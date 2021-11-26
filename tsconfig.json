@@ -7,7 +7,6 @@
     "sourceMap": true,
     "types": [
       "node",
-      "@dcl/posix"
     ],
     "strict": true,
     "outDir": "./dist",

@@ -1,5 +1,5 @@
 import { Matrix } from './Matrix'
-import { FloatArray, Epsilon } from './types'
+import { FloatArray, Epsilon, ReadOnlyVector2 } from './types'
 import { Scalar } from './Scalar'
 
 /**

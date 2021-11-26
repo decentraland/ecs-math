@@ -1,7 +1,7 @@
 import { Matrix } from './Matrix'
 import { Vector3 } from './Vector3'
 import { MathTmp } from './preallocatedVariables'
-import { DEG2RAD, RAD2DEG } from './types'
+import { DEG2RAD, RAD2DEG, ReadOnlyQuaternion } from './types'
 import { Scalar } from './Scalar'
 
 /**

@@ -1,4 +1,4 @@
-import { FloatArray, Epsilon } from './types'
+import { FloatArray, Epsilon, ReadOnlyVector4 } from './types'
 import { Matrix } from './Matrix'
 import { Scalar } from './Scalar'
 import { Vector3 } from './Vector3'

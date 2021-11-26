@@ -1,5 +1,5 @@
 import { MathTmp } from './preallocatedVariables'
-import { FloatArray, Epsilon } from './types'
+import { FloatArray, Epsilon, ReadOnlyVector3 } from './types'
 import { Matrix } from './Matrix'
 import { Quaternion } from './Quaternion'
 import { Scalar } from './Scalar'
