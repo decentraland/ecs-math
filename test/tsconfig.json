@@ -13,6 +13,5 @@
     "skipLibCheck": true,
     "forceConsistentCasingInFileNames": true,
     "noEmit": true
-  },
-  "extends": "../tsconfig.json"
+  }
 }
