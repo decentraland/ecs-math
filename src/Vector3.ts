@@ -1,8 +1,14 @@
 import { MathTmp } from './preallocatedVariables'
-import { FloatArray, Epsilon, ReadOnlyVector3 } from './types'
+import { FloatArray, Epsilon } from './types'
 import { Matrix } from './Matrix'
 import { Quaternion } from './Quaternion'
 import { Scalar } from './Scalar'
+
+type ReadOnlyVector3 = {
+  readonly y: number
+  readonly x: number
+  readonly z: number
+}
 
 /**
  * Classed used to store (x,y,z) vector representation

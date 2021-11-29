@@ -1,7 +1,14 @@
-import { FloatArray, Epsilon, ReadOnlyVector4 } from './types'
+import { FloatArray, Epsilon } from './types'
 import { Matrix } from './Matrix'
 import { Scalar } from './Scalar'
 import { Vector3 } from './Vector3'
+
+type ReadOnlyVector4 = {
+  readonly x: number
+  readonly y: number
+  readonly z: number
+  readonly w: number
+}
 
 /**
  * Vector4 class created for EulerAngle class conversion to Quaternion

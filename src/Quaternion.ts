@@ -1,8 +1,15 @@
 import { Matrix } from './Matrix'
 import { Vector3 } from './Vector3'
 import { MathTmp } from './preallocatedVariables'
-import { DEG2RAD, RAD2DEG, ReadOnlyQuaternion } from './types'
+import { DEG2RAD, RAD2DEG } from './types'
 import { Scalar } from './Scalar'
+
+type ReadOnlyQuaternion = {
+  readonly x: number
+  readonly y: number
+  readonly z: number
+  readonly w: number
+}
 
 /**
  * Class used to store quaternion data

@@ -1,6 +1,11 @@
 import { Matrix } from './Matrix'
-import { FloatArray, Epsilon, ReadOnlyVector2 } from './types'
+import { FloatArray, Epsilon } from './types'
 import { Scalar } from './Scalar'
+
+type ReadOnlyVector2 = {
+  readonly y: number
+  readonly x: number
+}
 
 /**
  * Class representing a vector containing 2 coordinates
