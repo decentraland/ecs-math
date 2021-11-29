@@ -9,7 +9,7 @@ import { Matrix } from './Matrix'
 // There's a Tmp array per object type : int, float, Vector2, Vector3, Vector4, Quaternion, Matrix
 
 /**
- * @internal
+ * @public
  * Same as Tmp but not exported to keep it only for math functions to avoid conflicts
  */
 export const MathTmp = {
