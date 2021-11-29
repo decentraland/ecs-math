@@ -78,23 +78,23 @@ export interface ISize {
   height: number
 }
 
-/** @public */
+/** @internal */
 export type ReadOnlyQuaternion = ReadOnlyVector4
 
-/** @public */
+/** @internal */
 export type ReadOnlyVector2 = {
   readonly y: number
   readonly x: number
 }
 
-/** @public */
+/** @internal */
 export type ReadOnlyVector3 = {
   readonly y: number
   readonly x: number
   readonly z: number
 }
 
-/** @public */
+/** @internal */
 export type ReadOnlyVector4 = {
   readonly x: number
   readonly y: number

@@ -384,6 +384,8 @@ export class Plane {
     transform(transformation: Matrix): Plane;
 }
 
+// Warning: (ae-incompatible-release-tags) The symbol "Quaternion" is marked as @public, but its signature references "ReadOnlyQuaternion" which is marked as @internal
+//
 // @public
 export class Quaternion implements ReadOnlyQuaternion {
     constructor(
@@ -470,23 +472,31 @@ export type ReadOnlyColor4 = {
     readonly a: number;
 };
 
-// @public (undocumented)
+// Warning: (ae-internal-missing-underscore) The name "ReadOnlyQuaternion" should be prefixed with an underscore because the declaration is marked as @internal
+//
+// @internal (undocumented)
 export type ReadOnlyQuaternion = ReadOnlyVector4;
 
-// @public (undocumented)
+// Warning: (ae-internal-missing-underscore) The name "ReadOnlyVector2" should be prefixed with an underscore because the declaration is marked as @internal
+//
+// @internal (undocumented)
 export type ReadOnlyVector2 = {
     readonly y: number;
     readonly x: number;
 };
 
-// @public (undocumented)
+// Warning: (ae-internal-missing-underscore) The name "ReadOnlyVector3" should be prefixed with an underscore because the declaration is marked as @internal
+//
+// @internal (undocumented)
 export type ReadOnlyVector3 = {
     readonly y: number;
     readonly x: number;
     readonly z: number;
 };
 
-// @public (undocumented)
+// Warning: (ae-internal-missing-underscore) The name "ReadOnlyVector4" should be prefixed with an underscore because the declaration is marked as @internal
+//
+// @internal (undocumented)
 export type ReadOnlyVector4 = {
     readonly x: number;
     readonly y: number;
@@ -554,6 +564,8 @@ export const ToGammaSpace: number;
 // @public
 export const ToLinearSpace = 2.2;
 
+// Warning: (ae-incompatible-release-tags) The symbol "Vector2" is marked as @public, but its signature references "ReadOnlyVector2" which is marked as @internal
+//
 // @public
 export class Vector2 implements ReadOnlyVector2 {
     constructor(
@@ -618,6 +630,8 @@ export class Vector2 implements ReadOnlyVector2 {
     static Zero(): Vector2;
 }
 
+// Warning: (ae-incompatible-release-tags) The symbol "Vector3" is marked as @public, but its signature references "ReadOnlyVector3" which is marked as @internal
+//
 // @public
 export class Vector3 implements ReadOnlyVector3 {
     constructor(
@@ -721,6 +735,8 @@ export class Vector3 implements ReadOnlyVector3 {
     static Zero(): Vector3;
 }
 
+// Warning: (ae-incompatible-release-tags) The symbol "Vector4" is marked as @public, but its signature references "ReadOnlyVector4" which is marked as @internal
+//
 // @public
 export class Vector4 implements ReadOnlyVector4 {
     constructor(
