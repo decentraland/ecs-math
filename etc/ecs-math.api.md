@@ -178,6 +178,14 @@ export const DEG2RAD: number;
 export type double = number;
 
 // @public (undocumented)
+export type EcsMathReadOnlyQuaternion = {
+    readonly x: number;
+    readonly y: number;
+    readonly z: number;
+    readonly w: number;
+};
+
+// @public (undocumented)
 export type EcsMathReadOnlyVector2 = {
     readonly y: number;
     readonly x: number;
@@ -404,7 +412,7 @@ export class Plane {
 }
 
 // @public
-export class Quaternion implements ReadOnlyQuaternion {
+export class Quaternion implements EcsMathReadOnlyQuaternion {
     constructor(
     x?: number,
     y?: number,
@@ -414,19 +422,19 @@ export class Quaternion implements ReadOnlyQuaternion {
     add(other: Quaternion): Quaternion;
     // @internal
     addInPlace(other: Quaternion): Quaternion;
-    static Angle(quat1: ReadOnlyQuaternion, quat2: ReadOnlyQuaternion): number;
+    static Angle(quat1: EcsMathReadOnlyQuaternion, quat2: EcsMathReadOnlyQuaternion): number;
     // (undocumented)
     angleAxis(degress: number, axis: Vector3): Quaternion;
-    static AreClose(quat0: ReadOnlyQuaternion, quat1: ReadOnlyQuaternion): boolean;
+    static AreClose(quat0: EcsMathReadOnlyQuaternion, quat1: EcsMathReadOnlyQuaternion): boolean;
     asArray(): number[];
     clone(): Quaternion;
     conjugate(): Quaternion;
     conjugateInPlace(): Quaternion;
     conjugateToRef(ref: Quaternion): Quaternion;
-    copyFrom(other: ReadOnlyQuaternion): Quaternion;
+    copyFrom(other: EcsMathReadOnlyQuaternion): Quaternion;
     copyFromFloats(x: number, y: number, z: number, w: number): Quaternion;
-    static Dot(left: ReadOnlyQuaternion, right: ReadOnlyQuaternion): number;
-    equals(otherQuaternion: ReadOnlyQuaternion): boolean;
+    static Dot(left: EcsMathReadOnlyQuaternion, right: EcsMathReadOnlyQuaternion): number;
+    equals(otherQuaternion: EcsMathReadOnlyQuaternion): boolean;
     static Euler(x: number, y: number, z: number): Quaternion;
     set eulerAngles(euler: Vector3);
     get eulerAngles(): Vector3;
@@ -438,19 +446,19 @@ export class Quaternion implements ReadOnlyQuaternion {
     static FromToRotation(from: Vector3, to: Vector3, up?: Vector3): Quaternion;
     getClassName(): string;
     getHashCode(): number;
-    static Hermite(value1: ReadOnlyQuaternion, tangent1: ReadOnlyQuaternion, value2: ReadOnlyQuaternion, tangent2: ReadOnlyQuaternion, amount: number): Quaternion;
+    static Hermite(value1: EcsMathReadOnlyQuaternion, tangent1: EcsMathReadOnlyQuaternion, value2: EcsMathReadOnlyQuaternion, tangent2: EcsMathReadOnlyQuaternion, amount: number): Quaternion;
     static get Identity(): Quaternion;
     static Inverse(q: Quaternion): Quaternion;
-    static IsIdentity(quaternion: ReadOnlyQuaternion): boolean;
+    static IsIdentity(quaternion: EcsMathReadOnlyQuaternion): boolean;
     get length(): number;
     get lengthSquared(): number;
     static LookRotation(forward: Vector3, up?: Vector3): Quaternion;
-    multiply(q1: ReadOnlyQuaternion): Quaternion;
-    multiplyInPlace(q1: ReadOnlyQuaternion): Quaternion;
-    multiplyToRef(q1: ReadOnlyQuaternion, result: Quaternion): Quaternion;
+    multiply(q1: EcsMathReadOnlyQuaternion): Quaternion;
+    multiplyInPlace(q1: EcsMathReadOnlyQuaternion): Quaternion;
+    multiplyToRef(q1: EcsMathReadOnlyQuaternion, result: Quaternion): Quaternion;
     normalize(): Quaternion;
     get normalized(): Quaternion;
-    static RotateTowards(from: ReadOnlyQuaternion, to: Quaternion, maxDegreesDelta: number): Quaternion;
+    static RotateTowards(from: EcsMathReadOnlyQuaternion, to: Quaternion, maxDegreesDelta: number): Quaternion;
     static RotationAlphaBetaGamma(alpha: number, beta: number, gamma: number): Quaternion;
     static RotationAlphaBetaGammaToRef(alpha: number, beta: number, gamma: number, result: Quaternion): void;
     static RotationAxis(axis: Vector3, angle: number): Quaternion;
@@ -466,8 +474,8 @@ export class Quaternion implements ReadOnlyQuaternion {
     set(x: number, y: number, z: number, w: number): Quaternion;
     setEuler(x: number, y: number, z: number): Quaternion;
     setFromToRotation(from: Vector3, to: Vector3, up?: Vector3): void;
-    static Slerp(left: ReadOnlyQuaternion, right: ReadOnlyQuaternion, amount: number): Quaternion;
-    static SlerpToRef(left: ReadOnlyQuaternion, right: ReadOnlyQuaternion, amount: number, result: Quaternion): void;
+    static Slerp(left: EcsMathReadOnlyQuaternion, right: EcsMathReadOnlyQuaternion, amount: number): Quaternion;
+    static SlerpToRef(left: EcsMathReadOnlyQuaternion, right: EcsMathReadOnlyQuaternion, amount: number, result: Quaternion): void;
     subtract(other: Quaternion): Quaternion;
     toRotationMatrix(result: Matrix): Quaternion;
     toString(): string;
@@ -487,14 +495,6 @@ export type ReadOnlyColor4 = {
     readonly g: number;
     readonly b: number;
     readonly a: number;
-};
-
-// @public (undocumented)
-export type ReadOnlyQuaternion = {
-    readonly x: number;
-    readonly y: number;
-    readonly z: number;
-    readonly w: number;
 };
 
 // @public

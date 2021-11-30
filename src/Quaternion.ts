@@ -7,7 +7,7 @@ import { Scalar } from './Scalar'
 /**
  * @public
  */
-export type ReadOnlyQuaternion = {
+export type EcsMathReadOnlyQuaternion = {
   readonly x: number
   readonly y: number
   readonly z: number
@@ -20,7 +20,7 @@ export type ReadOnlyQuaternion = {
  * {@link http://doc.babylonjs.com/features/position,_rotation,_scaling }
  * @public
  */
-export class Quaternion implements ReadOnlyQuaternion {
+export class Quaternion implements EcsMathReadOnlyQuaternion {
   /**
    * Creates a new Quaternion from the given floats
    * @param x - defines the first component (0 by default)
@@ -114,8 +114,8 @@ export class Quaternion implements ReadOnlyQuaternion {
    * @returns the dot product
    */
   public static Dot(
-    left: ReadOnlyQuaternion,
-    right: ReadOnlyQuaternion
+    left: EcsMathReadOnlyQuaternion,
+    right: EcsMathReadOnlyQuaternion
   ): number {
     return (
       left.x * right.x + left.y * right.y + left.z * right.z + left.w * right.w
@@ -129,8 +129,8 @@ export class Quaternion implements ReadOnlyQuaternion {
    * @returns true if the two quaternions are close to each other
    */
   public static AreClose(
-    quat0: ReadOnlyQuaternion,
-    quat1: ReadOnlyQuaternion
+    quat0: EcsMathReadOnlyQuaternion,
+    quat1: EcsMathReadOnlyQuaternion
   ): boolean {
     const dot = Quaternion.Dot(quat0, quat1)
 
@@ -159,7 +159,7 @@ export class Quaternion implements ReadOnlyQuaternion {
    * @param quaternion - defines the quaternion to check
    * @returns true if the quaternion is identity
    */
-  public static IsIdentity(quaternion: ReadOnlyQuaternion): boolean {
+  public static IsIdentity(quaternion: EcsMathReadOnlyQuaternion): boolean {
     return (
       quaternion &&
       quaternion.x === 0 &&
@@ -375,8 +375,8 @@ export class Quaternion implements ReadOnlyQuaternion {
    * @returns the new interpolated quaternion
    */
   public static Slerp(
-    left: ReadOnlyQuaternion,
-    right: ReadOnlyQuaternion,
+    left: EcsMathReadOnlyQuaternion,
+    right: EcsMathReadOnlyQuaternion,
     amount: number
   ): Quaternion {
     const result = Quaternion.Identity
@@ -394,8 +394,8 @@ export class Quaternion implements ReadOnlyQuaternion {
    * @param result - defines the target quaternion
    */
   public static SlerpToRef(
-    left: ReadOnlyQuaternion,
-    right: ReadOnlyQuaternion,
+    left: EcsMathReadOnlyQuaternion,
+    right: EcsMathReadOnlyQuaternion,
     amount: number,
     result: Quaternion
   ): void {
@@ -438,10 +438,10 @@ export class Quaternion implements ReadOnlyQuaternion {
    * @returns the new interpolated quaternion
    */
   public static Hermite(
-    value1: ReadOnlyQuaternion,
-    tangent1: ReadOnlyQuaternion,
-    value2: ReadOnlyQuaternion,
-    tangent2: ReadOnlyQuaternion,
+    value1: EcsMathReadOnlyQuaternion,
+    tangent1: EcsMathReadOnlyQuaternion,
+    value2: EcsMathReadOnlyQuaternion,
+    tangent2: EcsMathReadOnlyQuaternion,
     amount: number
   ): Quaternion {
     const squared = amount * amount
@@ -488,8 +488,8 @@ export class Quaternion implements ReadOnlyQuaternion {
    * @param quat2 - defines the second quaternion
    */
   public static Angle(
-    quat1: ReadOnlyQuaternion,
-    quat2: ReadOnlyQuaternion
+    quat1: EcsMathReadOnlyQuaternion,
+    quat2: EcsMathReadOnlyQuaternion
   ): number {
     const dot = Quaternion.Dot(quat1, quat2)
     return Math.acos(Math.min(Math.abs(dot), 1)) * 2 * RAD2DEG
@@ -580,7 +580,7 @@ export class Quaternion implements ReadOnlyQuaternion {
    * @param maxDegreesDelta - the interval step
    */
   public static RotateTowards(
-    from: ReadOnlyQuaternion,
+    from: EcsMathReadOnlyQuaternion,
     to: Quaternion,
     maxDegreesDelta: number
   ): Quaternion {
@@ -756,7 +756,7 @@ export class Quaternion implements ReadOnlyQuaternion {
    * @param otherQuaternion - defines the second operand
    * @returns true if the current quaternion and the given one coordinates are strictly equals
    */
-  public equals(otherQuaternion: ReadOnlyQuaternion): boolean {
+  public equals(otherQuaternion: EcsMathReadOnlyQuaternion): boolean {
     return (
       otherQuaternion &&
       this.x === otherQuaternion.x &&
@@ -779,7 +779,7 @@ export class Quaternion implements ReadOnlyQuaternion {
    * @param other - defines the other quaternion
    * @returns the updated current quaternion
    */
-  public copyFrom(other: ReadOnlyQuaternion): Quaternion {
+  public copyFrom(other: EcsMathReadOnlyQuaternion): Quaternion {
     this.x = other.x
     this.y = other.y
     this.z = other.z
@@ -937,7 +937,7 @@ export class Quaternion implements ReadOnlyQuaternion {
    * @param q1 - defines the second operand
    * @returns a new quaternion set as the multiplication result of the current one with the given one "q1"
    */
-  public multiply(q1: ReadOnlyQuaternion): Quaternion {
+  public multiply(q1: EcsMathReadOnlyQuaternion): Quaternion {
     const result = new Quaternion(0, 0, 0, 1.0)
     this.multiplyToRef(q1, result)
     return result
@@ -949,7 +949,10 @@ export class Quaternion implements ReadOnlyQuaternion {
    * @param result - defines the target quaternion
    * @returns the current quaternion
    */
-  public multiplyToRef(q1: ReadOnlyQuaternion, result: Quaternion): Quaternion {
+  public multiplyToRef(
+    q1: EcsMathReadOnlyQuaternion,
+    result: Quaternion
+  ): Quaternion {
     const x = this.x * q1.w + this.y * q1.z - this.z * q1.y + this.w * q1.x
     const y = -this.x * q1.z + this.y * q1.w + this.z * q1.x + this.w * q1.y
     const z = this.x * q1.y - this.y * q1.x + this.z * q1.w + this.w * q1.z
@@ -963,7 +966,7 @@ export class Quaternion implements ReadOnlyQuaternion {
    * @param q1 - defines the second operand
    * @returns the currentupdated quaternion
    */
-  public multiplyInPlace(q1: ReadOnlyQuaternion): Quaternion {
+  public multiplyInPlace(q1: EcsMathReadOnlyQuaternion): Quaternion {
     this.multiplyToRef(q1, this)
     return this
   }
