@@ -2,7 +2,10 @@ import { Matrix } from './Matrix'
 import { FloatArray, Epsilon } from './types'
 import { Scalar } from './Scalar'
 
-type ReadOnlyVector2 = {
+/**
+ * @public
+ */
+export type EcsMathReadOnlyVector2 = {
   readonly y: number
   readonly x: number
 }
@@ -11,7 +14,7 @@ type ReadOnlyVector2 = {
  * Class representing a vector containing 2 coordinates
  * @public
  */
-export class Vector2 implements ReadOnlyVector2 {
+export class Vector2 implements EcsMathReadOnlyVector2 {
   /**
    * Creates a new Vector2 from the given x and y coordinates
    * @param x - defines the first coordinate
@@ -47,8 +50,8 @@ export class Vector2 implements ReadOnlyVector2 {
    * @returns the resulting vector
    */
   public static Add(
-    vector1: ReadOnlyVector2,
-    vector2: ReadOnlyVector2
+    vector1: EcsMathReadOnlyVector2,
+    vector2: EcsMathReadOnlyVector2
   ): Vector2 {
     return new Vector2(vector1.x, vector1.y).addInPlace(vector2)
   }
@@ -91,10 +94,10 @@ export class Vector2 implements ReadOnlyVector2 {
    * @returns a new Vector2
    */
   public static CatmullRom(
-    value1: ReadOnlyVector2,
-    value2: ReadOnlyVector2,
-    value3: ReadOnlyVector2,
-    value4: ReadOnlyVector2,
+    value1: EcsMathReadOnlyVector2,
+    value2: EcsMathReadOnlyVector2,
+    value3: EcsMathReadOnlyVector2,
+    value4: EcsMathReadOnlyVector2,
     amount: number
   ): Vector2 {
     const squared = amount * amount
@@ -129,9 +132,9 @@ export class Vector2 implements ReadOnlyVector2 {
    * @returns a new Vector2
    */
   public static Clamp(
-    value: ReadOnlyVector2,
-    min: ReadOnlyVector2,
-    max: ReadOnlyVector2
+    value: EcsMathReadOnlyVector2,
+    min: EcsMathReadOnlyVector2,
+    max: EcsMathReadOnlyVector2
   ): Vector2 {
     let x = value.x
     x = x > max.x ? max.x : x
@@ -154,10 +157,10 @@ export class Vector2 implements ReadOnlyVector2 {
    * @returns a new Vector2
    */
   public static Hermite(
-    value1: ReadOnlyVector2,
-    tangent1: ReadOnlyVector2,
-    value2: ReadOnlyVector2,
-    tangent2: ReadOnlyVector2,
+    value1: EcsMathReadOnlyVector2,
+    tangent1: EcsMathReadOnlyVector2,
+    value2: EcsMathReadOnlyVector2,
+    tangent2: EcsMathReadOnlyVector2,
     amount: number
   ): Vector2 {
     const squared = amount * amount
@@ -189,8 +192,8 @@ export class Vector2 implements ReadOnlyVector2 {
    * @returns a new Vector2
    */
   public static Lerp(
-    start: ReadOnlyVector2,
-    end: ReadOnlyVector2,
+    start: EcsMathReadOnlyVector2,
+    end: EcsMathReadOnlyVector2,
     amount: number
   ): Vector2 {
     const x = start.x + (end.x - start.x) * amount
@@ -204,7 +207,10 @@ export class Vector2 implements ReadOnlyVector2 {
    * @param right - defines second vector
    * @returns the dot product (float)
    */
-  public static Dot(left: ReadOnlyVector2, right: ReadOnlyVector2): number {
+  public static Dot(
+    left: EcsMathReadOnlyVector2,
+    right: EcsMathReadOnlyVector2
+  ): number {
     return left.x * right.x + left.y * right.y
   }
 
@@ -213,7 +219,7 @@ export class Vector2 implements ReadOnlyVector2 {
    * @param vector - defines the vector to normalize
    * @returns a new Vector2
    */
-  public static Normalize(vector: ReadOnlyVector2): Vector2 {
+  public static Normalize(vector: EcsMathReadOnlyVector2): Vector2 {
     const newVector = new Vector2(vector.x, vector.y)
     newVector.normalize()
     return newVector
@@ -226,8 +232,8 @@ export class Vector2 implements ReadOnlyVector2 {
    * @returns a new Vector2
    */
   public static Minimize(
-    left: ReadOnlyVector2,
-    right: ReadOnlyVector2
+    left: EcsMathReadOnlyVector2,
+    right: EcsMathReadOnlyVector2
   ): Vector2 {
     const x = left.x < right.x ? left.x : right.x
     const y = left.y < right.y ? left.y : right.y
@@ -241,8 +247,8 @@ export class Vector2 implements ReadOnlyVector2 {
    * @returns a new Vector2
    */
   public static Maximize(
-    left: ReadOnlyVector2,
-    right: ReadOnlyVector2
+    left: EcsMathReadOnlyVector2,
+    right: EcsMathReadOnlyVector2
   ): Vector2 {
     const x = left.x > right.x ? left.x : right.x
     const y = left.y > right.y ? left.y : right.y
@@ -268,7 +274,7 @@ export class Vector2 implements ReadOnlyVector2 {
    * @param result - defines the target vector
    */
   public static TransformToRef(
-    vector: ReadOnlyVector2,
+    vector: EcsMathReadOnlyVector2,
     transformation: Matrix,
     result: Vector2
   ) {
@@ -288,10 +294,10 @@ export class Vector2 implements ReadOnlyVector2 {
    * @returns true if the point "p" is in the triangle defined by the vertors "p0", "p1", "p2"
    */
   public static PointInTriangle(
-    p: ReadOnlyVector2,
-    p0: ReadOnlyVector2,
-    p1: ReadOnlyVector2,
-    p2: ReadOnlyVector2
+    p: EcsMathReadOnlyVector2,
+    p0: EcsMathReadOnlyVector2,
+    p1: EcsMathReadOnlyVector2,
+    p2: EcsMathReadOnlyVector2
   ) {
     const a =
       (1 / 2) *
@@ -327,8 +333,8 @@ export class Vector2 implements ReadOnlyVector2 {
    * @returns the squared distance between vectors
    */
   public static DistanceSquared(
-    value1: ReadOnlyVector2,
-    value2: ReadOnlyVector2
+    value1: EcsMathReadOnlyVector2,
+    value2: EcsMathReadOnlyVector2
   ): number {
     const x = value1.x - value2.x
     const y = value1.y - value2.y
@@ -342,8 +348,8 @@ export class Vector2 implements ReadOnlyVector2 {
    * @returns a new Vector2
    */
   public static Center(
-    value1: ReadOnlyVector2,
-    value2: ReadOnlyVector2
+    value1: EcsMathReadOnlyVector2,
+    value2: EcsMathReadOnlyVector2
   ): Vector2 {
     const center = Vector2.Add(value1, value2)
     center.scaleInPlace(0.5)
@@ -427,7 +433,7 @@ export class Vector2 implements ReadOnlyVector2 {
    * @param source - defines the source Vector2
    * @returns the current updated Vector2
    */
-  public copyFrom(source: ReadOnlyVector2): Vector2 {
+  public copyFrom(source: EcsMathReadOnlyVector2): Vector2 {
     this.x = source.x
     this.y = source.y
     return this
@@ -459,7 +465,7 @@ export class Vector2 implements ReadOnlyVector2 {
    * @param otherVector - defines the other vector
    * @returns a new Vector2 set with the addition of the current Vector2 and the given one coordinates
    */
-  public add(otherVector: ReadOnlyVector2): Vector2 {
+  public add(otherVector: EcsMathReadOnlyVector2): Vector2 {
     return new Vector2(this.x + otherVector.x, this.y + otherVector.y)
   }
 
@@ -469,7 +475,10 @@ export class Vector2 implements ReadOnlyVector2 {
    * @param result - defines the target vector
    * @returns the unmodified current Vector2
    */
-  public addToRef(otherVector: ReadOnlyVector2, result: Vector2): Vector2 {
+  public addToRef(
+    otherVector: EcsMathReadOnlyVector2,
+    result: Vector2
+  ): Vector2 {
     result.x = this.x + otherVector.x
     result.y = this.y + otherVector.y
     return this
@@ -480,7 +489,7 @@ export class Vector2 implements ReadOnlyVector2 {
    * @param otherVector - defines the other vector
    * @returns the current updated Vector2
    */
-  public addInPlace(otherVector: ReadOnlyVector2): Vector2 {
+  public addInPlace(otherVector: EcsMathReadOnlyVector2): Vector2 {
     this.x += otherVector.x
     this.y += otherVector.y
     return this
@@ -491,7 +500,7 @@ export class Vector2 implements ReadOnlyVector2 {
    * @param otherVector - defines the other vector
    * @returns a new Vector2
    */
-  public addVector3(otherVector: ReadOnlyVector2): Vector2 {
+  public addVector3(otherVector: EcsMathReadOnlyVector2): Vector2 {
     return new Vector2(this.x + otherVector.x, this.y + otherVector.y)
   }
 
@@ -500,7 +509,7 @@ export class Vector2 implements ReadOnlyVector2 {
    * @param otherVector - defines the other vector
    * @returns a new Vector2
    */
-  public subtract(otherVector: ReadOnlyVector2): Vector2 {
+  public subtract(otherVector: EcsMathReadOnlyVector2): Vector2 {
     return new Vector2(this.x - otherVector.x, this.y - otherVector.y)
   }
 
@@ -510,7 +519,10 @@ export class Vector2 implements ReadOnlyVector2 {
    * @param result - defines the target vector
    * @returns the unmodified current Vector2
    */
-  public subtractToRef(otherVector: ReadOnlyVector2, result: Vector2): Vector2 {
+  public subtractToRef(
+    otherVector: EcsMathReadOnlyVector2,
+    result: Vector2
+  ): Vector2 {
     result.x = this.x - otherVector.x
     result.y = this.y - otherVector.y
     return this
@@ -520,7 +532,7 @@ export class Vector2 implements ReadOnlyVector2 {
    * @param otherVector - defines the other vector
    * @returns the current updated Vector2
    */
-  public subtractInPlace(otherVector: ReadOnlyVector2): Vector2 {
+  public subtractInPlace(otherVector: EcsMathReadOnlyVector2): Vector2 {
     this.x -= otherVector.x
     this.y -= otherVector.y
     return this
@@ -531,7 +543,7 @@ export class Vector2 implements ReadOnlyVector2 {
    * @param otherVector - defines the other vector
    * @returns the current updated Vector2
    */
-  public multiplyInPlace(otherVector: ReadOnlyVector2): Vector2 {
+  public multiplyInPlace(otherVector: EcsMathReadOnlyVector2): Vector2 {
     this.x *= otherVector.x
     this.y *= otherVector.y
     return this
@@ -542,7 +554,7 @@ export class Vector2 implements ReadOnlyVector2 {
    * @param otherVector - defines the other vector
    * @returns a new Vector2
    */
-  public multiply(otherVector: ReadOnlyVector2): Vector2 {
+  public multiply(otherVector: EcsMathReadOnlyVector2): Vector2 {
     return new Vector2(this.x * otherVector.x, this.y * otherVector.y)
   }
 
@@ -552,7 +564,10 @@ export class Vector2 implements ReadOnlyVector2 {
    * @param result - defines the target vector
    * @returns the unmodified current Vector2
    */
-  public multiplyToRef(otherVector: ReadOnlyVector2, result: Vector2): Vector2 {
+  public multiplyToRef(
+    otherVector: EcsMathReadOnlyVector2,
+    result: Vector2
+  ): Vector2 {
     result.x = this.x * otherVector.x
     result.y = this.y * otherVector.y
     return this
@@ -573,7 +588,7 @@ export class Vector2 implements ReadOnlyVector2 {
    * @param otherVector - defines the other vector
    * @returns a new Vector2
    */
-  public divide(otherVector: ReadOnlyVector2): Vector2 {
+  public divide(otherVector: EcsMathReadOnlyVector2): Vector2 {
     return new Vector2(this.x / otherVector.x, this.y / otherVector.y)
   }
 
@@ -583,7 +598,10 @@ export class Vector2 implements ReadOnlyVector2 {
    * @param result - defines the target vector
    * @returns the unmodified current Vector2
    */
-  public divideToRef(otherVector: ReadOnlyVector2, result: Vector2): Vector2 {
+  public divideToRef(
+    otherVector: EcsMathReadOnlyVector2,
+    result: Vector2
+  ): Vector2 {
     result.x = this.x / otherVector.x
     result.y = this.y / otherVector.y
     return this
@@ -594,7 +612,7 @@ export class Vector2 implements ReadOnlyVector2 {
    * @param otherVector - defines the other vector
    * @returns the current updated Vector2
    */
-  public divideInPlace(otherVector: ReadOnlyVector2): Vector2 {
+  public divideInPlace(otherVector: EcsMathReadOnlyVector2): Vector2 {
     return this.divideToRef(otherVector, this)
   }
 
@@ -657,7 +675,7 @@ export class Vector2 implements ReadOnlyVector2 {
    * @param otherVector - defines the other vector
    * @returns true if the given vector coordinates strictly equal the current Vector2 ones
    */
-  public equals(otherVector: ReadOnlyVector2): boolean {
+  public equals(otherVector: EcsMathReadOnlyVector2): boolean {
     return otherVector && this.x === otherVector.x && this.y === otherVector.y
   }
 
@@ -668,7 +686,7 @@ export class Vector2 implements ReadOnlyVector2 {
    * @returns true if the given vector coordinates are close to the current ones by a distance of epsilon.
    */
   public equalsWithEpsilon(
-    otherVector: ReadOnlyVector2,
+    otherVector: EcsMathReadOnlyVector2,
     epsilon: number = Epsilon
   ): boolean {
     return (

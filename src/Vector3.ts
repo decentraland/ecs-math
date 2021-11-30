@@ -3,8 +3,10 @@ import { FloatArray, Epsilon } from './types'
 import { Matrix } from './Matrix'
 import { Quaternion } from './Quaternion'
 import { Scalar } from './Scalar'
-
-type ReadOnlyVector3 = {
+/**
+ * @public
+ */
+export type EcsMathReadOnlyVector3 = {
   readonly y: number
   readonly x: number
   readonly z: number
@@ -17,7 +19,7 @@ type ReadOnlyVector3 = {
  * Reminder: Babylon.js uses a left handed forward facing system
  * @public
  */
-export class Vector3 implements ReadOnlyVector3 {
+export class Vector3 implements EcsMathReadOnlyVector3 {
   /**
    * Gets a boolean indicating that the vector is non uniform meaning x, y or z are not all the same
    */
@@ -69,8 +71,8 @@ export class Vector3 implements ReadOnlyVector3 {
    * @returns the resulting vector
    */
   public static Add(
-    vector1: ReadOnlyVector3,
-    vector2: ReadOnlyVector3
+    vector1: EcsMathReadOnlyVector3,
+    vector2: EcsMathReadOnlyVector3
   ): Vector3 {
     return new Vector3(vector1.x, vector1.y, vector1.z).addInPlace(vector2)
   }
@@ -84,9 +86,9 @@ export class Vector3 implements ReadOnlyVector3 {
    * @returns the clip factor
    */
   public static GetClipFactor(
-    vector0: ReadOnlyVector3,
-    vector1: ReadOnlyVector3,
-    axis: ReadOnlyVector3,
+    vector0: EcsMathReadOnlyVector3,
+    vector1: EcsMathReadOnlyVector3,
+    axis: EcsMathReadOnlyVector3,
     size: number
   ) {
     const d0 = Vector3.Dot(vector0, axis) - size
@@ -107,7 +109,7 @@ export class Vector3 implements ReadOnlyVector3 {
   public static GetAngleBetweenVectors(
     vector0: Vector3,
     vector1: Vector3,
-    normal: ReadOnlyVector3
+    normal: EcsMathReadOnlyVector3
   ): number {
     const v0: Vector3 = vector0.normalizeToRef(MathTmp.Vector3[1])
     const v1: Vector3 = vector1.normalizeToRef(MathTmp.Vector3[2])
@@ -256,7 +258,7 @@ export class Vector3 implements ReadOnlyVector3 {
    * @returns the transformed Vector3
    */
   public static TransformCoordinates(
-    vector: ReadOnlyVector3,
+    vector: EcsMathReadOnlyVector3,
     transformation: Matrix
   ): Vector3 {
     const result = Vector3.Zero()
@@ -272,7 +274,7 @@ export class Vector3 implements ReadOnlyVector3 {
    * @param result - defines the Vector3 where to store the result
    */
   public static TransformCoordinatesToRef(
-    vector: ReadOnlyVector3,
+    vector: EcsMathReadOnlyVector3,
     transformation: Readonly<Matrix>,
     result: Vector3
   ): void {
@@ -320,7 +322,7 @@ export class Vector3 implements ReadOnlyVector3 {
    * @returns the new Vector3
    */
   public static TransformNormal(
-    vector: ReadOnlyVector3,
+    vector: EcsMathReadOnlyVector3,
     transformation: Matrix
   ): Vector3 {
     const result = Vector3.Zero()
@@ -336,7 +338,7 @@ export class Vector3 implements ReadOnlyVector3 {
    * @param result - defines the Vector3 where to store the result
    */
   public static TransformNormalToRef(
-    vector: ReadOnlyVector3,
+    vector: EcsMathReadOnlyVector3,
     transformation: Readonly<Matrix>,
     result: Vector3
   ): void {
@@ -381,10 +383,10 @@ export class Vector3 implements ReadOnlyVector3 {
    * @returns the new Vector3
    */
   public static CatmullRom(
-    value1: ReadOnlyVector3,
-    value2: ReadOnlyVector3,
-    value3: ReadOnlyVector3,
-    value4: ReadOnlyVector3,
+    value1: EcsMathReadOnlyVector3,
+    value2: EcsMathReadOnlyVector3,
+    value3: EcsMathReadOnlyVector3,
+    value4: EcsMathReadOnlyVector3,
     amount: number
   ): Vector3 {
     const squared = amount * amount
@@ -427,9 +429,9 @@ export class Vector3 implements ReadOnlyVector3 {
    * @returns the new Vector3
    */
   public static Clamp(
-    value: ReadOnlyVector3,
-    min: ReadOnlyVector3,
-    max: ReadOnlyVector3
+    value: EcsMathReadOnlyVector3,
+    min: EcsMathReadOnlyVector3,
+    max: EcsMathReadOnlyVector3
   ): Vector3 {
     const v = new Vector3()
     Vector3.ClampToRef(value, min, max, v)
@@ -445,9 +447,9 @@ export class Vector3 implements ReadOnlyVector3 {
    * @param result - defines the Vector3 where to store the result
    */
   public static ClampToRef(
-    value: ReadOnlyVector3,
-    min: ReadOnlyVector3,
-    max: ReadOnlyVector3,
+    value: EcsMathReadOnlyVector3,
+    min: EcsMathReadOnlyVector3,
+    max: EcsMathReadOnlyVector3,
     result: Vector3
   ): void {
     let x = value.x
@@ -475,10 +477,10 @@ export class Vector3 implements ReadOnlyVector3 {
    * @returns the new Vector3
    */
   public static Hermite(
-    value1: ReadOnlyVector3,
-    tangent1: ReadOnlyVector3,
-    value2: ReadOnlyVector3,
-    tangent2: ReadOnlyVector3,
+    value1: EcsMathReadOnlyVector3,
+    tangent1: EcsMathReadOnlyVector3,
+    value2: EcsMathReadOnlyVector3,
+    tangent2: EcsMathReadOnlyVector3,
     amount: number
   ): Vector3 {
     const squared = amount * amount
@@ -514,8 +516,8 @@ export class Vector3 implements ReadOnlyVector3 {
    * @returns the new Vector3
    */
   public static Lerp(
-    start: ReadOnlyVector3,
-    end: ReadOnlyVector3,
+    start: EcsMathReadOnlyVector3,
+    end: EcsMathReadOnlyVector3,
     amount: number
   ): Vector3 {
     const result = new Vector3(0, 0, 0)
@@ -531,8 +533,8 @@ export class Vector3 implements ReadOnlyVector3 {
    * @param result - defines the Vector3 where to store the result
    */
   public static LerpToRef(
-    start: ReadOnlyVector3,
-    end: ReadOnlyVector3,
+    start: EcsMathReadOnlyVector3,
+    end: EcsMathReadOnlyVector3,
     amount: number,
     result: Vector3
   ): void {
@@ -547,7 +549,10 @@ export class Vector3 implements ReadOnlyVector3 {
    * @param right - defines the right operand
    * @returns the dot product
    */
-  public static Dot(left: ReadOnlyVector3, right: ReadOnlyVector3): number {
+  public static Dot(
+    left: EcsMathReadOnlyVector3,
+    right: EcsMathReadOnlyVector3
+  ): number {
     return left.x * right.x + left.y * right.y + left.z * right.z
   }
 
@@ -558,7 +563,10 @@ export class Vector3 implements ReadOnlyVector3 {
    * @param right - defines the right operand
    * @returns the cross product
    */
-  public static Cross(left: ReadOnlyVector3, right: ReadOnlyVector3): Vector3 {
+  public static Cross(
+    left: EcsMathReadOnlyVector3,
+    right: EcsMathReadOnlyVector3
+  ): Vector3 {
     const result = Vector3.Zero()
     Vector3.CrossToRef(left, right, result)
     return result
@@ -572,8 +580,8 @@ export class Vector3 implements ReadOnlyVector3 {
    * @param result - defines the Vector3 where to store the result
    */
   public static CrossToRef(
-    left: ReadOnlyVector3,
-    right: ReadOnlyVector3,
+    left: EcsMathReadOnlyVector3,
+    right: EcsMathReadOnlyVector3,
     result: Vector3
   ): void {
     const x = left.y * right.z - left.z * right.y
@@ -609,8 +617,8 @@ export class Vector3 implements ReadOnlyVector3 {
    * @returns the new Vector3
    */
   public static Minimize(
-    left: ReadOnlyVector3,
-    right: ReadOnlyVector3
+    left: EcsMathReadOnlyVector3,
+    right: EcsMathReadOnlyVector3
   ): Vector3 {
     const min = new Vector3(left.x, left.y, left.z)
     min.minimizeInPlace(right)
@@ -636,8 +644,8 @@ export class Vector3 implements ReadOnlyVector3 {
    * @returns the distance
    */
   public static Distance(
-    value1: ReadOnlyVector3,
-    value2: ReadOnlyVector3
+    value1: EcsMathReadOnlyVector3,
+    value2: EcsMathReadOnlyVector3
   ): number {
     return Math.sqrt(Vector3.DistanceSquared(value1, value2))
   }
@@ -649,8 +657,8 @@ export class Vector3 implements ReadOnlyVector3 {
    * @returns the squared distance
    */
   public static DistanceSquared(
-    value1: ReadOnlyVector3,
-    value2: ReadOnlyVector3
+    value1: EcsMathReadOnlyVector3,
+    value2: EcsMathReadOnlyVector3
   ): number {
     const x = value1.x - value2.x
     const y = value1.y - value2.y
@@ -666,8 +674,8 @@ export class Vector3 implements ReadOnlyVector3 {
    * @returns the new Vector3
    */
   public static Center(
-    value1: ReadOnlyVector3,
-    value2: ReadOnlyVector3
+    value1: EcsMathReadOnlyVector3,
+    value2: EcsMathReadOnlyVector3
   ): Vector3 {
     const center = Vector3.Add(value1, value2)
     center.scaleInPlace(0.5)
@@ -777,7 +785,7 @@ export class Vector3 implements ReadOnlyVector3 {
    * @param otherVector - defines the second operand
    * @returns the current updated Vector3
    */
-  public addInPlace(otherVector: ReadOnlyVector3): Vector3 {
+  public addInPlace(otherVector: EcsMathReadOnlyVector3): Vector3 {
     return this.addInPlaceFromFloats(
       otherVector.x,
       otherVector.y,
@@ -804,7 +812,7 @@ export class Vector3 implements ReadOnlyVector3 {
    * @param otherVector - defines the second operand
    * @returns the resulting Vector3
    */
-  public add(otherVector: ReadOnlyVector3): Vector3 {
+  public add(otherVector: EcsMathReadOnlyVector3): Vector3 {
     return new Vector3(
       this.x + otherVector.x,
       this.y + otherVector.y,
@@ -818,7 +826,10 @@ export class Vector3 implements ReadOnlyVector3 {
    * @param result - defines the Vector3 object where to store the result
    * @returns the current Vector3
    */
-  public addToRef(otherVector: ReadOnlyVector3, result: Vector3): Vector3 {
+  public addToRef(
+    otherVector: EcsMathReadOnlyVector3,
+    result: Vector3
+  ): Vector3 {
     return result.copyFromFloats(
       this.x + otherVector.x,
       this.y + otherVector.y,
@@ -831,7 +842,7 @@ export class Vector3 implements ReadOnlyVector3 {
    * @param otherVector - defines the second operand
    * @returns the current updated Vector3
    */
-  public subtractInPlace(otherVector: ReadOnlyVector3): Vector3 {
+  public subtractInPlace(otherVector: EcsMathReadOnlyVector3): Vector3 {
     this.x -= otherVector.x
     this.y -= otherVector.y
     this.z -= otherVector.z
@@ -843,7 +854,7 @@ export class Vector3 implements ReadOnlyVector3 {
    * @param otherVector - defines the second operand
    * @returns the resulting Vector3
    */
-  public subtract(otherVector: ReadOnlyVector3): Vector3 {
+  public subtract(otherVector: EcsMathReadOnlyVector3): Vector3 {
     return new Vector3(
       this.x - otherVector.x,
       this.y - otherVector.y,
@@ -857,7 +868,10 @@ export class Vector3 implements ReadOnlyVector3 {
    * @param result - defines the Vector3 object where to store the result
    * @returns the current Vector3
    */
-  public subtractToRef(otherVector: ReadOnlyVector3, result: Vector3): Vector3 {
+  public subtractToRef(
+    otherVector: EcsMathReadOnlyVector3,
+    result: Vector3
+  ): Vector3 {
     return this.subtractFromFloatsToRef(
       otherVector.x,
       otherVector.y,
@@ -1013,7 +1027,7 @@ export class Vector3 implements ReadOnlyVector3 {
    * @param otherVector - defines the second operand
    * @returns true if both vectors are equals
    */
-  public equals(otherVector: ReadOnlyVector3): boolean {
+  public equals(otherVector: EcsMathReadOnlyVector3): boolean {
     return (
       otherVector &&
       this.x === otherVector.x &&
@@ -1029,7 +1043,7 @@ export class Vector3 implements ReadOnlyVector3 {
    * @returns true if both vectors are distant less than epsilon
    */
   public equalsWithEpsilon(
-    otherVector: ReadOnlyVector3,
+    otherVector: EcsMathReadOnlyVector3,
     epsilon: number = Epsilon
   ): boolean {
     return (
@@ -1056,7 +1070,7 @@ export class Vector3 implements ReadOnlyVector3 {
    * @param otherVector - defines the second operand
    * @returns the current updated Vector3
    */
-  public multiplyInPlace(otherVector: ReadOnlyVector3): Vector3 {
+  public multiplyInPlace(otherVector: EcsMathReadOnlyVector3): Vector3 {
     this.x *= otherVector.x
     this.y *= otherVector.y
     this.z *= otherVector.z
@@ -1068,7 +1082,7 @@ export class Vector3 implements ReadOnlyVector3 {
    * @param otherVector - defines the second operand
    * @returns the new Vector3
    */
-  public multiply(otherVector: ReadOnlyVector3): Vector3 {
+  public multiply(otherVector: EcsMathReadOnlyVector3): Vector3 {
     return this.multiplyByFloats(otherVector.x, otherVector.y, otherVector.z)
   }
 
@@ -1078,7 +1092,10 @@ export class Vector3 implements ReadOnlyVector3 {
    * @param result - defines the Vector3 object where to store the result
    * @returns the current Vector3
    */
-  public multiplyToRef(otherVector: ReadOnlyVector3, result: Vector3): Vector3 {
+  public multiplyToRef(
+    otherVector: EcsMathReadOnlyVector3,
+    result: Vector3
+  ): Vector3 {
     return result.copyFromFloats(
       this.x * otherVector.x,
       this.y * otherVector.y,
@@ -1102,7 +1119,7 @@ export class Vector3 implements ReadOnlyVector3 {
    * @param otherVector - defines the second operand
    * @returns the new Vector3
    */
-  public divide(otherVector: ReadOnlyVector3): Vector3 {
+  public divide(otherVector: EcsMathReadOnlyVector3): Vector3 {
     return new Vector3(
       this.x / otherVector.x,
       this.y / otherVector.y,
@@ -1116,7 +1133,10 @@ export class Vector3 implements ReadOnlyVector3 {
    * @param result - defines the Vector3 object where to store the result
    * @returns the current Vector3
    */
-  public divideToRef(otherVector: ReadOnlyVector3, result: Vector3): Vector3 {
+  public divideToRef(
+    otherVector: EcsMathReadOnlyVector3,
+    result: Vector3
+  ): Vector3 {
     return result.copyFromFloats(
       this.x / otherVector.x,
       this.y / otherVector.y,
@@ -1129,7 +1149,7 @@ export class Vector3 implements ReadOnlyVector3 {
    * @param otherVector - defines the second operand
    * @returns the current updated Vector3
    */
-  public divideInPlace(otherVector: ReadOnlyVector3): Vector3 {
+  public divideInPlace(otherVector: EcsMathReadOnlyVector3): Vector3 {
     return this.divideToRef(otherVector, this)
   }
 
@@ -1138,7 +1158,7 @@ export class Vector3 implements ReadOnlyVector3 {
    * @param other - defines the second operand
    * @returns the current updated Vector3
    */
-  public minimizeInPlace(other: ReadOnlyVector3): Vector3 {
+  public minimizeInPlace(other: EcsMathReadOnlyVector3): Vector3 {
     return this.minimizeInPlaceFromFloats(other.x, other.y, other.z)
   }
 
@@ -1147,7 +1167,7 @@ export class Vector3 implements ReadOnlyVector3 {
    * @param other - defines the second operand
    * @returns the current updated Vector3
    */
-  public maximizeInPlace(other: ReadOnlyVector3): Vector3 {
+  public maximizeInPlace(other: EcsMathReadOnlyVector3): Vector3 {
     return this.maximizeInPlaceFromFloats(other.x, other.y, other.z)
   }
 
@@ -1292,7 +1312,7 @@ export class Vector3 implements ReadOnlyVector3 {
    * @param source - defines the source Vector3
    * @returns the current updated Vector3
    */
-  public copyFrom(source: ReadOnlyVector3): Vector3 {
+  public copyFrom(source: EcsMathReadOnlyVector3): Vector3 {
     return this.copyFromFloats(source.x, source.y, source.z)
   }
 

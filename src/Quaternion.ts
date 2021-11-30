@@ -4,7 +4,10 @@ import { MathTmp } from './preallocatedVariables'
 import { DEG2RAD, RAD2DEG } from './types'
 import { Scalar } from './Scalar'
 
-type ReadOnlyQuaternion = {
+/**
+ * @public
+ */
+export type ReadOnlyQuaternion = {
   readonly x: number
   readonly y: number
   readonly z: number

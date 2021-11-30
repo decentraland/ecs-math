@@ -3,7 +3,10 @@ import { Matrix } from './Matrix'
 import { Scalar } from './Scalar'
 import { Vector3 } from './Vector3'
 
-type ReadOnlyVector4 = {
+/**
+ * @public
+ */
+export type EcsMathReadOnlyVector4 = {
   readonly x: number
   readonly y: number
   readonly z: number
@@ -14,7 +17,7 @@ type ReadOnlyVector4 = {
  * Vector4 class created for EulerAngle class conversion to Quaternion
  * @public
  */
-export class Vector4 implements ReadOnlyVector4 {
+export class Vector4 implements EcsMathReadOnlyVector4 {
   /**
    * Creates a Vector4 object from the given floats.
    * @param x - x value of the vector
@@ -42,8 +45,8 @@ export class Vector4 implements ReadOnlyVector4 {
    * @returns the resulting vector
    */
   public static Add(
-    vector1: ReadOnlyVector4,
-    vector2: ReadOnlyVector4
+    vector1: EcsMathReadOnlyVector4,
+    vector2: EcsMathReadOnlyVector4
   ): Vector4 {
     return new Vector4(vector1.x, vector1.y, vector1.z, vector1.w).addInPlace(
       vector2
@@ -135,7 +138,7 @@ export class Vector4 implements ReadOnlyVector4 {
    * @param vector - the vector to normalize
    * @returns the vector
    */
-  public static Normalize(vector: ReadOnlyVector4): Vector4 {
+  public static Normalize(vector: EcsMathReadOnlyVector4): Vector4 {
     const result = Vector4.Zero()
     Vector4.NormalizeToRef(vector, result)
     return result
@@ -145,7 +148,10 @@ export class Vector4 implements ReadOnlyVector4 {
    * @param vector - the vector to normalize
    * @param result - the vector to store the result in
    */
-  public static NormalizeToRef(vector: ReadOnlyVector4, result: Vector4): void {
+  public static NormalizeToRef(
+    vector: EcsMathReadOnlyVector4,
+    result: Vector4
+  ): void {
     result.copyFrom(vector)
     result.normalize()
   }
@@ -157,8 +163,8 @@ export class Vector4 implements ReadOnlyVector4 {
    * @returns a new vector with the minimum of the left and right vector values
    */
   public static Minimize(
-    left: ReadOnlyVector4,
-    right: ReadOnlyVector4
+    left: EcsMathReadOnlyVector4,
+    right: EcsMathReadOnlyVector4
   ): Vector4 {
     const min = new Vector4(left.x, left.y, left.z, left.w)
     min.minimizeInPlace(right)
@@ -172,8 +178,8 @@ export class Vector4 implements ReadOnlyVector4 {
    * @returns a new vector with the maximum of the left and right vector values
    */
   public static Maximize(
-    left: ReadOnlyVector4,
-    right: ReadOnlyVector4
+    left: EcsMathReadOnlyVector4,
+    right: EcsMathReadOnlyVector4
   ): Vector4 {
     const max = new Vector4(left.x, left.y, left.z, left.w)
     max.maximizeInPlace(right)
@@ -186,8 +192,8 @@ export class Vector4 implements ReadOnlyVector4 {
    * @returns the distance between the two vectors
    */
   public static Distance(
-    value1: ReadOnlyVector4,
-    value2: ReadOnlyVector4
+    value1: EcsMathReadOnlyVector4,
+    value2: EcsMathReadOnlyVector4
   ): number {
     return Math.sqrt(Vector4.DistanceSquared(value1, value2))
   }
@@ -198,8 +204,8 @@ export class Vector4 implements ReadOnlyVector4 {
    * @returns the distance between the two vectors squared
    */
   public static DistanceSquared(
-    value1: ReadOnlyVector4,
-    value2: ReadOnlyVector4
+    value1: EcsMathReadOnlyVector4,
+    value2: EcsMathReadOnlyVector4
   ): number {
     const x = value1.x - value2.x
     const y = value1.y - value2.y
@@ -215,8 +221,8 @@ export class Vector4 implements ReadOnlyVector4 {
    * @returns the center between the two vectors
    */
   public static Center(
-    value1: ReadOnlyVector4,
-    value2: ReadOnlyVector4
+    value1: EcsMathReadOnlyVector4,
+    value2: EcsMathReadOnlyVector4
   ): Vector4 {
     const center = Vector4.Add(value1, value2)
     center.scaleInPlace(0.5)
@@ -231,7 +237,7 @@ export class Vector4 implements ReadOnlyVector4 {
    * @returns the new vector
    */
   public static TransformNormal(
-    vector: ReadOnlyVector4,
+    vector: EcsMathReadOnlyVector4,
     transformation: Matrix
   ): Vector4 {
     const result = Vector4.Zero()
@@ -247,7 +253,7 @@ export class Vector4 implements ReadOnlyVector4 {
    * @param result - the vector to store the result in
    */
   public static TransformNormalToRef(
-    vector: ReadOnlyVector4,
+    vector: EcsMathReadOnlyVector4,
     transformation: Matrix,
     result: Vector4
   ): void {
@@ -348,7 +354,7 @@ export class Vector4 implements ReadOnlyVector4 {
    * @param otherVector - the vector to add
    * @returns the updated Vector4.
    */
-  public addInPlace(otherVector: ReadOnlyVector4): Vector4 {
+  public addInPlace(otherVector: EcsMathReadOnlyVector4): Vector4 {
     this.x += otherVector.x
     this.y += otherVector.y
     this.z += otherVector.z
@@ -361,7 +367,7 @@ export class Vector4 implements ReadOnlyVector4 {
    * @param otherVector - the vector to add
    * @returns the resulting vector
    */
-  public add(otherVector: ReadOnlyVector4): Vector4 {
+  public add(otherVector: EcsMathReadOnlyVector4): Vector4 {
     return new Vector4(
       this.x + otherVector.x,
       this.y + otherVector.y,
@@ -376,7 +382,10 @@ export class Vector4 implements ReadOnlyVector4 {
    * @param result - the vector to store the result
    * @returns the current Vector4.
    */
-  public addToRef(otherVector: ReadOnlyVector4, result: Vector4): Vector4 {
+  public addToRef(
+    otherVector: EcsMathReadOnlyVector4,
+    result: Vector4
+  ): Vector4 {
     result.x = this.x + otherVector.x
     result.y = this.y + otherVector.y
     result.z = this.z + otherVector.z
@@ -389,7 +398,7 @@ export class Vector4 implements ReadOnlyVector4 {
    * @param otherVector - the vector to subtract
    * @returns the updated Vector4.
    */
-  public subtractInPlace(otherVector: ReadOnlyVector4): Vector4 {
+  public subtractInPlace(otherVector: EcsMathReadOnlyVector4): Vector4 {
     this.x -= otherVector.x
     this.y -= otherVector.y
     this.z -= otherVector.z
@@ -402,7 +411,7 @@ export class Vector4 implements ReadOnlyVector4 {
    * @param otherVector - the vector to add
    * @returns the new vector with the result
    */
-  public subtract(otherVector: ReadOnlyVector4): Vector4 {
+  public subtract(otherVector: EcsMathReadOnlyVector4): Vector4 {
     return new Vector4(
       this.x - otherVector.x,
       this.y - otherVector.y,
@@ -417,7 +426,10 @@ export class Vector4 implements ReadOnlyVector4 {
    * @param result - the vector to store the result
    * @returns the current Vector4.
    */
-  public subtractToRef(otherVector: ReadOnlyVector4, result: Vector4): Vector4 {
+  public subtractToRef(
+    otherVector: EcsMathReadOnlyVector4,
+    result: Vector4
+  ): Vector4 {
     result.x = this.x - otherVector.x
     result.y = this.y - otherVector.y
     result.z = this.z - otherVector.z
@@ -536,7 +548,7 @@ export class Vector4 implements ReadOnlyVector4 {
    * @param otherVector - the vector to compare against
    * @returns true if they are equal
    */
-  public equals(otherVector: ReadOnlyVector4): boolean {
+  public equals(otherVector: EcsMathReadOnlyVector4): boolean {
     return (
       otherVector &&
       this.x === otherVector.x &&
@@ -553,7 +565,7 @@ export class Vector4 implements ReadOnlyVector4 {
    * @returns true if they are equal
    */
   public equalsWithEpsilon(
-    otherVector: ReadOnlyVector4,
+    otherVector: EcsMathReadOnlyVector4,
     epsilon: number = Epsilon
   ): boolean {
     return (
@@ -582,7 +594,7 @@ export class Vector4 implements ReadOnlyVector4 {
    * @param otherVector - vector to multiple with
    * @returns the updated Vector4.
    */
-  public multiplyInPlace(otherVector: ReadOnlyVector4): Vector4 {
+  public multiplyInPlace(otherVector: EcsMathReadOnlyVector4): Vector4 {
     this.x *= otherVector.x
     this.y *= otherVector.y
     this.z *= otherVector.z
@@ -595,7 +607,7 @@ export class Vector4 implements ReadOnlyVector4 {
    * @param otherVector - vector to multiple with
    * @returns resulting new vector
    */
-  public multiply(otherVector: ReadOnlyVector4): Vector4 {
+  public multiply(otherVector: EcsMathReadOnlyVector4): Vector4 {
     return new Vector4(
       this.x * otherVector.x,
       this.y * otherVector.y,
@@ -609,7 +621,10 @@ export class Vector4 implements ReadOnlyVector4 {
    * @param result - vector to store the result
    * @returns the current Vector4.
    */
-  public multiplyToRef(otherVector: ReadOnlyVector4, result: Vector4): Vector4 {
+  public multiplyToRef(
+    otherVector: EcsMathReadOnlyVector4,
+    result: Vector4
+  ): Vector4 {
     result.x = this.x * otherVector.x
     result.y = this.y * otherVector.y
     result.z = this.z * otherVector.z
@@ -632,7 +647,7 @@ export class Vector4 implements ReadOnlyVector4 {
    * @param otherVector - vector to devide with
    * @returns resulting new vector
    */
-  public divide(otherVector: ReadOnlyVector4): Vector4 {
+  public divide(otherVector: EcsMathReadOnlyVector4): Vector4 {
     return new Vector4(
       this.x / otherVector.x,
       this.y / otherVector.y,
@@ -646,7 +661,10 @@ export class Vector4 implements ReadOnlyVector4 {
    * @param result - vector to store the result
    * @returns the current Vector4.
    */
-  public divideToRef(otherVector: ReadOnlyVector4, result: Vector4): Vector4 {
+  public divideToRef(
+    otherVector: EcsMathReadOnlyVector4,
+    result: Vector4
+  ): Vector4 {
     result.x = this.x / otherVector.x
     result.y = this.y / otherVector.y
     result.z = this.z / otherVector.z
@@ -659,7 +677,7 @@ export class Vector4 implements ReadOnlyVector4 {
    * @param otherVector - vector to devide with
    * @returns the updated Vector3.
    */
-  public divideInPlace(otherVector: ReadOnlyVector4): Vector4 {
+  public divideInPlace(otherVector: EcsMathReadOnlyVector4): Vector4 {
     return this.divideToRef(otherVector, this)
   }
 
@@ -668,7 +686,7 @@ export class Vector4 implements ReadOnlyVector4 {
    * @param other - defines the second operand
    * @returns the current updated Vector4
    */
-  public minimizeInPlace(other: ReadOnlyVector4): Vector4 {
+  public minimizeInPlace(other: EcsMathReadOnlyVector4): Vector4 {
     if (other.x < this.x) {
       this.x = other.x
     }
@@ -688,7 +706,7 @@ export class Vector4 implements ReadOnlyVector4 {
    * @param other - defines the second operand
    * @returns the current updated Vector4
    */
-  public maximizeInPlace(other: ReadOnlyVector4): Vector4 {
+  public maximizeInPlace(other: EcsMathReadOnlyVector4): Vector4 {
     if (other.x > this.x) {
       this.x = other.x
     }
@@ -782,7 +800,7 @@ export class Vector4 implements ReadOnlyVector4 {
    * @param source - the source vector to copy from
    * @returns the updated Vector4.
    */
-  public copyFrom(source: ReadOnlyVector4): Vector4 {
+  public copyFrom(source: EcsMathReadOnlyVector4): Vector4 {
     this.x = source.x
     this.y = source.y
     this.z = source.z
