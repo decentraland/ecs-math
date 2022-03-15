@@ -255,7 +255,7 @@ function Right(): EcsMathMutableVector3 {
  * @returns a new left Vector3
  */
 function Left(): EcsMathMutableVector3 {
-  return create(1.0, 0.0, 0.0)
+  return create(-1.0, 0.0, 0.0)
 }
 
 /**
