@@ -1,9 +1,5 @@
 import { Quaternion } from '../src/Quaternion'
-import {
-  Vector3,
-  EcsMathMutableVector3,
-  EcsMathReadOnlyVector3
-} from '../src/Vector3'
+import { Vector3 } from '../src/Vector3'
 
 const results = {
   zeros: '(0.0, 0.0, 0.0)',
@@ -17,7 +13,7 @@ const results = {
 
 const normalize = (v: string) => (v === '-0.0' ? '0.0' : v)
 
-function vector3ToString(vec: EcsMathMutableVector3) {
+function vector3ToString(vec: Vector3.MutableVector3) {
   const x = normalize(vec.x.toFixed(1).substr(0, 6))
   const y = normalize(vec.y.toFixed(1).substr(0, 6))
   const z = normalize(vec.z.toFixed(1).substr(0, 6))
@@ -53,7 +49,7 @@ describe('ECS Vector3 tests', () => {
   })
 
   it('Vector3.copy(ones) = ones', () => {
-    const immutableVector = Vector3.One() as EcsMathReadOnlyVector3
+    const immutableVector = Vector3.One() as Vector3.ReadonlyVector3
     const mutableVector = Vector3.copy(immutableVector)
 
     mutableVector.x = 2.0

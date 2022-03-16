@@ -1,9 +1,4 @@
-import {
-  EcsMathReadOnlyQuaternion,
-  EcsMathReadOnlyVector3,
-  Quaternion,
-  Vector3
-} from '../src/'
+import { EcsMathReadOnlyQuaternion, Quaternion, Vector3 } from '../src/'
 
 const results = {
   staticAngle01: '90.00',
@@ -64,7 +59,7 @@ function quaternionToString(quat: EcsMathReadOnlyQuaternion) {
   return `(${x}, ${y}, ${z}, ${w})`
 }
 
-function vector3ToString(vec: EcsMathReadOnlyVector3) {
+function vector3ToString(vec: Vector3.ReadonlyVector3) {
   const x = normalize(vec.x.toFixed(1).substr(0, 6))
   const y = normalize(vec.y.toFixed(1).substr(0, 6))
   const z = normalize(vec.z.toFixed(1).substr(0, 6))

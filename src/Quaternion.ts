@@ -1,4 +1,4 @@
-import { EcsMathMutableVector3, EcsMathReadOnlyVector3, Vector3 } from "."
+import { Vector3 } from "."
 import { Scalar } from "./Scalar"
 import { DEG2RAD, RAD2DEG } from "./types"
 
@@ -206,8 +206,8 @@ function rotateTowards(
  * @param up - the vector that defines in which direction up is
  */
 function lookRotation(
-  forward: EcsMathReadOnlyVector3,
-  up: EcsMathReadOnlyVector3 = { x: 0.0, y: 1.0, z: 0.0 }
+  forward: Vector3.ReadonlyVector3,
+  up: Vector3.ReadonlyVector3 = { x: 0.0, y: 1.0, z: 0.0 }
 ): EcsMathMutableQuatearnion {
   const forwardNew = Vector3.normalize(forward)
   const right = Vector3.normalize(Vector3.cross(up, forwardNew))
@@ -279,9 +279,9 @@ function normalize(q: EcsMathReadOnlyQuaternion): EcsMathMutableQuatearnion {
  * @param to - defines the target direction Vector
  */
 function fromToRotation(
-  from: EcsMathReadOnlyVector3,
-  to: EcsMathReadOnlyVector3,
-  up: EcsMathReadOnlyVector3 = Vector3.Up()
+  from: Vector3.ReadonlyVector3,
+  to: Vector3.ReadonlyVector3,
+  up: Vector3.ReadonlyVector3 = Vector3.Up()
 ): EcsMathMutableQuatearnion {
   // Unity-based calculations implemented from https://forum.unity.com/threads/quaternion-lookrotation-around-an-axis.608470/#post-4069888
 

@@ -1,5 +1,4 @@
-import { EcsMathReadOnlyQuaternion } from "."
-
+import { EcsMathReadOnlyQuaternion } from '.'
 
 export namespace Vector3 {
   /**
@@ -35,7 +34,7 @@ export namespace Vector3 {
      * Defines the third coordinates (on Z axis)
      */
     z: number = 0
-  ): EcsMathMutableVector3 {
+  ): MutableVector3 {
     return { x, y, z }
   }
 
@@ -46,9 +45,9 @@ export namespace Vector3 {
    * @returns the resulting vector
    */
   export function add(
-    vector1: EcsMathReadOnlyVector3,
-    vector2: EcsMathReadOnlyVector3
-  ): EcsMathMutableVector3 {
+    vector1: ReadonlyVector3,
+    vector2: ReadonlyVector3
+  ): MutableVector3 {
     return {
       x: vector1.x + vector2.x,
       y: vector1.y + vector2.y,
@@ -61,9 +60,9 @@ export namespace Vector3 {
    * @returns the resulting vector
    */
   export function sub(
-    minuend: EcsMathReadOnlyVector3,
-    subtrahend: EcsMathReadOnlyVector3
-  ): EcsMathMutableVector3 {
+    minuend: ReadonlyVector3,
+    subtrahend: ReadonlyVector3
+  ): MutableVector3 {
     return {
       x: minuend.x - subtrahend.x,
       y: minuend.y - subtrahend.y,
@@ -75,7 +74,7 @@ export namespace Vector3 {
    * Returns a new Vector3 with the other sign
    * @returns the resulting vector
    */
-  export function opposite(value: EcsMathReadOnlyVector3): EcsMathMutableVector3 {
+  export function opposite(value: ReadonlyVector3): MutableVector3 {
     return { x: -value.x, y: -value.y, z: -value.z }
   }
 
@@ -83,7 +82,7 @@ export namespace Vector3 {
    * Returns a new Vector3 with the same value
    * @returns the resulting vector
    */
-  export function copy(value: EcsMathReadOnlyVector3): EcsMathMutableVector3 {
+  export function copy(value: ReadonlyVector3): MutableVector3 {
     return { x: value.x, y: value.y, z: value.z }
   }
 
@@ -92,7 +91,7 @@ export namespace Vector3 {
    * Gets the length of the Vector3
    * @returns the length of the Vecto3
    */
-  export function length(vector: EcsMathReadOnlyVector3): number {
+  export function length(vector: ReadonlyVector3): number {
     return Math.sqrt(
       vector.x * vector.x + vector.y * vector.y + vector.z * vector.z
     )
@@ -102,7 +101,7 @@ export namespace Vector3 {
    * Gets the squared length of the Vector3
    * @returns squared length of the Vector3
    */
-  export function lengthSquared(vector: EcsMathReadOnlyVector3): number {
+  export function lengthSquared(vector: ReadonlyVector3): number {
     return vector.x * vector.x + vector.y * vector.y + vector.z * vector.z
   }
 
@@ -112,9 +111,9 @@ export namespace Vector3 {
    * @returns a new Vector3
    */
   export function scale(
-    vector: EcsMathReadOnlyVector3,
+    vector: ReadonlyVector3,
     scale: number
-  ): EcsMathMutableVector3 {
+  ): MutableVector3 {
     return create(vector.x * scale, vector.y * scale, vector.z * scale)
   }
 
@@ -125,9 +124,9 @@ export namespace Vector3 {
    * @returns the current updated Vector3
    */
   export function normalizeFromLength(
-    vector: EcsMathReadOnlyVector3,
+    vector: ReadonlyVector3,
     len: number
-  ): EcsMathMutableVector3 {
+  ): MutableVector3 {
     if (len === 0 || len === 1.0) {
       return copy(vector)
     }
@@ -140,7 +139,7 @@ export namespace Vector3 {
    * Please note that this is an in place operation.
    * @returns the current updated Vector3
    */
-  export function normalize(vector: EcsMathReadOnlyVector3): EcsMathMutableVector3 {
+  export function normalize(vector: ReadonlyVector3): MutableVector3 {
     return normalizeFromLength(vector, length(vector))
   }
 
@@ -152,9 +151,9 @@ export namespace Vector3 {
    * @param result - defines the Vector3 where to store the result
    */
   export function cross(
-    left: EcsMathReadOnlyVector3,
-    right: EcsMathReadOnlyVector3
-  ): EcsMathMutableVector3 {
+    left: ReadonlyVector3,
+    right: ReadonlyVector3
+  ): MutableVector3 {
     const x = left.y * right.z - left.z * right.y
     const y = left.z * right.x - left.x * right.z
     const z = left.x * right.y - left.y * right.x
@@ -167,10 +166,7 @@ export namespace Vector3 {
    * @param right - defines the right operand
    * @returns the dot product
    */
-  export function dot(
-    left: EcsMathReadOnlyVector3,
-    right: EcsMathReadOnlyVector3
-  ): number {
+  export function dot(left: ReadonlyVector3, right: ReadonlyVector3): number {
     return left.x * right.x + left.y * right.y + left.z * right.z
   }
 
@@ -181,9 +177,9 @@ export namespace Vector3 {
    * @returns the current Vector3
    */
   export function rotate(
-    vector: EcsMathReadOnlyVector3,
+    vector: ReadonlyVector3,
     q: EcsMathReadOnlyQuaternion
-  ): EcsMathMutableVector3 {
+  ): MutableVector3 {
     const { x, y, z } = vector
     const { x: qx, y: qy, z: qz, w: qw } = q
 
@@ -207,56 +203,56 @@ export namespace Vector3 {
    * Returns a new Vector3 set to (0.0, 0.0, 0.0)
    * @returns a new empty Vector3
    */
-  export function Zero(): EcsMathMutableVector3 {
+  export function Zero(): MutableVector3 {
     return create(0.0, 0.0, 0.0)
   }
   /**
    * Returns a new Vector3 set to (1.0, 1.0, 1.0)
    * @returns a new unit Vector3
    */
-  export function One(): EcsMathMutableVector3 {
+  export function One(): MutableVector3 {
     return create(1.0, 1.0, 1.0)
   }
   /**
    * Returns a new Vector3 set tolengthSquared (0.0, 1.0, 0.0)
    * @returns a new up Vector3
    */
-  export function Up(): EcsMathMutableVector3 {
+  export function Up(): MutableVector3 {
     return create(0.0, 1.0, 0.0)
   }
   /**
    * Returns a new Vector3 set to (0.0, -1.0, 0.0)
    * @returns a new down Vector3
    */
-  export function Down(): EcsMathMutableVector3 {
+  export function Down(): MutableVector3 {
     return create(0.0, -1.0, 0.0)
   }
   /**
    * Returns a new Vector3 set to (0.0, 0.0, 1.0)
    * @returns a new forward Vector3
    */
-  export function Forward(): EcsMathMutableVector3 {
+  export function Forward(): MutableVector3 {
     return create(0.0, 0.0, 1.0)
   }
   /**
    * Returns a new Vector3 set to (0.0, 0.0, -1.0)
    * @returns a new forward Vector3
    */
-  export function Backward(): EcsMathMutableVector3 {
+  export function Backward(): MutableVector3 {
     return create(0.0, 0.0, -1.0)
   }
   /**
    * Returns a new Vector3 set to (1.0, 0.0, 0.0)
    * @returns a new right Vector3
    */
-  export function Right(): EcsMathMutableVector3 {
+  export function Right(): MutableVector3 {
     return create(1.0, 0.0, 0.0)
   }
   /**
    * Returns a new Vector3 set to (-1.0, 0.0, 0.0)
    * @returns a new left Vector3
    */
-  export function Left(): EcsMathMutableVector3 {
+  export function Left(): MutableVector3 {
     return create(-1.0, 0.0, 0.0)
   }
 }
