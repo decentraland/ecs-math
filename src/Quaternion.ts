@@ -2,6 +2,7 @@ import { Vector3 } from './Vector3'
 import { Scalar } from './Scalar'
 import { DEG2RAD, RAD2DEG } from './types'
 import { MathTmp } from './preallocatedVariables'
+import { Matrix } from './Matrix'
 
 /**
  * @public
@@ -140,49 +141,6 @@ export namespace Quaternion {
   ): number {
     const dotVal = dot(quat1, quat2)
     return Math.acos(Math.min(Math.abs(dotVal), 1)) * 2 * RAD2DEG
-  }
-
-  /**
-   * Interpolates between two quaternions and stores it into a target quaternion
-   * @param left - defines first quaternion
-   * @param right - defines second quaternion
-   * @param amount - defines the gradient to use
-   * @param result - defines the target quaternion
-   */
-  export function slerp(
-    left: ReadonlyQuaternion,
-    right: ReadonlyQuaternion,
-    amount: number
-  ): MutableQuaternion {
-    let num2
-    let num3
-    let num4 =
-      left.x * right.x + left.y * right.y + left.z * right.z + left.w * right.w
-    let flag = false
-
-    if (num4 < 0) {
-      flag = true
-      num4 = -num4
-    }
-
-    if (num4 > 0.999999) {
-      num3 = 1 - amount
-      num2 = flag ? -amount : amount
-    } else {
-      const num5 = Math.acos(num4)
-      const num6 = 1.0 / Math.sin(num5)
-      num3 = Math.sin((1.0 - amount) * num5) * num6
-      num2 = flag
-        ? -Math.sin(amount * num5) * num6
-        : Math.sin(amount * num5) * num6
-    }
-
-    return {
-      x: num3 * left.x + num2 * right.x,
-      y: num3 * left.y + num2 * right.y,
-      z: num3 * left.z + num2 * right.z,
-      w: num3 * left.w + num2 * right.w
-    }
   }
 
   /**
@@ -362,6 +320,152 @@ export namespace Quaternion {
     out.z = Scalar.repeat(out.z, 360)
 
     return out
+  }
+
+  /**
+   * Creates a new rotation from the given Euler float angles (y, x, z) and stores it in the target quaternion
+   * @param yaw - defines the rotation around Y axis
+   * @param pitch - defines the rotation around X axis
+   * @param roll - defines the rotation around Z axis
+   * @param result - defines the target quaternion
+   */
+  export function rotationYawPitchRollToRef(
+    yaw: number,
+    pitch: number,
+    roll: number,
+    result: Quaternion.MutableQuaternion
+  ): void {
+    // Implemented unity-based calculations from: https://stackoverflow.com/a/56055813
+
+    const halfPitch = pitch * 0.5
+    const halfYaw = yaw * 0.5
+    const halfRoll = roll * 0.5
+
+    const c1 = Math.cos(halfPitch)
+    const c2 = Math.cos(halfYaw)
+    const c3 = Math.cos(halfRoll)
+    const s1 = Math.sin(halfPitch)
+    const s2 = Math.sin(halfYaw)
+    const s3 = Math.sin(halfRoll)
+
+    result.x = c2 * s1 * c3 + s2 * c1 * s3
+    result.y = s2 * c1 * c3 - c2 * s1 * s3
+    result.z = c2 * c1 * s3 - s2 * s1 * c3
+    result.w = c2 * c1 * c3 + s2 * s1 * s3
+  }
+
+  /**
+   * Updates the given quaternion with the given rotation matrix values
+   * @param matrix - defines the source matrix
+   * @param result - defines the target quaternion
+   */
+  export function fromRotationMatrixToRef(
+    matrix: Matrix.ReadonlyMatrix,
+    result: Quaternion.MutableQuaternion
+  ): void {
+    const data = matrix._m
+    // tslint:disable:one-variable-per-declaration
+    const m11 = data[0],
+      m12 = data[4],
+      m13 = data[8]
+    const m21 = data[1],
+      m22 = data[5],
+      m23 = data[9]
+    const m31 = data[2],
+      m32 = data[6],
+      m33 = data[10]
+    // tslint:enable:one-variable-per-declaration
+    const trace = m11 + m22 + m33
+    let s
+
+    if (trace > 0) {
+      s = 0.5 / Math.sqrt(trace + 1.0)
+
+      result.w = 0.25 / s
+      result.x = (m32 - m23) * s
+      result.y = (m13 - m31) * s
+      result.z = (m21 - m12) * s
+    } else if (m11 > m22 && m11 > m33) {
+      s = 2.0 * Math.sqrt(1.0 + m11 - m22 - m33)
+
+      result.w = (m32 - m23) / s
+      result.x = 0.25 * s
+      result.y = (m12 + m21) / s
+      result.z = (m13 + m31) / s
+    } else if (m22 > m33) {
+      s = 2.0 * Math.sqrt(1.0 + m22 - m11 - m33)
+
+      result.w = (m13 - m31) / s
+      result.x = (m12 + m21) / s
+      result.y = 0.25 * s
+      result.z = (m23 + m32) / s
+    } else {
+      s = 2.0 * Math.sqrt(1.0 + m33 - m11 - m22)
+
+      result.w = (m21 - m12) / s
+      result.x = (m13 + m31) / s
+      result.y = (m23 + m32) / s
+      result.z = 0.25 * s
+    }
+  }
+
+  /**
+   * Interpolates between two quaternions
+   * @param left - defines first quaternion
+   * @param right - defines second quaternion
+   * @param amount - defines the gradient to use
+   * @returns the new interpolated quaternion
+   */
+  export function slerp(
+    left: ReadonlyQuaternion,
+    right: ReadonlyQuaternion,
+    amount: number
+  ): MutableQuaternion {
+    const result = Quaternion.Identity()
+    Quaternion.slerpToRef(left, right, amount, result)
+    return result
+  }
+
+  /**
+   * Interpolates between two quaternions and stores it into a target quaternion
+   * @param left - defines first quaternion
+   * @param right - defines second quaternion
+   * @param amount - defines the gradient to use
+   * @param result - defines the target quaternion
+   */
+  export function slerpToRef(
+    left: ReadonlyQuaternion,
+    right: ReadonlyQuaternion,
+    amount: number,
+    result: MutableQuaternion
+  ): void {
+    let num2
+    let num3
+    let num4 =
+      left.x * right.x + left.y * right.y + left.z * right.z + left.w * right.w
+    let flag = false
+
+    if (num4 < 0) {
+      flag = true
+      num4 = -num4
+    }
+
+    if (num4 > 0.999999) {
+      num3 = 1 - amount
+      num2 = flag ? -amount : amount
+    } else {
+      const num5 = Math.acos(num4)
+      const num6 = 1.0 / Math.sin(num5)
+      num3 = Math.sin((1.0 - amount) * num5) * num6
+      num2 = flag
+        ? -Math.sin(amount * num5) * num6
+        : Math.sin(amount * num5) * num6
+    }
+
+    result.x = num3 * left.x + num2 * right.x
+    result.y = num3 * left.y + num2 * right.y
+    result.z = num3 * left.z + num2 * right.z
+    result.w = num3 * left.w + num2 * right.w
   }
 
   /**

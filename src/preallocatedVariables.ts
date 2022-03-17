@@ -13,8 +13,8 @@ import { buildArray } from './utils'
  * Same as Tmp but not exported to keep it only for math functions to avoid conflicts
  */
 export const MathTmp = {
-  Vector3: buildArray(6, Vector3.Zero) as Vector3.ReadonlyVector3[],
-  Matrix: buildArray(2, Matrix.Identity) as Matrix.ReadonlyMatrix[],
+  Vector3: buildArray(6, Vector3.Zero) as Vector3.MutableVector3[],
+  Matrix: buildArray(2, Matrix.Identity) as Matrix.MutableMatrix[],
   Quaternion: buildArray(3, Quaternion.Zero) as Quaternion.ReadonlyQuaternion[],
   staticUp: Vector3.Up() as Vector3.ReadonlyVector3,
   tmpMatrix: Matrix.Zero()

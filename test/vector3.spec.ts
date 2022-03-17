@@ -37,9 +37,9 @@ describe('ECS Vector3 tests', () => {
   })
 
   it('Vector3.sub zeros - ones = -ones', () => {
-    expect(vector3ToString(Vector3.sub(Vector3.Zero(), Vector3.One()))).toEqual(
-      results.minusOnes
-    )
+    expect(
+      vector3ToString(Vector3.subtract(Vector3.Zero(), Vector3.One()))
+    ).toEqual(results.minusOnes)
   })
 
   it('Vector3.opposite(ones) = -ones', () => {
@@ -50,7 +50,7 @@ describe('ECS Vector3 tests', () => {
 
   it('Vector3.copy(ones) = ones', () => {
     const immutableVector = Vector3.One() as Vector3.ReadonlyVector3
-    const mutableVector = Vector3.copy(immutableVector)
+    const mutableVector = Vector3.clone(immutableVector)
 
     mutableVector.x = 2.0
 
