@@ -1,4 +1,4 @@
-import { EcsMathReadOnlyQuaternion, Quaternion, Vector3 } from '../src/'
+import { Quaternion, Vector3 } from '../src/'
 
 const results = {
   staticAngle01: '90.00',
@@ -50,7 +50,7 @@ const results = {
 
 const normalize = (v: string) => (v === '-0.0' ? '0.0' : v)
 
-function quaternionToString(quat: EcsMathReadOnlyQuaternion) {
+function quaternionToString(quat: Quaternion.ReadonlyQuaternion) {
   const x = normalize(quat.x.toFixed(1).substr(0, 6))
   const y = normalize(quat.y.toFixed(1).substr(0, 6))
   const z = normalize(quat.z.toFixed(1).substr(0, 6))

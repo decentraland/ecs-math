@@ -1,5 +1,8 @@
-import { EcsMathReadOnlyQuaternion } from '.'
+import { Quaternion } from './Quaternion'
 
+/**
+ * @public
+ */
 export namespace Vector3 {
   /**
    * @public
@@ -178,7 +181,7 @@ export namespace Vector3 {
    */
   export function rotate(
     vector: ReadonlyVector3,
-    q: EcsMathReadOnlyQuaternion
+    q: Quaternion.ReadonlyQuaternion
   ): MutableVector3 {
     const { x, y, z } = vector
     const { x: qx, y: qy, z: qz, w: qw } = q
@@ -256,32 +259,3 @@ export namespace Vector3 {
     return create(-1.0, 0.0, 0.0)
   }
 }
-// /**
-//  * @public
-//  */
-// export const Vector3 = {
-//   // Methods
-//   create,
-//   add,
-//   sub,
-//   opposite,
-//   copy,
-//   normalize,
-//   normalizeFromLength,
-//   scale,
-//   length,
-//   lengthSquared,
-//   cross,
-//   dot,
-//   rotate,
-
-//   // Known Vector3s
-//   Zero,
-//   One,
-//   Up,
-//   Down,
-//   Forward,
-//   Backward,
-//   Right,
-//   Left
-// }
