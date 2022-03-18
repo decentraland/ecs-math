@@ -1,6 +1,6 @@
 import { Vector3 } from './Vector3'
 import { Matrix } from './Matrix'
-import { MathTmp } from './preallocatedVariables'
+import { DeepReadonly } from './types'
 
 /**
  * Represens a plane by the equation ax + by + cz + d = 0
@@ -18,16 +18,7 @@ export namespace Plane {
     d: number
   }
 
-  export type ReadonlyPlane = Readonly<{
-    /**
-     * Normal of the plane (a,b,c)
-     */
-    normal: Vector3.ReadonlyVector3
-    /**
-     * d component of the plane
-     */
-    d: number
-  }>
+  export type ReadonlyPlane = DeepReadonly<MutablePlane>
 
   /**
    * Creates a Plane object according to the given floats a, b, c, d and the plane equation : ax + by + cz + d = 0
@@ -162,7 +153,7 @@ export namespace Plane {
     plane: ReadonlyPlane,
     transformation: Matrix.ReadonlyMatrix
   ): MutablePlane {
-    const transposedMatrix = MathTmp.Matrix[0]
+    const transposedMatrix = Matrix.create()
     Matrix.transposeToRef(transformation, transposedMatrix)
     const m = transposedMatrix._m
     const x = plane.normal.x

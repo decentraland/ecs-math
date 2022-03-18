@@ -1,7 +1,6 @@
-import { FloatArray } from './types'
+import { DeepReadonly, FloatArray } from './types'
 import { Vector3 } from './Vector3'
 import { Quaternion } from './Quaternion'
-import { MathTmp } from './preallocatedVariables'
 import { Plane } from './Plane'
 /**
  * Class used to store matrix data (4x4)
@@ -43,9 +42,6 @@ export namespace Matrix {
     _m: Matrix4x4
   }
 
-  type DeepReadonly<T> = {
-    readonly [P in keyof T]: DeepReadonly<T[P]>
-  }
   export type ReadonlyMatrix = DeepReadonly<MutableMatrix>
 
   /**
@@ -284,9 +280,10 @@ export namespace Matrix {
     translation: Vector3.ReadonlyVector3,
     result: MutableMatrix
   ): void {
-    scalingToRef(scale.x, scale.y, scale.z, MathTmp.Matrix[1])
-    fromQuaternionToRef(rotation, MathTmp.Matrix[0])
-    multiplyToRef(MathTmp.Matrix[1], MathTmp.Matrix[0], result)
+    const tmpMatrix: MutableMatrix[] = [create(), create(), create()]
+    scalingToRef(scale.x, scale.y, scale.z, tmpMatrix[1])
+    fromQuaternionToRef(rotation, tmpMatrix[0])
+    multiplyToRef(tmpMatrix[1], tmpMatrix[0], result)
     setTranslation(result, translation)
   }
 
@@ -582,13 +579,9 @@ export namespace Matrix {
     roll: number,
     result: MutableMatrix
   ): void {
-    Quaternion.rotationYawPitchRollToRef(
-      yaw,
-      pitch,
-      roll,
-      MathTmp.Quaternion[0]
-    )
-    fromQuaternionToRef(MathTmp.Quaternion[0], result)
+    const quaternionResult = Quaternion.Zero()
+    Quaternion.rotationYawPitchRollToRef(yaw, pitch, roll, quaternionResult)
+    fromQuaternionToRef(quaternionResult, result)
   }
 
   /**
@@ -761,22 +754,22 @@ export namespace Matrix {
     gradient: number,
     result: MutableMatrix
   ) {
-    const startScale = MathTmp.Vector3[0]
-    const startRotation = MathTmp.Quaternion[0]
-    const startTranslation = MathTmp.Vector3[1]
+    const startScale = Vector3.Zero()
+    const startRotation = Quaternion.Zero()
+    const startTranslation = Vector3.Zero()
     decompose(startValue, startScale, startRotation, startTranslation)
 
-    const endScale = MathTmp.Vector3[2]
-    const endRotation = MathTmp.Quaternion[1]
-    const endTranslation = MathTmp.Vector3[3]
+    const endScale = Vector3.Zero()
+    const endRotation = Quaternion.Zero()
+    const endTranslation = Vector3.Zero()
     decompose(endValue, endScale, endRotation, endTranslation)
 
-    const resultScale = MathTmp.Vector3[4]
+    const resultScale = Vector3.Zero()
     Vector3.lerpToRef(startScale, endScale, gradient, resultScale)
-    const resultRotation = MathTmp.Quaternion[2]
+    const resultRotation = Quaternion.Zero()
     Quaternion.slerpToRef(startRotation, endRotation, gradient, resultRotation)
 
-    const resultTranslation = MathTmp.Vector3[5]
+    const resultTranslation = Vector3.Zero()
     Vector3.lerpToRef(
       startTranslation,
       endTranslation,
@@ -819,9 +812,9 @@ export namespace Matrix {
     up: Vector3.ReadonlyVector3,
     result: MutableMatrix
   ): void {
-    const xAxis = MathTmp.Vector3[0]
-    const yAxis = MathTmp.Vector3[1]
-    const zAxis = MathTmp.Vector3[2]
+    const xAxis = Vector3.Zero()
+    const yAxis = Vector3.Zero()
+    const zAxis = Vector3.Zero()
 
     // Z axis
     Vector3.subtractToRef(target, eye, zAxis)
@@ -899,9 +892,9 @@ export namespace Matrix {
     up: Vector3.ReadonlyVector3,
     result: MutableMatrix
   ): void {
-    const xAxis = MathTmp.Vector3[0]
-    const yAxis = MathTmp.Vector3[1]
-    const zAxis = MathTmp.Vector3[2]
+    const xAxis = Vector3.Zero()
+    const yAxis = Vector3.Zero()
+    const zAxis = Vector3.Zero()
 
     // Z axis
     Vector3.subtractToRef(eye, target, zAxis)
@@ -2247,7 +2240,7 @@ export namespace Matrix {
       translation = Vector3.create(m[12], m[13], m[14])
     }
 
-    const usedScale = scale || MathTmp.Vector3[0]
+    const usedScale = scale || Vector3.Zero()
     usedScale.x = Math.sqrt(m[0] * m[0] + m[1] * m[1] + m[2] * m[2])
     usedScale.y = Math.sqrt(m[4] * m[4] + m[5] * m[5] + m[6] * m[6])
     usedScale.z = Math.sqrt(m[8] * m[8] + m[9] * m[9] + m[10] * m[10])
@@ -2268,6 +2261,7 @@ export namespace Matrix {
       const sx = 1 / usedScale.x,
         sy = 1 / usedScale.y,
         sz = 1 / usedScale.z
+      const tmpMatrix = create()
       fromValuesToRef(
         m[0] * sx,
         m[1] * sx,
@@ -2285,10 +2279,10 @@ export namespace Matrix {
         0.0,
         0.0,
         1.0,
-        MathTmp.Matrix[0]
+        tmpMatrix
       )
 
-      Quaternion.fromRotationMatrixToRef(MathTmp.Matrix[0], rotation)
+      Quaternion.fromRotationMatrixToRef(tmpMatrix, rotation)
     }
 
     return true
@@ -2406,7 +2400,7 @@ export namespace Matrix {
     self: ReadonlyMatrix,
     ref: MutableMatrix
   ): void {
-    const tmp = MathTmp.Matrix[0]
+    const tmp = create()
     invertToRef(self, tmp)
     transposeToRef(tmp, ref)
     const m = ref._m
@@ -2450,7 +2444,7 @@ export namespace Matrix {
     self: ReadonlyMatrix,
     result: MutableMatrix
   ): void {
-    const scale = MathTmp.Vector3[0]
+    const scale = Vector3.Zero()
     if (!decompose(self, scale)) {
       result = Identity()
       return

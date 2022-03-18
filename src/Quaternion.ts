@@ -1,7 +1,6 @@
 import { Vector3 } from './Vector3'
 import { Scalar } from './Scalar'
-import { DEG2RAD, RAD2DEG } from './types'
-import { MathTmp } from './preallocatedVariables'
+import { DeepReadonly, DEG2RAD, RAD2DEG } from './types'
 import { Matrix } from './Matrix'
 
 /**
@@ -21,7 +20,7 @@ export namespace Quaternion {
   /**
    * @public
    */
-  export type ReadonlyQuaternion = Readonly<MutableQuaternion>
+  export type ReadonlyQuaternion = DeepReadonly<MutableQuaternion>
 
   /**
    * Creates a new Quaternion from the given floats
@@ -153,7 +152,7 @@ export namespace Quaternion {
     from: ReadonlyQuaternion,
     to: ReadonlyQuaternion,
     maxDegreesDelta: number
-  ): ReadonlyQuaternion {
+  ): MutableQuaternion {
     const num: number = angle(from, to)
     if (num === 0) {
       return to
@@ -244,7 +243,7 @@ export namespace Quaternion {
   export function fromToRotation(
     from: Vector3.ReadonlyVector3,
     to: Vector3.ReadonlyVector3,
-    up: Vector3.ReadonlyVector3 = MathTmp.staticUp
+    up: Vector3.ReadonlyVector3 = Vector3.Up()
   ): MutableQuaternion {
     // Unity-based calculations implemented from https://forum.unity.com/threads/quaternion-lookrotation-around-an-axis.608470/#post-4069888
 
@@ -466,6 +465,62 @@ export namespace Quaternion {
     result.y = num3 * left.y + num2 * right.y
     result.z = num3 * left.z + num2 * right.z
     result.w = num3 * left.w + num2 * right.w
+  }
+
+  /**
+   * Multiplies two quaternions
+   * @param self - defines the first operand
+   * @param q1 - defines the second operand
+   * @returns a new quaternion set as the multiplication result of the self one with the given one "q1"
+   */
+  export function multiply(
+    self: ReadonlyQuaternion,
+    q1: ReadonlyQuaternion
+  ): MutableQuaternion {
+    const result = create(0, 0, 0, 1.0)
+    multiplyToRef(self, q1, result)
+    return result
+  }
+
+  /**
+   * Sets the given "result" as the the multiplication result of the self one with the given one "q1"
+   * @param self - defines the first operand
+   * @param q1 - defines the second operand
+   * @param result - defines the target quaternion
+   * @returns the current quaternion
+   */
+  export function multiplyToRef(
+    self: ReadonlyQuaternion,
+    q1: ReadonlyQuaternion,
+    result: MutableQuaternion
+  ): void {
+    result.x = self.x * q1.w + self.y * q1.z - self.z * q1.y + self.w * q1.x
+    result.y = -self.x * q1.z + self.y * q1.w + self.z * q1.x + self.w * q1.y
+    result.z = self.x * q1.y - self.y * q1.x + self.z * q1.w + self.w * q1.z
+    result.w = -self.x * q1.x - self.y * q1.y - self.z * q1.z + self.w * q1.w
+  }
+
+  export function angleAxis(
+    degress: number,
+    axis: Vector3.ReadonlyVector3
+  ): MutableQuaternion {
+    if (Vector3.lengthSquared(axis) === 0) {
+      return Quaternion.Identity()
+    }
+
+    const result: MutableQuaternion = Identity()
+    let radians = degress * DEG2RAD
+    radians *= 0.5
+
+    const a2: Vector3.MutableVector3 = Vector3.normalize(axis)
+    Vector3.scaleToRef(a2, Math.sin(radians), a2)
+
+    result.x = a2.x
+    result.y = a2.y
+    result.z = a2.z
+    result.w = Math.cos(radians)
+
+    return normalize(result)
   }
 
   /**

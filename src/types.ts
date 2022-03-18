@@ -77,3 +77,11 @@ export interface ISize {
    */
   height: number
 }
+
+/**
+ * Make each field readonly deeply
+ * @internal
+ */
+export type DeepReadonly<T> = {
+  readonly [P in keyof T]: DeepReadonly<T[P]>
+}

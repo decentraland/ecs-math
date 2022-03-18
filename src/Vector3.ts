@@ -1,3 +1,4 @@
+import { DeepReadonly } from './types'
 import { Quaternion } from './Quaternion'
 
 /**
@@ -16,7 +17,7 @@ export namespace Vector3 {
   /**
    * @public
    */
-  export type ReadonlyVector3 = Readonly<MutableVector3>
+  export type ReadonlyVector3 = DeepReadonly<MutableVector3>
 
   /**
    * Creates a new Vector3 object from the given x, y, z (floats) coordinates.

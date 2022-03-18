@@ -4,32 +4,18 @@
 
 ```ts
 
+// Warning: (ae-internal-missing-underscore) The name "DeepReadonly" should be prefixed with an underscore because the declaration is marked as @internal
+//
+// @internal
+export type DeepReadonly<T> = {
+    readonly [P in keyof T]: DeepReadonly<T[P]>;
+};
+
 // @public
 export const DEG2RAD: number;
 
 // @public (undocumented)
 export type double = number;
-
-// @public (undocumented)
-export type EcsMathMutableQuatearnion = {
-    y: number;
-    x: number;
-    z: number;
-    w: number;
-};
-
-// @public (undocumented)
-export type EcsMathMutableVector3 = {
-    y: number;
-    x: number;
-    z: number;
-};
-
-// @public (undocumented)
-export type EcsMathReadOnlyQuaternion = Readonly<EcsMathMutableQuatearnion>;
-
-// @public (undocumented)
-export type EcsMathReadOnlyVector3 = Readonly<EcsMathMutableVector3>;
 
 // @public
 export const Epsilon = 0.000001;
@@ -56,22 +42,47 @@ export enum Orientation {
 }
 
 // @public (undocumented)
-export const Quaternion: {
-    create: typeof create;
-    add: typeof add;
-    rotationYawPitchRoll: typeof rotationYawPitchRoll;
-    rotateTowards: typeof rotateTowards;
-    euler: typeof euler;
-    slerp: typeof slerp;
-    angle: typeof angle;
-    length: typeof length_2;
-    lengthSquared: typeof lengthSquared;
-    lookRotation: typeof lookRotation;
-    fromToRotation: typeof fromToRotation;
-    eulerAngles: typeof eulerAngles;
-    normalize: typeof normalize;
-    Identity: typeof Identity;
-};
+export namespace Quaternion {
+    export function add(q1: ReadonlyQuaternion, q2: ReadonlyQuaternion): MutableQuaternion;
+    export function angle(quat1: ReadonlyQuaternion, quat2: ReadonlyQuaternion): number;
+    // (undocumented)
+    export function angleAxis(degress: number, axis: Vector3.ReadonlyVector3): MutableQuaternion;
+    export function create(
+    x?: number,
+    y?: number,
+    z?: number,
+    w?: number): MutableQuaternion;
+    export function dot(left: ReadonlyQuaternion, right: ReadonlyQuaternion): number;
+    export function euler(x: number, y: number, z: number): MutableQuaternion;
+    export function eulerAngles(q: MutableQuaternion): Vector3.MutableVector3;
+    // Warning: (ae-forgotten-export) The symbol "Matrix" needs to be exported by the entry point index.d.ts
+    export function fromRotationMatrixToRef(matrix: Matrix.ReadonlyMatrix, result: Quaternion.MutableQuaternion): void;
+    export function fromToRotation(from: Vector3.ReadonlyVector3, to: Vector3.ReadonlyVector3, up?: Vector3.ReadonlyVector3): MutableQuaternion;
+    export function Identity(): MutableQuaternion;
+    export function length(q: ReadonlyQuaternion): number;
+    export function lengthSquared(q: ReadonlyQuaternion): number;
+    export function lookRotation(forward: Vector3.ReadonlyVector3, up?: Vector3.ReadonlyVector3): MutableQuaternion;
+    export function multiply(self: ReadonlyQuaternion, q1: ReadonlyQuaternion): MutableQuaternion;
+    export function multiplyToRef(self: ReadonlyQuaternion, q1: ReadonlyQuaternion, result: MutableQuaternion): void;
+    // (undocumented)
+    export type MutableQuaternion = {
+        y: number;
+        x: number;
+        z: number;
+        w: number;
+    };
+    export function normalize(q: ReadonlyQuaternion): MutableQuaternion;
+    // Warning: (ae-incompatible-release-tags) The symbol "ReadonlyQuaternion" is marked as @public, but its signature references "DeepReadonly" which is marked as @internal
+    //
+    // (undocumented)
+    export type ReadonlyQuaternion = DeepReadonly<MutableQuaternion>;
+    export function rotateTowards(from: ReadonlyQuaternion, to: ReadonlyQuaternion, maxDegreesDelta: number): MutableQuaternion;
+    export function rotationYawPitchRoll(yaw: number, pitch: number, roll: number): MutableQuaternion;
+    export function rotationYawPitchRollToRef(yaw: number, pitch: number, roll: number, result: Quaternion.MutableQuaternion): void;
+    export function slerp(left: ReadonlyQuaternion, right: ReadonlyQuaternion, amount: number): MutableQuaternion;
+    export function slerpToRef(left: ReadonlyQuaternion, right: ReadonlyQuaternion, amount: number, result: MutableQuaternion): void;
+    export function Zero(): MutableQuaternion;
+}
 
 // @public
 export const RAD2DEG: number;
@@ -90,67 +101,50 @@ export const ToGammaSpace: number;
 export const ToLinearSpace = 2.2;
 
 // @public (undocumented)
-export const Vector3: {
-    create: typeof create_2;
-    add: typeof add_2;
-    sub: typeof sub;
-    opposite: typeof opposite;
-    copy: typeof copy;
-    normalize: typeof normalize_2;
-    normalizeFromLength: typeof normalizeFromLength;
-    scale: typeof scale;
-    length: typeof length_3;
-    lengthSquared: typeof lengthSquared_2;
-    cross: typeof cross;
-    dot: typeof dot;
-    rotate: typeof rotate;
-    Zero: typeof Zero;
-    One: typeof One;
-    Up: typeof Up;
-    Down: typeof Down;
-    Forward: typeof Forward;
-    Backward: typeof Backward;
-    Right: typeof Right;
-    Left: typeof Left;
-};
-
-// Warnings were encountered during analysis:
-//
-// src/Quaternion.ts:365:24 - (ae-forgotten-export) The symbol "create" needs to be exported by the entry point index.d.ts
-// src/Quaternion.ts:365:24 - (ae-forgotten-export) The symbol "add" needs to be exported by the entry point index.d.ts
-// src/Quaternion.ts:365:24 - (ae-forgotten-export) The symbol "rotationYawPitchRoll" needs to be exported by the entry point index.d.ts
-// src/Quaternion.ts:365:24 - (ae-forgotten-export) The symbol "rotateTowards" needs to be exported by the entry point index.d.ts
-// src/Quaternion.ts:365:24 - (ae-forgotten-export) The symbol "euler" needs to be exported by the entry point index.d.ts
-// src/Quaternion.ts:365:24 - (ae-forgotten-export) The symbol "slerp" needs to be exported by the entry point index.d.ts
-// src/Quaternion.ts:365:24 - (ae-forgotten-export) The symbol "angle" needs to be exported by the entry point index.d.ts
-// src/Quaternion.ts:365:24 - (ae-forgotten-export) The symbol "length" needs to be exported by the entry point index.d.ts
-// src/Quaternion.ts:365:24 - (ae-forgotten-export) The symbol "lengthSquared" needs to be exported by the entry point index.d.ts
-// src/Quaternion.ts:365:24 - (ae-forgotten-export) The symbol "lookRotation" needs to be exported by the entry point index.d.ts
-// src/Quaternion.ts:365:24 - (ae-forgotten-export) The symbol "fromToRotation" needs to be exported by the entry point index.d.ts
-// src/Quaternion.ts:365:24 - (ae-forgotten-export) The symbol "eulerAngles" needs to be exported by the entry point index.d.ts
-// src/Quaternion.ts:365:24 - (ae-forgotten-export) The symbol "normalize" needs to be exported by the entry point index.d.ts
-// src/Quaternion.ts:365:24 - (ae-forgotten-export) The symbol "Identity" needs to be exported by the entry point index.d.ts
-// src/Vector3.ts:264:21 - (ae-forgotten-export) The symbol "create" needs to be exported by the entry point index.d.ts
-// src/Vector3.ts:264:21 - (ae-forgotten-export) The symbol "add" needs to be exported by the entry point index.d.ts
-// src/Vector3.ts:264:21 - (ae-forgotten-export) The symbol "sub" needs to be exported by the entry point index.d.ts
-// src/Vector3.ts:264:21 - (ae-forgotten-export) The symbol "opposite" needs to be exported by the entry point index.d.ts
-// src/Vector3.ts:264:21 - (ae-forgotten-export) The symbol "copy" needs to be exported by the entry point index.d.ts
-// src/Vector3.ts:264:21 - (ae-forgotten-export) The symbol "normalize" needs to be exported by the entry point index.d.ts
-// src/Vector3.ts:264:21 - (ae-forgotten-export) The symbol "normalizeFromLength" needs to be exported by the entry point index.d.ts
-// src/Vector3.ts:264:21 - (ae-forgotten-export) The symbol "scale" needs to be exported by the entry point index.d.ts
-// src/Vector3.ts:264:21 - (ae-forgotten-export) The symbol "length" needs to be exported by the entry point index.d.ts
-// src/Vector3.ts:264:21 - (ae-forgotten-export) The symbol "lengthSquared" needs to be exported by the entry point index.d.ts
-// src/Vector3.ts:264:21 - (ae-forgotten-export) The symbol "cross" needs to be exported by the entry point index.d.ts
-// src/Vector3.ts:264:21 - (ae-forgotten-export) The symbol "dot" needs to be exported by the entry point index.d.ts
-// src/Vector3.ts:264:21 - (ae-forgotten-export) The symbol "rotate" needs to be exported by the entry point index.d.ts
-// src/Vector3.ts:264:21 - (ae-forgotten-export) The symbol "Zero" needs to be exported by the entry point index.d.ts
-// src/Vector3.ts:264:21 - (ae-forgotten-export) The symbol "One" needs to be exported by the entry point index.d.ts
-// src/Vector3.ts:264:21 - (ae-forgotten-export) The symbol "Up" needs to be exported by the entry point index.d.ts
-// src/Vector3.ts:264:21 - (ae-forgotten-export) The symbol "Down" needs to be exported by the entry point index.d.ts
-// src/Vector3.ts:264:21 - (ae-forgotten-export) The symbol "Forward" needs to be exported by the entry point index.d.ts
-// src/Vector3.ts:264:21 - (ae-forgotten-export) The symbol "Backward" needs to be exported by the entry point index.d.ts
-// src/Vector3.ts:264:21 - (ae-forgotten-export) The symbol "Right" needs to be exported by the entry point index.d.ts
-// src/Vector3.ts:264:21 - (ae-forgotten-export) The symbol "Left" needs to be exported by the entry point index.d.ts
+export namespace Vector3 {
+    export function add(vector1: ReadonlyVector3, vector2: ReadonlyVector3): MutableVector3;
+    export function Backward(): MutableVector3;
+    export function clone(source: ReadonlyVector3): MutableVector3;
+    export function copy(source: ReadonlyVector3, dest: MutableVector3): void;
+    export function create(
+    x?: number,
+    y?: number,
+    z?: number): MutableVector3;
+    export function cross(left: ReadonlyVector3, right: ReadonlyVector3): MutableVector3;
+    export function crossToRef(left: ReadonlyVector3, right: ReadonlyVector3, result: MutableVector3): void;
+    export function dot(left: ReadonlyVector3, right: ReadonlyVector3): number;
+    export function Down(): MutableVector3;
+    export function Forward(): MutableVector3;
+    export function Left(): MutableVector3;
+    export function length(vector: ReadonlyVector3): number;
+    export function lengthSquared(vector: ReadonlyVector3): number;
+    export function lerp(start: ReadonlyVector3, end: ReadonlyVector3, amount: number): MutableVector3;
+    export function lerpToRef(start: ReadonlyVector3, end: ReadonlyVector3, amount: number, result: MutableVector3): void;
+    // (undocumented)
+    export type MutableVector3 = {
+        y: number;
+        x: number;
+        z: number;
+    };
+    export function normalize(vector: ReadonlyVector3): MutableVector3;
+    export function normalizeFromLength(vector: ReadonlyVector3, len: number): MutableVector3;
+    export function normalizeFromLengthToRef(vector: ReadonlyVector3, len: number, result: MutableVector3): void;
+    export function normalizeToRef(vector: ReadonlyVector3, result: MutableVector3): void;
+    export function One(): MutableVector3;
+    export function opposite(value: ReadonlyVector3): MutableVector3;
+    // Warning: (ae-incompatible-release-tags) The symbol "ReadonlyVector3" is marked as @public, but its signature references "DeepReadonly" which is marked as @internal
+    //
+    // (undocumented)
+    export type ReadonlyVector3 = DeepReadonly<MutableVector3>;
+    export function Right(): MutableVector3;
+    export function rotate(vector: ReadonlyVector3, q: Quaternion.ReadonlyQuaternion): MutableVector3;
+    export function scale(vector: ReadonlyVector3, scale: number): MutableVector3;
+    export function scaleToRef(vector: ReadonlyVector3, scale: number, result: MutableVector3): void;
+    export function subtract(minuend: ReadonlyVector3, subtrahend: ReadonlyVector3): MutableVector3;
+    export function subtractToRef(minuend: ReadonlyVector3, subtrahend: ReadonlyVector3, result: MutableVector3): void;
+    export function Up(): MutableVector3;
+    export function Zero(): MutableVector3;
+}
 
 // (No @packageDocumentation comment for this package)
 
