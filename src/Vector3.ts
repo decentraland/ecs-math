@@ -102,8 +102,8 @@ export namespace Vector3 {
    */
   export function copy(source: ReadonlyVector3, dest: MutableVector3): void {
     dest.x = source.x
-    dest.x = source.x
-    dest.x = source.x
+    dest.y = source.y
+    dest.z = source.z
   }
 
   /**
@@ -190,8 +190,6 @@ export namespace Vector3 {
       copy(vector, result)
       return
     }
-
-    result = scale(vector, 1.0 / len)
     scaleToRef(vector, 1.0 / len, result)
   }
 
