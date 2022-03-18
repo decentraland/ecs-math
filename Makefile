@@ -10,7 +10,7 @@ lint-fix:
 	node_modules/.bin/eslint . --ext .ts --fix
 
 test:
-	node_modules/.bin/jest --detectOpenHandles --colors --runInBand $(TESTARGS)
+	node_modules/.bin/jest --detectOpenHandles --colors --runInBand --coverage $(TESTARGS)
 
 test-watch:
 	node_modules/.bin/jest --detectOpenHandles --colors --runInBand --watch $(TESTARGS)
