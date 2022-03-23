@@ -1,4 +1,4 @@
-import { Matrix } from '../../src/next/Matrix'
+import { Matrix } from '../src/Matrix'
 
 const results = {
   identity:
