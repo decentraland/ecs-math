@@ -51,9 +51,9 @@ export namespace Plane {
    * @returns a new Plane defined by the three given points.
    */
   export function fromPoints(
-    point1: Vector3.ReadonlyVector3,
-    point2: Vector3.ReadonlyVector3,
-    point3: Vector3.ReadonlyVector3
+    _point1: Vector3.ReadonlyVector3,
+    _point2: Vector3.ReadonlyVector3,
+    _point3: Vector3.ReadonlyVector3
   ): MutablePlane {
     const result = create(0.0, 0.0, 0.0, 0.0)
     // TODO
@@ -115,7 +115,7 @@ export namespace Plane {
   /**
    * @returns the Plane hash code.
    */
-  export function getHashCode(plane: ReadonlyPlane): number {
+  export function getHashCode(_plane: ReadonlyPlane): number {
     // TODO
     // let hash = plane.normal.getHashCode()
     // hash = (hash * 397) ^ (plane.d || 0)

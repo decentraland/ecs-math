@@ -85,7 +85,7 @@ export namespace Matrix {
    * @param offset - defines an offset in the source array
    * @returns a new Matrix set from the starting index of the given array
    */
-  function fromArray(
+  export function fromArray(
     array: ArrayLike<number>,
     offset: number = 0
   ): MutableMatrix {
