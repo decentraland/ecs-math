@@ -1,4 +1,4 @@
-import { Matrix } from '../src/Matrix'
+import { Matrix } from '../../src/next/Matrix'
 
 const results = {
   identity:
@@ -18,7 +18,7 @@ function matrixToString(m: Matrix.ReadonlyMatrix) {
   return res
 }
 
-describe('ECS Matrix tests', () => {
+describe('ECS Matrix - Next tests', () => {
   it('Matrix.create One', () => {
     expect(matrixToString(Matrix.Identity())).toEqual(results.identity)
   })

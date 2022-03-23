@@ -4,18 +4,207 @@
 
 ```ts
 
-// Warning: (ae-internal-missing-underscore) The name "DeepReadonly" should be prefixed with an underscore because the declaration is marked as @internal
-//
-// @internal
-export type DeepReadonly<T> = {
-    readonly [P in keyof T]: DeepReadonly<T[P]>;
-};
+// @public
+export class Angle {
+    constructor(radians: number);
+    static BetweenTwoPoints(a: Vector2, b: Vector2): Angle;
+    degrees(): number;
+    static FromDegrees(degrees: number): Angle;
+    static FromRadians(radians: number): Angle;
+    radians(): number;
+}
+
+// @public
+export class Arc2 {
+    constructor(
+    startPoint: Vector2,
+    midPoint: Vector2,
+    endPoint: Vector2);
+    angle: Angle;
+    centerPoint: Vector2;
+    endPoint: Vector2;
+    midPoint: Vector2;
+    orientation: Orientation;
+    radius: number;
+    startAngle: Angle;
+    startPoint: Vector2;
+}
+
+// @public
+export class Axis {
+    static X: Vector3;
+    static Y: Vector3;
+    static Z: Vector3;
+}
+
+// @public
+export class BezierCurve {
+    static Interpolate(t: number, x1: number, y1: number, x2: number, y2: number): number;
+}
+
+// @public
+export class Color3 {
+    constructor(
+    r?: number,
+    g?: number,
+    b?: number);
+    add(otherColor: Color3): Color3;
+    addToRef(otherColor: Color3, result: Color3): Color3;
+    asArray(): number[];
+    b: number;
+    static Black(): Color3;
+    static Blue(): Color3;
+    clampToRef(min: number | undefined, max: number | undefined, result: Color3): Color3;
+    clone(): Color3;
+    copyFrom(source: Color3): Color3;
+    copyFromFloats(r: number, g: number, b: number): Color3;
+    equals(otherColor: Color3): boolean;
+    equalsFloats(r: number, g: number, b: number): boolean;
+    static FromArray(array: ArrayLike<number>, offset?: number): Color3;
+    static FromHexString(hex: string): Color3;
+    static FromInts(r: number, g: number, b: number): Color3;
+    g: number;
+    getClassName(): string;
+    getHashCode(): number;
+    static Gray(): Color3;
+    static Green(): Color3;
+    static Lerp(start: Color3, end: Color3, amount: number): Color3;
+    static LerpToRef(left: Color3, right: Color3, amount: number, result: Color3): void;
+    static Magenta(): Color3;
+    multiply(otherColor: Color3): Color3;
+    multiplyToRef(otherColor: Color3, result: Color3): Color3;
+    static Purple(): Color3;
+    r: number;
+    static Random(): Color3;
+    static Red(): Color3;
+    scale(scale: number): Color3;
+    scaleAndAddToRef(scale: number, result: Color3): Color3;
+    scaleToRef(scale: number, result: Color3): Color3;
+    set(r: number, g: number, b: number): Color3;
+    subtract(otherColor: Color3): Color3;
+    subtractToRef(otherColor: Color3, result: Color3): Color3;
+    static Teal(): Color3;
+    toArray(array: FloatArray, index?: number): Color3;
+    toColor4(alpha?: number): Color4;
+    toGammaSpace(): Color3;
+    toGammaSpaceToRef(convertedColor: Color3): Color3;
+    toHexString(): string;
+    toJSON(): {
+        r: number;
+        g: number;
+        b: number;
+    };
+    toLinearSpace(): Color3;
+    toLinearSpaceToRef(convertedColor: Color3): Color3;
+    toLuminance(): number;
+    toString(): string;
+    static White(): Color3;
+    static Yellow(): Color3;
+}
+
+// @public
+export class Color4 {
+    constructor(
+    r?: number,
+    g?: number,
+    b?: number,
+    a?: number);
+    a: number;
+    add(right: Color4): Color4;
+    addInPlace(right: Color4): Color4;
+    asArray(): number[];
+    b: number;
+    static Black(): Color4;
+    static Blue(): Color4;
+    static CheckColors4(colors: number[], count: number): number[];
+    clampToRef(min: number | undefined, max: number | undefined, result: Color4): Color4;
+    static Clear(): Color4;
+    clone(): Color4;
+    copyFrom(source: Color4): Color4;
+    copyFromFloats(r: number, g: number, b: number, a: number): Color4;
+    static FromArray(array: ArrayLike<number>, offset?: number): Color4;
+    static FromColor3(color3: Color3, alpha?: number): Color4;
+    static FromHexString(hex: string): Color4;
+    static FromInts(r: number, g: number, b: number, a: number): Color4;
+    g: number;
+    getClassName(): string;
+    getHashCode(): number;
+    static Gray(): Color4;
+    static Green(): Color4;
+    static Lerp(left: Color4, right: Color4, amount: number): Color4;
+    static LerpToRef(left: Color4, right: Color4, amount: number, result: Color4): void;
+    static Magenta(): Color4;
+    multiply(color: Color4): Color4;
+    multiplyToRef(color: Color4, result: Color4): Color4;
+    static Purple(): Color4;
+    r: number;
+    static Red(): Color4;
+    scale(scale: number): Color4;
+    scaleAndAddToRef(scale: number, result: Color4): Color4;
+    scaleToRef(scale: number, result: Color4): Color4;
+    set(r: number, g: number, b: number, a: number): Color4;
+    subtract(right: Color4): Color4;
+    subtractToRef(right: Color4, result: Color4): Color4;
+    static Teal(): Color4;
+    toArray(array: number[], index?: number): Color4;
+    toGammaSpace(): Color4;
+    toGammaSpaceToRef(convertedColor: Color4): Color4;
+    toHexString(): string;
+    toLinearSpace(): Color4;
+    toLinearSpaceToRef(convertedColor: Color4): Color4;
+    toString(): string;
+    static White(): Color4;
+    static Yellow(): Color4;
+}
+
+// @public
+export class Curve3 {
+    constructor(points: Vector3[]);
+    continue(curve: Curve3): Curve3;
+    static CreateCatmullRomSpline(points: Vector3[], nbPoints: number, closed?: boolean): Curve3;
+    static CreateCubicBezier(v0: Vector3, v1: Vector3, v2: Vector3, v3: Vector3, nbPoints: number): Curve3;
+    static CreateHermiteSpline(p1: Vector3, t1: Vector3, p2: Vector3, t2: Vector3, nbPoints: number): Curve3;
+    static CreateQuadraticBezier(v0: Vector3, v1: Vector3, v2: Vector3, nbPoints: number): Curve3;
+    // (undocumented)
+    getPoints(): Vector3[];
+    // (undocumented)
+    length(): number;
+}
 
 // @public
 export const DEG2RAD: number;
 
 // @public (undocumented)
 export type double = number;
+
+// @public (undocumented)
+export type EcsMathReadOnlyQuaternion = {
+    readonly x: number;
+    readonly y: number;
+    readonly z: number;
+    readonly w: number;
+};
+
+// @public (undocumented)
+export type EcsMathReadOnlyVector2 = {
+    readonly y: number;
+    readonly x: number;
+};
+
+// @public (undocumented)
+export type EcsMathReadOnlyVector3 = {
+    readonly y: number;
+    readonly x: number;
+    readonly z: number;
+};
+
+// @public (undocumented)
+export type EcsMathReadOnlyVector4 = {
+    readonly x: number;
+    readonly y: number;
+    readonly z: number;
+    readonly w: number;
+};
 
 // @public
 export const Epsilon = 0.000001;
@@ -27,9 +216,139 @@ export type float = number;
 export type FloatArray = number[];
 
 // @public
+export class Frustum {
+    static GetBottomPlaneToRef(transform: Matrix, frustumPlane: Plane): void;
+    static GetFarPlaneToRef(transform: Matrix, frustumPlane: Plane): void;
+    static GetLeftPlaneToRef(transform: Matrix, frustumPlane: Plane): void;
+    static GetNearPlaneToRef(transform: Matrix, frustumPlane: Plane): void;
+    static GetPlanes(transform: Matrix): Plane[];
+    static GetPlanesToRef(transform: Matrix, frustumPlanes: Plane[]): void;
+    static GetRightPlaneToRef(transform: Matrix, frustumPlane: Plane): void;
+    static GetTopPlaneToRef(transform: Matrix, frustumPlane: Plane): void;
+}
+
+// @public
 export interface ISize {
     height: number;
     width: number;
+}
+
+// @public
+export const MathTmp: {
+    Vector3: Vector3[];
+    Matrix: Matrix[];
+    Quaternion: Quaternion[];
+    staticUp: Readonly<Vector3>;
+    tmpMatrix: Matrix;
+};
+
+// @public
+export class Matrix {
+    constructor();
+    add(other: Matrix): Matrix;
+    addAtIndex(index: number, value: number): Matrix;
+    addToRef(other: Matrix, result: Matrix): Matrix;
+    addToSelf(other: Matrix): Matrix;
+    asArray(): Readonly<FloatArray>;
+    clone(): Matrix;
+    static Compose(scale: Vector3, rotation: Quaternion, translation: Vector3): Matrix;
+    static ComposeToRef(scale: Vector3, rotation: Quaternion, translation: Vector3, result: Matrix): void;
+    copyFrom(other: Readonly<Matrix>): Matrix;
+    copyToArray(array: FloatArray, offset?: number): Matrix;
+    decompose(scale?: Vector3, rotation?: Quaternion, translation?: Vector3): boolean;
+    static DecomposeLerp(startValue: Matrix, endValue: Matrix, gradient: number): Matrix;
+    static DecomposeLerpToRef(startValue: Matrix, endValue: Matrix, gradient: number, result: Matrix): void;
+    determinant(): number;
+    equals(value: Matrix): boolean;
+    static FromArray(array: ArrayLike<number>, offset?: number): Matrix;
+    static FromArrayToRef(array: ArrayLike<number>, offset: number, result: Matrix): void;
+    static FromFloatArrayToRefScaled(array: FloatArray, offset: number, scale: number, result: Matrix): void;
+    static FromQuaternionToRef(quat: Quaternion, result: Matrix): void;
+    static FromValues(initialM11: number, initialM12: number, initialM13: number, initialM14: number, initialM21: number, initialM22: number, initialM23: number, initialM24: number, initialM31: number, initialM32: number, initialM33: number, initialM34: number, initialM41: number, initialM42: number, initialM43: number, initialM44: number): Matrix;
+    static FromValuesToRef(initialM11: number, initialM12: number, initialM13: number, initialM14: number, initialM21: number, initialM22: number, initialM23: number, initialM24: number, initialM31: number, initialM32: number, initialM33: number, initialM34: number, initialM41: number, initialM42: number, initialM43: number, initialM44: number, result: Matrix): void;
+    static FromXYZAxesToRef(xaxis: Vector3, yaxis: Vector3, zaxis: Vector3, result: Matrix): void;
+    static GetAsMatrix2x2(matrix: Matrix): FloatArray;
+    static GetAsMatrix3x3(matrix: Matrix): FloatArray;
+    getClassName(): string;
+    getHashCode(): number;
+    getRotationMatrix(): Matrix;
+    getRotationMatrixToRef(result: Matrix): Matrix;
+    getRow(index: number): Nullable<Vector4>;
+    getTranslation(): Vector3;
+    getTranslationToRef(result: Vector3): Matrix;
+    static Identity(): Matrix;
+    static get IdentityReadOnly(): Readonly<Matrix>;
+    static IdentityToRef(result: Matrix): void;
+    static Invert(source: Matrix): Matrix;
+    invert(): Matrix;
+    invertToRef(other: Matrix): Matrix;
+    isIdentity(): boolean;
+    isIdentityAs3x2(): boolean;
+    static Lerp(startValue: Matrix, endValue: Matrix, gradient: number): Matrix;
+    static LerpToRef(startValue: Matrix, endValue: Matrix, gradient: number, result: Matrix): void;
+    static LookAtLH(eye: Vector3, target: Vector3, up: Vector3): Matrix;
+    static LookAtLHToRef(eye: Vector3, target: Vector3, up: Vector3, result: Matrix): void;
+    static LookAtRH(eye: Vector3, target: Vector3, up: Vector3): Matrix;
+    static LookAtRHToRef(eye: Vector3, target: Vector3, up: Vector3, result: Matrix): void;
+    get m(): Readonly<FloatArray>;
+    // @internal (undocumented)
+    _markAsUpdated(): void;
+    multiply(other: Readonly<Matrix>): Matrix;
+    multiplyAtIndex(index: number, value: number): Matrix;
+    multiplyToArray(other: Readonly<Matrix>, result: FloatArray, offset: number): Matrix;
+    multiplyToRef(other: Readonly<Matrix>, result: Matrix): Matrix;
+    static OrthoLH(width: number, height: number, znear: number, zfar: number): Matrix;
+    static OrthoLHToRef(width: number, height: number, znear: number, zfar: number, result: Matrix): void;
+    static OrthoOffCenterLH(left: number, right: number, bottom: number, top: number, znear: number, zfar: number): Matrix;
+    static OrthoOffCenterLHToRef(left: number, right: number, bottom: number, top: number, znear: number, zfar: number, result: Matrix): void;
+    static OrthoOffCenterRH(left: number, right: number, bottom: number, top: number, znear: number, zfar: number): Matrix;
+    static OrthoOffCenterRHToRef(left: number, right: number, bottom: number, top: number, znear: number, zfar: number, result: Matrix): void;
+    static PerspectiveFovLH(fov: number, aspect: number, znear: number, zfar: number): Matrix;
+    static PerspectiveFovLHToRef(fov: number, aspect: number, znear: number, zfar: number, result: Matrix, isVerticalFovFixed?: boolean): void;
+    static PerspectiveFovRH(fov: number, aspect: number, znear: number, zfar: number): Matrix;
+    static PerspectiveFovRHToRef(fov: number, aspect: number, znear: number, zfar: number, result: Matrix, isVerticalFovFixed?: boolean): void;
+    static PerspectiveFovWebVRToRef(fov: {
+        upDegrees: number;
+        downDegrees: number;
+        leftDegrees: number;
+        rightDegrees: number;
+    }, znear: number, zfar: number, result: Matrix, rightHanded?: boolean): void;
+    static PerspectiveLH(width: number, height: number, znear: number, zfar: number): Matrix;
+    static Reflection(plane: Plane): Matrix;
+    static ReflectionToRef(plane: Plane, result: Matrix): void;
+    removeRotationAndScaling(): Matrix;
+    reset(): Matrix;
+    static RotationAxis(axis: Vector3, angle: number): Matrix;
+    static RotationAxisToRef(axis: Vector3, angle: number, result: Matrix): void;
+    static RotationX(angle: number): Matrix;
+    static RotationXToRef(angle: number, result: Matrix): void;
+    static RotationY(angle: number): Matrix;
+    static RotationYawPitchRoll(yaw: number, pitch: number, roll: number): Matrix;
+    static RotationYawPitchRollToRef(yaw: number, pitch: number, roll: number, result: Matrix): void;
+    static RotationYToRef(angle: number, result: Matrix): void;
+    static RotationZ(angle: number): Matrix;
+    static RotationZToRef(angle: number, result: Matrix): void;
+    scale(scale: number): Matrix;
+    scaleAndAddToRef(scale: number, result: Matrix): Matrix;
+    scaleToRef(scale: number, result: Matrix): Matrix;
+    static Scaling(x: number, y: number, z: number): Matrix;
+    static ScalingToRef(x: number, y: number, z: number, result: Matrix): void;
+    setRow(index: number, row: Vector4): Matrix;
+    setRowFromFloats(index: number, x: number, y: number, z: number, w: number): Matrix;
+    setTranslation(vector3: Vector3): Matrix;
+    setTranslationFromFloats(x: number, y: number, z: number): Matrix;
+    toArray(): Readonly<FloatArray>;
+    toggleModelMatrixHandInPlace(): void;
+    toggleProjectionMatrixHandInPlace(): void;
+    toNormalMatrix(ref: Matrix): void;
+    static Translation(x: number, y: number, z: number): Matrix;
+    static TranslationToRef(x: number, y: number, z: number, result: Matrix): void;
+    static Transpose(matrix: Matrix): Matrix;
+    transpose(): Matrix;
+    static TransposeToRef(matrix: Matrix, result: Matrix): void;
+    transposeToRef(result: Matrix): Matrix;
+    updateFlag: number;
+    static Zero(): Matrix;
 }
 
 // @public (undocumented)
@@ -41,51 +360,189 @@ export enum Orientation {
     CW = 0
 }
 
-// @public (undocumented)
-export namespace Quaternion {
-    export function add(q1: ReadonlyQuaternion, q2: ReadonlyQuaternion): MutableQuaternion;
-    export function angle(quat1: ReadonlyQuaternion, quat2: ReadonlyQuaternion): number;
+// @public
+export class Path2 {
+    constructor(x: number, y: number);
+    addArcTo(midX: number, midY: number, endX: number, endY: number, numberOfSegments?: number): Path2;
+    addLineTo(x: number, y: number): Path2;
+    close(): Path2;
+    closed: boolean;
+    getPointAtLengthPosition(normalizedLengthPosition: number): Vector2;
+    getPoints(): Vector2[];
+    length(): number;
+    static StartingAt(x: number, y: number): Path2;
+}
+
+// @public
+export class Path3D {
+    constructor(
+    path: Vector3[], firstNormal?: Nullable<Vector3>, raw?: boolean);
+    getBinormals(): Vector3[];
+    getCurve(): Vector3[];
+    getDistances(): number[];
+    getNormals(): Vector3[];
+    getTangents(): Vector3[];
+    path: Vector3[];
+    update(path: Vector3[], firstNormal?: Nullable<Vector3>): Path3D;
+}
+
+// @public
+export class Plane {
+    constructor(a: number, b: number, c: number, d: number);
     // (undocumented)
-    export function angleAxis(degress: number, axis: Vector3.ReadonlyVector3): MutableQuaternion;
-    export function create(
+    asArray(): number[];
+    // (undocumented)
+    clone(): Plane;
+    copyFromPoints(point1: Vector3, point2: Vector3, point3: Vector3): Plane;
+    d: number;
+    dotCoordinate(point: Vector3): number;
+    static FromArray(array: ArrayLike<number>): Plane;
+    static FromPoints(point1: Vector3, point2: Vector3, point3: Vector3): Plane;
+    static FromPositionAndNormal(origin: Vector3, normal: Vector3): Plane;
+    // (undocumented)
+    getClassName(): string;
+    // (undocumented)
+    getHashCode(): number;
+    isFrontFacingTo(direction: Vector3, epsilon: number): boolean;
+    normal: Vector3;
+    normalize(): Plane;
+    signedDistanceTo(point: Vector3): number;
+    static SignedDistanceToPlaneFromPositionAndNormal(origin: Vector3, normal: Vector3, point: Vector3): number;
+    transform(transformation: Matrix): Plane;
+}
+
+// @public
+export class Quaternion implements EcsMathReadOnlyQuaternion {
+    constructor(
     x?: number,
     y?: number,
     z?: number,
-    w?: number): MutableQuaternion;
-    export function dot(left: ReadonlyQuaternion, right: ReadonlyQuaternion): number;
-    export function euler(x: number, y: number, z: number): MutableQuaternion;
-    export function eulerAngles(q: MutableQuaternion): Vector3.MutableVector3;
-    // Warning: (ae-forgotten-export) The symbol "Matrix" needs to be exported by the entry point index.d.ts
-    export function fromRotationMatrixToRef(matrix: Matrix.ReadonlyMatrix, result: Quaternion.MutableQuaternion): void;
-    export function fromToRotation(from: Vector3.ReadonlyVector3, to: Vector3.ReadonlyVector3, up?: Vector3.ReadonlyVector3): MutableQuaternion;
-    export function Identity(): MutableQuaternion;
-    export function length(q: ReadonlyQuaternion): number;
-    export function lengthSquared(q: ReadonlyQuaternion): number;
-    export function lookRotation(forward: Vector3.ReadonlyVector3, up?: Vector3.ReadonlyVector3): MutableQuaternion;
-    export function multiply(self: ReadonlyQuaternion, q1: ReadonlyQuaternion): MutableQuaternion;
-    export function multiplyToRef(self: ReadonlyQuaternion, q1: ReadonlyQuaternion, result: MutableQuaternion): void;
+    w?: number);
+    // @internal
+    add(other: Quaternion): Quaternion;
+    // @internal
+    addInPlace(other: Quaternion): Quaternion;
+    static Angle(quat1: EcsMathReadOnlyQuaternion, quat2: EcsMathReadOnlyQuaternion): number;
     // (undocumented)
-    export type MutableQuaternion = {
-        y: number;
-        x: number;
-        z: number;
-        w: number;
-    };
-    export function normalize(q: ReadonlyQuaternion): MutableQuaternion;
-    // Warning: (ae-incompatible-release-tags) The symbol "ReadonlyQuaternion" is marked as @public, but its signature references "DeepReadonly" which is marked as @internal
-    //
-    // (undocumented)
-    export type ReadonlyQuaternion = DeepReadonly<MutableQuaternion>;
-    export function rotateTowards(from: ReadonlyQuaternion, to: ReadonlyQuaternion, maxDegreesDelta: number): MutableQuaternion;
-    export function rotationYawPitchRoll(yaw: number, pitch: number, roll: number): MutableQuaternion;
-    export function rotationYawPitchRollToRef(yaw: number, pitch: number, roll: number, result: Quaternion.MutableQuaternion): void;
-    export function slerp(left: ReadonlyQuaternion, right: ReadonlyQuaternion, amount: number): MutableQuaternion;
-    export function slerpToRef(left: ReadonlyQuaternion, right: ReadonlyQuaternion, amount: number, result: MutableQuaternion): void;
-    export function Zero(): MutableQuaternion;
+    angleAxis(degress: number, axis: Vector3): Quaternion;
+    static AreClose(quat0: EcsMathReadOnlyQuaternion, quat1: EcsMathReadOnlyQuaternion): boolean;
+    asArray(): number[];
+    clone(): Quaternion;
+    conjugate(): Quaternion;
+    conjugateInPlace(): Quaternion;
+    conjugateToRef(ref: Quaternion): Quaternion;
+    copyFrom(other: EcsMathReadOnlyQuaternion): Quaternion;
+    copyFromFloats(x: number, y: number, z: number, w: number): Quaternion;
+    static Dot(left: EcsMathReadOnlyQuaternion, right: EcsMathReadOnlyQuaternion): number;
+    equals(otherQuaternion: EcsMathReadOnlyQuaternion): boolean;
+    static Euler(x: number, y: number, z: number): Quaternion;
+    set eulerAngles(euler: Vector3);
+    get eulerAngles(): Vector3;
+    static FromArray(array: ArrayLike<number>, offset?: number): Quaternion;
+    static FromEulerAnglesRef(x: number, y: number, z: number, result: Quaternion): void;
+    static FromRotationMatrix(matrix: Matrix): Quaternion;
+    fromRotationMatrix(matrix: Matrix): Quaternion;
+    static FromRotationMatrixToRef(matrix: Matrix, result: Quaternion): void;
+    static FromToRotation(from: Vector3, to: Vector3, up?: Vector3): Quaternion;
+    getClassName(): string;
+    getHashCode(): number;
+    static Hermite(value1: EcsMathReadOnlyQuaternion, tangent1: EcsMathReadOnlyQuaternion, value2: EcsMathReadOnlyQuaternion, tangent2: EcsMathReadOnlyQuaternion, amount: number): Quaternion;
+    static get Identity(): Quaternion;
+    static Inverse(q: Quaternion): Quaternion;
+    static IsIdentity(quaternion: EcsMathReadOnlyQuaternion): boolean;
+    get length(): number;
+    get lengthSquared(): number;
+    static LookRotation(forward: Vector3, up?: Vector3): Quaternion;
+    multiply(q1: EcsMathReadOnlyQuaternion): Quaternion;
+    multiplyInPlace(q1: EcsMathReadOnlyQuaternion): Quaternion;
+    multiplyToRef(q1: EcsMathReadOnlyQuaternion, result: Quaternion): Quaternion;
+    normalize(): Quaternion;
+    get normalized(): Quaternion;
+    static RotateTowards(from: EcsMathReadOnlyQuaternion, to: Quaternion, maxDegreesDelta: number): Quaternion;
+    static RotationAlphaBetaGamma(alpha: number, beta: number, gamma: number): Quaternion;
+    static RotationAlphaBetaGammaToRef(alpha: number, beta: number, gamma: number, result: Quaternion): void;
+    static RotationAxis(axis: Vector3, angle: number): Quaternion;
+    static RotationAxisToRef(axis: Vector3, angle: number, result: Quaternion): Quaternion;
+    static RotationQuaternionFromAxis(axis1: Vector3, axis2: Vector3, axis3: Vector3): Quaternion;
+    static RotationQuaternionFromAxisToRef(axis1: Vector3, axis2: Vector3, axis3: Vector3, ref: Quaternion): void;
+    static RotationYawPitchRoll(yaw: number, pitch: number, roll: number): Quaternion;
+    static RotationYawPitchRollToRef(yaw: number, pitch: number, roll: number, result: Quaternion): void;
+    scale(value: number): Quaternion;
+    scaleAndAddToRef(scale: number, result: Quaternion): Quaternion;
+    scaleInPlace(value: number): Quaternion;
+    scaleToRef(scale: number, result: Quaternion): Quaternion;
+    set(x: number, y: number, z: number, w: number): Quaternion;
+    setEuler(x: number, y: number, z: number): Quaternion;
+    setFromToRotation(from: Vector3, to: Vector3, up?: Vector3): void;
+    static Slerp(left: EcsMathReadOnlyQuaternion, right: EcsMathReadOnlyQuaternion, amount: number): Quaternion;
+    static SlerpToRef(left: EcsMathReadOnlyQuaternion, right: EcsMathReadOnlyQuaternion, amount: number, result: Quaternion): void;
+    subtract(other: Quaternion): Quaternion;
+    toRotationMatrix(result: Matrix): Quaternion;
+    toString(): string;
+    w: number;
+    x: number;
+    y: number;
+    z: number;
+    static Zero(): Quaternion;
 }
 
 // @public
 export const RAD2DEG: number;
+
+// @public (undocumented)
+export type ReadOnlyColor4 = {
+    readonly r: number;
+    readonly g: number;
+    readonly b: number;
+    readonly a: number;
+};
+
+// @public
+export class Scalar {
+    static Clamp(value: number, min?: number, max?: number): number;
+    static DeltaAngle(current: number, target: number): number;
+    static Denormalize(normalized: number, min: number, max: number): number;
+    static Hermite(value1: number, tangent1: number, value2: number, tangent2: number, amount: number): number;
+    static InverseLerp(a: number, b: number, value: number): number;
+    static Lerp(start: number, end: number, amount: number): number;
+    static LerpAngle(start: number, end: number, amount: number): number;
+    static Log2(value: number): number;
+    static MoveTowards(current: number, target: number, maxDelta: number): number;
+    static MoveTowardsAngle(current: number, target: number, maxDelta: number): number;
+    static Normalize(value: number, min: number, max: number): number;
+    static NormalizeRadians(angle: number): number;
+    static PercentToRange(percent: number, min: number, max: number): number;
+    static PingPong(tx: number, length: number): number;
+    static RandomRange(min: number, max: number): number;
+    static RangeToPercent(num: number, min: number, max: number): number;
+    static Repeat(value: number, length: number): number;
+    static Sign(value: number): number;
+    static SmoothStep(from: number, to: number, tx: number): number;
+    static ToHex(i: number): string;
+    static TwoPi: number;
+    static WithinEpsilon(a: number, b: number, epsilon?: number): boolean;
+}
+
+// @public
+export class Size implements ISize {
+    constructor(width: number, height: number);
+    add(otherSize: Size): Size;
+    clone(): Size;
+    copyFrom(src: Size): void;
+    copyFromFloats(width: number, height: number): Size;
+    equals(other: Size): boolean;
+    getClassName(): string;
+    getHashCode(): number;
+    height: number;
+    static Lerp(start: Size, end: Size, amount: number): Size;
+    multiplyByFloats(w: number, h: number): Size;
+    set(width: number, height: number): Size;
+    subtract(otherSize: Size): Size;
+    get surface(): number;
+    toString(): string;
+    width: number;
+    static Zero(): Size;
+}
 
 // @public
 export enum Space {
@@ -100,50 +557,242 @@ export const ToGammaSpace: number;
 // @public
 export const ToLinearSpace = 2.2;
 
-// @public (undocumented)
-export namespace Vector3 {
-    export function add(vector1: ReadonlyVector3, vector2: ReadonlyVector3): MutableVector3;
-    export function Backward(): MutableVector3;
-    export function clone(source: ReadonlyVector3): MutableVector3;
-    export function copy(source: ReadonlyVector3, dest: MutableVector3): void;
-    export function create(
+// @public
+export class Vector2 implements EcsMathReadOnlyVector2 {
+    constructor(
+    x?: number,
+    y?: number);
+    static Add(vector1: EcsMathReadOnlyVector2, vector2: EcsMathReadOnlyVector2): Vector2;
+    add(otherVector: EcsMathReadOnlyVector2): Vector2;
+    addInPlace(otherVector: EcsMathReadOnlyVector2): Vector2;
+    addToRef(otherVector: EcsMathReadOnlyVector2, result: Vector2): Vector2;
+    addVector3(otherVector: EcsMathReadOnlyVector2): Vector2;
+    asArray(): number[];
+    static CatmullRom(value1: EcsMathReadOnlyVector2, value2: EcsMathReadOnlyVector2, value3: EcsMathReadOnlyVector2, value4: EcsMathReadOnlyVector2, amount: number): Vector2;
+    static Center(value1: EcsMathReadOnlyVector2, value2: EcsMathReadOnlyVector2): Vector2;
+    static Clamp(value: EcsMathReadOnlyVector2, min: EcsMathReadOnlyVector2, max: EcsMathReadOnlyVector2): Vector2;
+    clone(): Vector2;
+    copyFrom(source: EcsMathReadOnlyVector2): Vector2;
+    copyFromFloats(x: number, y: number): Vector2;
+    static Distance(value1: Vector2, value2: Vector2): number;
+    static DistanceOfPointFromSegment(p: Vector2, segA: Vector2, segB: Vector2): number;
+    static DistanceSquared(value1: EcsMathReadOnlyVector2, value2: EcsMathReadOnlyVector2): number;
+    divide(otherVector: EcsMathReadOnlyVector2): Vector2;
+    divideInPlace(otherVector: EcsMathReadOnlyVector2): Vector2;
+    divideToRef(otherVector: EcsMathReadOnlyVector2, result: Vector2): Vector2;
+    static Dot(left: EcsMathReadOnlyVector2, right: EcsMathReadOnlyVector2): number;
+    equals(otherVector: EcsMathReadOnlyVector2): boolean;
+    equalsWithEpsilon(otherVector: EcsMathReadOnlyVector2, epsilon?: number): boolean;
+    floor(): Vector2;
+    fract(): Vector2;
+    static FromArray(array: ArrayLike<number>, offset?: number): Vector2;
+    static FromArrayToRef(array: ArrayLike<number>, offset: number, result: Vector2): void;
+    getClassName(): string;
+    getHashCode(): number;
+    static Hermite(value1: EcsMathReadOnlyVector2, tangent1: EcsMathReadOnlyVector2, value2: EcsMathReadOnlyVector2, tangent2: EcsMathReadOnlyVector2, amount: number): Vector2;
+    length(): number;
+    lengthSquared(): number;
+    static Lerp(start: EcsMathReadOnlyVector2, end: EcsMathReadOnlyVector2, amount: number): Vector2;
+    static Maximize(left: EcsMathReadOnlyVector2, right: EcsMathReadOnlyVector2): Vector2;
+    static Minimize(left: EcsMathReadOnlyVector2, right: EcsMathReadOnlyVector2): Vector2;
+    multiply(otherVector: EcsMathReadOnlyVector2): Vector2;
+    multiplyByFloats(x: number, y: number): Vector2;
+    multiplyInPlace(otherVector: EcsMathReadOnlyVector2): Vector2;
+    multiplyToRef(otherVector: EcsMathReadOnlyVector2, result: Vector2): Vector2;
+    negate(): Vector2;
+    static Normalize(vector: EcsMathReadOnlyVector2): Vector2;
+    normalize(): Vector2;
+    static One(): Vector2;
+    static PointInTriangle(p: EcsMathReadOnlyVector2, p0: EcsMathReadOnlyVector2, p1: EcsMathReadOnlyVector2, p2: EcsMathReadOnlyVector2): boolean;
+    scale(scale: number): Vector2;
+    scaleAndAddToRef(scale: number, result: Vector2): Vector2;
+    scaleInPlace(scale: number): Vector2;
+    scaleToRef(scale: number, result: Vector2): Vector2;
+    set(x: number, y: number): Vector2;
+    subtract(otherVector: EcsMathReadOnlyVector2): Vector2;
+    subtractInPlace(otherVector: EcsMathReadOnlyVector2): Vector2;
+    subtractToRef(otherVector: EcsMathReadOnlyVector2, result: Vector2): Vector2;
+    toArray(array: FloatArray, index?: number): Vector2;
+    toString(): string;
+    static Transform(vector: Vector2, transformation: Matrix): Vector2;
+    static TransformToRef(vector: EcsMathReadOnlyVector2, transformation: Matrix, result: Vector2): void;
+    x: number;
+    y: number;
+    static Zero(): Vector2;
+}
+
+// @public
+export class Vector3 implements EcsMathReadOnlyVector3 {
+    constructor(
     x?: number,
     y?: number,
-    z?: number): MutableVector3;
-    export function cross(left: ReadonlyVector3, right: ReadonlyVector3): MutableVector3;
-    export function crossToRef(left: ReadonlyVector3, right: ReadonlyVector3, result: MutableVector3): void;
-    export function dot(left: ReadonlyVector3, right: ReadonlyVector3): number;
-    export function Down(): MutableVector3;
-    export function Forward(): MutableVector3;
-    export function Left(): MutableVector3;
-    export function length(vector: ReadonlyVector3): number;
-    export function lengthSquared(vector: ReadonlyVector3): number;
-    export function lerp(start: ReadonlyVector3, end: ReadonlyVector3, amount: number): MutableVector3;
-    export function lerpToRef(start: ReadonlyVector3, end: ReadonlyVector3, amount: number, result: MutableVector3): void;
-    // (undocumented)
-    export type MutableVector3 = {
-        y: number;
-        x: number;
-        z: number;
-    };
-    export function normalize(vector: ReadonlyVector3): MutableVector3;
-    export function normalizeFromLength(vector: ReadonlyVector3, len: number): MutableVector3;
-    export function normalizeFromLengthToRef(vector: ReadonlyVector3, len: number, result: MutableVector3): void;
-    export function normalizeToRef(vector: ReadonlyVector3, result: MutableVector3): void;
-    export function One(): MutableVector3;
-    export function opposite(value: ReadonlyVector3): MutableVector3;
-    // Warning: (ae-incompatible-release-tags) The symbol "ReadonlyVector3" is marked as @public, but its signature references "DeepReadonly" which is marked as @internal
-    //
-    // (undocumented)
-    export type ReadonlyVector3 = DeepReadonly<MutableVector3>;
-    export function Right(): MutableVector3;
-    export function rotate(vector: ReadonlyVector3, q: Quaternion.ReadonlyQuaternion): MutableVector3;
-    export function scale(vector: ReadonlyVector3, scale: number): MutableVector3;
-    export function scaleToRef(vector: ReadonlyVector3, scale: number, result: MutableVector3): void;
-    export function subtract(minuend: ReadonlyVector3, subtrahend: ReadonlyVector3): MutableVector3;
-    export function subtractToRef(minuend: ReadonlyVector3, subtrahend: ReadonlyVector3, result: MutableVector3): void;
-    export function Up(): MutableVector3;
-    export function Zero(): MutableVector3;
+    z?: number);
+    static Add(vector1: EcsMathReadOnlyVector3, vector2: EcsMathReadOnlyVector3): Vector3;
+    add(otherVector: EcsMathReadOnlyVector3): Vector3;
+    addInPlace(otherVector: EcsMathReadOnlyVector3): Vector3;
+    addInPlaceFromFloats(x: number, y: number, z: number): Vector3;
+    addToRef(otherVector: EcsMathReadOnlyVector3, result: Vector3): Vector3;
+    applyMatrix4(matrix: Matrix): void;
+    applyMatrix4ToRef(matrix: Matrix, result: Vector3): Vector3;
+    asArray(): number[];
+    static Backward(): Vector3;
+    static CatmullRom(value1: EcsMathReadOnlyVector3, value2: EcsMathReadOnlyVector3, value3: EcsMathReadOnlyVector3, value4: EcsMathReadOnlyVector3, amount: number): Vector3;
+    static Center(value1: EcsMathReadOnlyVector3, value2: EcsMathReadOnlyVector3): Vector3;
+    static Clamp(value: EcsMathReadOnlyVector3, min: EcsMathReadOnlyVector3, max: EcsMathReadOnlyVector3): Vector3;
+    static ClampToRef(value: EcsMathReadOnlyVector3, min: EcsMathReadOnlyVector3, max: EcsMathReadOnlyVector3, result: Vector3): void;
+    clone(): Vector3;
+    copyFrom(source: EcsMathReadOnlyVector3): Vector3;
+    copyFromFloats(x: number, y: number, z: number): Vector3;
+    static Cross(left: EcsMathReadOnlyVector3, right: EcsMathReadOnlyVector3): Vector3;
+    static CrossToRef(left: EcsMathReadOnlyVector3, right: EcsMathReadOnlyVector3, result: Vector3): void;
+    static Distance(value1: EcsMathReadOnlyVector3, value2: EcsMathReadOnlyVector3): number;
+    static DistanceSquared(value1: EcsMathReadOnlyVector3, value2: EcsMathReadOnlyVector3): number;
+    divide(otherVector: EcsMathReadOnlyVector3): Vector3;
+    divideInPlace(otherVector: EcsMathReadOnlyVector3): Vector3;
+    divideToRef(otherVector: EcsMathReadOnlyVector3, result: Vector3): Vector3;
+    static Dot(left: EcsMathReadOnlyVector3, right: EcsMathReadOnlyVector3): number;
+    static Down(): Vector3;
+    equals(otherVector: EcsMathReadOnlyVector3): boolean;
+    equalsToFloats(x: number, y: number, z: number): boolean;
+    equalsWithEpsilon(otherVector: EcsMathReadOnlyVector3, epsilon?: number): boolean;
+    floor(): Vector3;
+    static Forward(): Vector3;
+    fract(): Vector3;
+    static FromArray(array: ArrayLike<number>, offset?: number): Vector3;
+    static FromArrayToRef(array: ArrayLike<number>, offset: number, result: Vector3): void;
+    static FromFloatArray(array: FloatArray, offset?: number): Vector3;
+    static FromFloatArrayToRef(array: FloatArray, offset: number, result: Vector3): void;
+    static FromFloatsToRef(x: number, y: number, z: number, result: Vector3): void;
+    static GetAngleBetweenVectors(vector0: Vector3, vector1: Vector3, normal: EcsMathReadOnlyVector3): number;
+    getClassName(): string;
+    static GetClipFactor(vector0: EcsMathReadOnlyVector3, vector1: EcsMathReadOnlyVector3, axis: EcsMathReadOnlyVector3, size: number): number;
+    getHashCode(): number;
+    static Hermite(value1: EcsMathReadOnlyVector3, tangent1: EcsMathReadOnlyVector3, value2: EcsMathReadOnlyVector3, tangent2: EcsMathReadOnlyVector3, amount: number): Vector3;
+    get isNonUniform(): boolean;
+    static Left(): Vector3;
+    length(): number;
+    lengthSquared(): number;
+    static Lerp(start: EcsMathReadOnlyVector3, end: EcsMathReadOnlyVector3, amount: number): Vector3;
+    static LerpToRef(start: EcsMathReadOnlyVector3, end: EcsMathReadOnlyVector3, amount: number, result: Vector3): void;
+    static Maximize(left: Vector3, right: Vector3): Vector3;
+    maximizeInPlace(other: EcsMathReadOnlyVector3): Vector3;
+    maximizeInPlaceFromFloats(x: number, y: number, z: number): Vector3;
+    static Minimize(left: EcsMathReadOnlyVector3, right: EcsMathReadOnlyVector3): Vector3;
+    minimizeInPlace(other: EcsMathReadOnlyVector3): Vector3;
+    minimizeInPlaceFromFloats(x: number, y: number, z: number): Vector3;
+    multiply(otherVector: EcsMathReadOnlyVector3): Vector3;
+    multiplyByFloats(x: number, y: number, z: number): Vector3;
+    multiplyInPlace(otherVector: EcsMathReadOnlyVector3): Vector3;
+    multiplyToRef(otherVector: EcsMathReadOnlyVector3, result: Vector3): Vector3;
+    negate(): Vector3;
+    static Normalize(vector: Vector3): Vector3;
+    normalize(): Vector3;
+    normalizeFromLength(len: number): Vector3;
+    normalizeToNew(): Vector3;
+    static NormalizeToRef(vector: Vector3, result: Vector3): void;
+    normalizeToRef(reference: Vector3): Vector3;
+    static One(): Vector3;
+    static Right(): Vector3;
+    rotate(q: Quaternion): Vector3;
+    rotateToRef(q: Quaternion, result: Vector3): Vector3;
+    static RotationFromAxis(axis1: Vector3, axis2: Vector3, axis3: Vector3): Vector3;
+    static RotationFromAxisToRef(axis1: Vector3, axis2: Vector3, axis3: Vector3, ref: Vector3): void;
+    scale(scale: number): Vector3;
+    scaleAndAddToRef(scale: number, result: Vector3): Vector3;
+    scaleInPlace(scale: number): Vector3;
+    scaleToRef(scale: number, result: Vector3): Vector3;
+    set(x: number, y: number, z: number): Vector3;
+    setAll(v: number): Vector3;
+    subtract(otherVector: EcsMathReadOnlyVector3): Vector3;
+    subtractFromFloats(x: number, y: number, z: number): Vector3;
+    subtractFromFloatsToRef(x: number, y: number, z: number, result: Vector3): Vector3;
+    subtractInPlace(otherVector: EcsMathReadOnlyVector3): Vector3;
+    subtractToRef(otherVector: EcsMathReadOnlyVector3, result: Vector3): Vector3;
+    toArray(array: FloatArray, index?: number): Vector3;
+    toQuaternion(): Quaternion;
+    toString(): string;
+    static TransformCoordinates(vector: EcsMathReadOnlyVector3, transformation: Matrix): Vector3;
+    static TransformCoordinatesFromFloatsToRef(x: number, y: number, z: number, transformation: Readonly<Matrix>, result: Vector3): void;
+    static TransformCoordinatesToRef(vector: EcsMathReadOnlyVector3, transformation: Readonly<Matrix>, result: Vector3): void;
+    static TransformNormal(vector: EcsMathReadOnlyVector3, transformation: Matrix): Vector3;
+    static TransformNormalFromFloatsToRef(x: number, y: number, z: number, transformation: Readonly<Matrix>, result: Vector3): void;
+    static TransformNormalToRef(vector: EcsMathReadOnlyVector3, transformation: Readonly<Matrix>, result: Vector3): void;
+    static Up(): Vector3;
+    x: number;
+    y: number;
+    z: number;
+    static Zero(): Vector3;
+}
+
+// @public
+export class Vector4 implements EcsMathReadOnlyVector4 {
+    constructor(
+    x: number,
+    y: number,
+    z: number,
+    w: number);
+    static Add(vector1: EcsMathReadOnlyVector4, vector2: EcsMathReadOnlyVector4): Vector4;
+    add(otherVector: EcsMathReadOnlyVector4): Vector4;
+    addInPlace(otherVector: EcsMathReadOnlyVector4): Vector4;
+    addToRef(otherVector: EcsMathReadOnlyVector4, result: Vector4): Vector4;
+    asArray(): number[];
+    static Center(value1: EcsMathReadOnlyVector4, value2: EcsMathReadOnlyVector4): Vector4;
+    clone(): Vector4;
+    copyFrom(source: EcsMathReadOnlyVector4): Vector4;
+    copyFromFloats(x: number, y: number, z: number, w: number): Vector4;
+    static Distance(value1: EcsMathReadOnlyVector4, value2: EcsMathReadOnlyVector4): number;
+    static DistanceSquared(value1: EcsMathReadOnlyVector4, value2: EcsMathReadOnlyVector4): number;
+    divide(otherVector: EcsMathReadOnlyVector4): Vector4;
+    divideInPlace(otherVector: EcsMathReadOnlyVector4): Vector4;
+    divideToRef(otherVector: EcsMathReadOnlyVector4, result: Vector4): Vector4;
+    equals(otherVector: EcsMathReadOnlyVector4): boolean;
+    equalsToFloats(x: number, y: number, z: number, w: number): boolean;
+    equalsWithEpsilon(otherVector: EcsMathReadOnlyVector4, epsilon?: number): boolean;
+    floor(): Vector4;
+    fract(): Vector4;
+    static FromArray(array: ArrayLike<number>, offset?: number): Vector4;
+    static FromArrayToRef(array: ArrayLike<number>, offset: number, result: Vector4): void;
+    static FromFloatArrayToRef(array: FloatArray, offset: number, result: Vector4): void;
+    static FromFloatsToRef(x: number, y: number, z: number, w: number, result: Vector4): void;
+    getClassName(): string;
+    getHashCode(): number;
+    length(): number;
+    lengthSquared(): number;
+    static Maximize(left: EcsMathReadOnlyVector4, right: EcsMathReadOnlyVector4): Vector4;
+    maximizeInPlace(other: EcsMathReadOnlyVector4): Vector4;
+    static Minimize(left: EcsMathReadOnlyVector4, right: EcsMathReadOnlyVector4): Vector4;
+    minimizeInPlace(other: EcsMathReadOnlyVector4): Vector4;
+    multiply(otherVector: EcsMathReadOnlyVector4): Vector4;
+    multiplyByFloats(x: number, y: number, z: number, w: number): Vector4;
+    multiplyInPlace(otherVector: EcsMathReadOnlyVector4): Vector4;
+    multiplyToRef(otherVector: EcsMathReadOnlyVector4, result: Vector4): Vector4;
+    negate(): Vector4;
+    static Normalize(vector: EcsMathReadOnlyVector4): Vector4;
+    normalize(): Vector4;
+    static NormalizeToRef(vector: EcsMathReadOnlyVector4, result: Vector4): void;
+    static One(): Vector4;
+    scale(scale: number): Vector4;
+    scaleAndAddToRef(scale: number, result: Vector4): Vector4;
+    scaleInPlace(scale: number): Vector4;
+    scaleToRef(scale: number, result: Vector4): Vector4;
+    set(x: number, y: number, z: number, w: number): Vector4;
+    setAll(v: number): Vector4;
+    subtract(otherVector: EcsMathReadOnlyVector4): Vector4;
+    subtractFromFloats(x: number, y: number, z: number, w: number): Vector4;
+    subtractFromFloatsToRef(x: number, y: number, z: number, w: number, result: Vector4): Vector4;
+    subtractInPlace(otherVector: EcsMathReadOnlyVector4): Vector4;
+    subtractToRef(otherVector: EcsMathReadOnlyVector4, result: Vector4): Vector4;
+    toArray(array: FloatArray, index?: number): Vector4;
+    toString(): string;
+    toVector3(): Vector3;
+    static TransformNormal(vector: EcsMathReadOnlyVector4, transformation: Matrix): Vector4;
+    static TransformNormalFromFloatsToRef(x: number, y: number, z: number, w: number, transformation: Matrix, result: Vector4): void;
+    static TransformNormalToRef(vector: EcsMathReadOnlyVector4, transformation: Matrix, result: Vector4): void;
+    w: number;
+    x: number;
+    y: number;
+    z: number;
+    static Zero(): Vector4;
 }
 
 // (No @packageDocumentation comment for this package)

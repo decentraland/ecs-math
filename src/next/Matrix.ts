@@ -1,53 +1,80 @@
-import { FloatArray, Nullable } from './types'
+import { DeepReadonly, FloatArray } from './types'
 import { Vector3 } from './Vector3'
 import { Quaternion } from './Quaternion'
-import { MathTmp } from './preallocatedVariables'
 import { Plane } from './Plane'
-import { Vector4 } from './Vector4'
-
 /**
  * Class used to store matrix data (4x4)
  * @public
  */
-export class Matrix {
+export namespace Matrix {
+  export type Matrix4x4 = [
+    number,
+    number,
+    number,
+    number,
+    number,
+    number,
+    number,
+    number,
+    number,
+    number,
+    number,
+    number,
+    number,
+    number,
+    number,
+    number
+  ]
+  export type MutableMatrix = {
+    /**
+     * Gets the update flag of the matrix which is an unique number for the matrix.
+     * It will be incremented every time the matrix data change.
+     * You can use it to speed the comparison between two versions of the same matrix.
+     */
+    updateFlag: number
+
+    isIdentity: boolean
+    isIdentity3x2: boolean
+
+    _isIdentityDirty: boolean
+    _isIdentity3x2Dirty: boolean
+
+    _m: Matrix4x4
+  }
+
+  export type ReadonlyMatrix = DeepReadonly<MutableMatrix>
+
   /**
    * Gets the internal data of the matrix
    */
-  public get m(): Readonly<FloatArray> {
-    return this._m
+  export function m(self: MutableMatrix): Readonly<Matrix4x4> {
+    return self._m
   }
+
+  let _updateFlagSeed = 0
+  const _identityReadOnly = {} as MutableMatrix
 
   /**
    * Gets an identity matrix that must not be updated
    */
-  public static get IdentityReadOnly(): Readonly<Matrix> {
-    return Matrix._identityReadOnly
+  export function IdentityReadOnly(): ReadonlyMatrix {
+    return _identityReadOnly
   }
-
-  private static _updateFlagSeed = 0
-  private static _identityReadOnly = Matrix.Identity()
-
-  /**
-   * Gets the update flag of the matrix which is an unique number for the matrix.
-   * It will be incremented every time the matrix data change.
-   * You can use it to speed the comparison between two versions of the same matrix.
-   */
-  public updateFlag!: number
-
-  private _isIdentity = false
-  private _isIdentityDirty = true
-  private _isIdentity3x2 = true
-  private _isIdentity3x2Dirty = true
-
-  private readonly _m: FloatArray = [
-    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
-  ]
 
   /**
    * Creates an empty matrix (filled with zeros)
    */
-  public constructor() {
-    this._updateIdentityStatus(false)
+  export function create(): MutableMatrix {
+    const newMatrix: MutableMatrix = {
+      updateFlag: 0,
+      isIdentity: false,
+      isIdentity3x2: true,
+      _isIdentityDirty: true,
+      _isIdentity3x2Dirty: true,
+      _m: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+    }
+    _updateIdentityStatus(newMatrix, false)
+    return newMatrix
   }
 
   // Statics
@@ -58,12 +85,12 @@ export class Matrix {
    * @param offset - defines an offset in the source array
    * @returns a new Matrix set from the starting index of the given array
    */
-  public static FromArray(
+  function fromArray(
     array: ArrayLike<number>,
     offset: number = 0
-  ): Matrix {
-    const result = new Matrix()
-    Matrix.FromArrayToRef(array, offset, result)
+  ): MutableMatrix {
+    const result = create()
+    fromArrayToRef(array, offset, result)
     return result
   }
 
@@ -73,15 +100,15 @@ export class Matrix {
    * @param offset - defines an offset in the source array
    * @param result - defines the target matrix
    */
-  public static FromArrayToRef(
+  export function fromArrayToRef(
     array: ArrayLike<number>,
     offset: number,
-    result: Matrix
+    result: MutableMatrix
   ) {
     for (let index = 0; index < 16; index++) {
       result._m[index] = array[index + offset]
     }
-    result._markAsUpdated()
+    _markAsUpdated(result)
   }
 
   /**
@@ -91,16 +118,16 @@ export class Matrix {
    * @param scale - defines the scaling factor
    * @param result - defines the target matrix
    */
-  public static FromFloatArrayToRefScaled(
+  export function fromFloatArrayToRefScaled(
     array: FloatArray,
     offset: number,
     scale: number,
-    result: Matrix
+    result: MutableMatrix
   ) {
     for (let index = 0; index < 16; index++) {
       result._m[index] = array[index + offset] * scale
     }
-    result._markAsUpdated()
+    _markAsUpdated(result)
   }
 
   /**
@@ -123,7 +150,7 @@ export class Matrix {
    * @param initialM44 - defines 4th value of 4th row
    * @param result - defines the target matrix
    */
-  public static FromValuesToRef(
+  export function fromValuesToRef(
     initialM11: number,
     initialM12: number,
     initialM13: number,
@@ -140,7 +167,7 @@ export class Matrix {
     initialM42: number,
     initialM43: number,
     initialM44: number,
-    result: Matrix
+    result: MutableMatrix
   ): void {
     const m = result._m
     m[0] = initialM11
@@ -160,7 +187,7 @@ export class Matrix {
     m[14] = initialM43
     m[15] = initialM44
 
-    result._markAsUpdated()
+    _markAsUpdated(result)
   }
 
   /**
@@ -183,7 +210,7 @@ export class Matrix {
    * @param initialM44 - defines 4th value of 4th row
    * @returns the new matrix
    */
-  public static FromValues(
+  export function fromValues(
     initialM11: number,
     initialM12: number,
     initialM13: number,
@@ -200,8 +227,8 @@ export class Matrix {
     initialM42: number,
     initialM43: number,
     initialM44: number
-  ): Matrix {
-    const result = new Matrix()
+  ): MutableMatrix {
+    const result = create()
     const m = result._m
     m[0] = initialM11
     m[1] = initialM12
@@ -219,7 +246,7 @@ export class Matrix {
     m[13] = initialM42
     m[14] = initialM43
     m[15] = initialM44
-    result._markAsUpdated()
+    _markAsUpdated(result)
     return result
   }
 
@@ -230,13 +257,13 @@ export class Matrix {
    * @param translation - defines the translation vector3
    * @returns a new matrix
    */
-  public static Compose(
-    scale: Vector3,
-    rotation: Quaternion,
-    translation: Vector3
-  ): Matrix {
-    const result = new Matrix()
-    Matrix.ComposeToRef(scale, rotation, translation, result)
+  export function compose(
+    scale: Vector3.ReadonlyVector3,
+    rotation: Quaternion.ReadonlyQuaternion,
+    translation: Vector3.ReadonlyVector3
+  ): MutableMatrix {
+    const result = create()
+    composeToRef(scale, rotation, translation, result)
     return result
   }
 
@@ -247,25 +274,25 @@ export class Matrix {
    * @param translation - defines the translation vector3
    * @param result - defines the target matrix
    */
-  public static ComposeToRef(
-    scale: Vector3,
-    rotation: Quaternion,
-    translation: Vector3,
-    result: Matrix
+  export function composeToRef(
+    scale: Vector3.ReadonlyVector3,
+    rotation: Quaternion.ReadonlyQuaternion,
+    translation: Vector3.ReadonlyVector3,
+    result: MutableMatrix
   ): void {
-    Matrix.ScalingToRef(scale.x, scale.y, scale.z, MathTmp.Matrix[1])
-    rotation.toRotationMatrix(MathTmp.Matrix[0])
-    MathTmp.Matrix[1].multiplyToRef(MathTmp.Matrix[0], result)
-
-    result.setTranslation(translation)
+    const tmpMatrix: MutableMatrix[] = [create(), create(), create()]
+    scalingToRef(scale.x, scale.y, scale.z, tmpMatrix[1])
+    fromQuaternionToRef(rotation, tmpMatrix[0])
+    multiplyToRef(tmpMatrix[1], tmpMatrix[0], result)
+    setTranslation(result, translation)
   }
 
   /**
    * Creates a new identity matrix
    * @returns a new identity matrix
    */
-  public static Identity(): Matrix {
-    const identity = Matrix.FromValues(
+  export function Identity(): MutableMatrix {
+    const identity = fromValues(
       1.0,
       0.0,
       0.0,
@@ -283,7 +310,7 @@ export class Matrix {
       0.0,
       1.0
     )
-    identity._updateIdentityStatus(true)
+    _updateIdentityStatus(identity, true)
     return identity
   }
 
@@ -291,8 +318,8 @@ export class Matrix {
    * Creates a new identity matrix and stores the result in a given matrix
    * @param result - defines the target matrix
    */
-  public static IdentityToRef(result: Matrix): void {
-    Matrix.FromValuesToRef(
+  export function IdentityToRef(result: MutableMatrix): void {
+    fromValuesToRef(
       1.0,
       0.0,
       0.0,
@@ -311,15 +338,15 @@ export class Matrix {
       1.0,
       result
     )
-    result._updateIdentityStatus(true)
+    _updateIdentityStatus(result, true)
   }
 
   /**
    * Creates a new zero matrix
    * @returns a new zero matrix
    */
-  public static Zero(): Matrix {
-    const zero = Matrix.FromValues(
+  export function Zero(): MutableMatrix {
+    const zero = fromValues(
       0.0,
       0.0,
       0.0,
@@ -337,7 +364,7 @@ export class Matrix {
       0.0,
       0.0
     )
-    zero._updateIdentityStatus(false)
+    _updateIdentityStatus(zero, false)
     return zero
   }
 
@@ -346,20 +373,9 @@ export class Matrix {
    * @param angle - defines the angle (in radians) to use
    * @returns the new matrix
    */
-  public static RotationX(angle: number): Matrix {
-    const result = new Matrix()
-    Matrix.RotationXToRef(angle, result)
-    return result
-  }
-
-  /**
-   * Creates a new matrix as the invert of a given matrix
-   * @param source - defines the source matrix
-   * @returns the new matrix
-   */
-  public static Invert(source: Matrix): Matrix {
-    const result = new Matrix()
-    source.invertToRef(result)
+  export function RotationX(angle: number): MutableMatrix {
+    const result = create()
+    rotationXToRef(angle, result)
     return result
   }
 
@@ -368,10 +384,10 @@ export class Matrix {
    * @param angle - defines the angle (in radians) to use
    * @param result - defines the target matrix
    */
-  public static RotationXToRef(angle: number, result: Matrix): void {
+  export function rotationXToRef(angle: number, result: MutableMatrix): void {
     const s = Math.sin(angle)
     const c = Math.cos(angle)
-    Matrix.FromValuesToRef(
+    fromValuesToRef(
       1.0,
       0.0,
       0.0,
@@ -391,7 +407,7 @@ export class Matrix {
       result
     )
 
-    result._updateIdentityStatus(c === 1 && s === 0)
+    _updateIdentityStatus(result, c === 1 && s === 0)
   }
 
   /**
@@ -399,9 +415,9 @@ export class Matrix {
    * @param angle - defines the angle (in radians) to use
    * @returns the new matrix
    */
-  public static RotationY(angle: number): Matrix {
-    const result = new Matrix()
-    Matrix.RotationYToRef(angle, result)
+  export function rotationY(angle: number): MutableMatrix {
+    const result = create()
+    rotationYToRef(angle, result)
     return result
   }
 
@@ -410,10 +426,10 @@ export class Matrix {
    * @param angle - defines the angle (in radians) to use
    * @param result - defines the target matrix
    */
-  public static RotationYToRef(angle: number, result: Matrix): void {
+  export function rotationYToRef(angle: number, result: MutableMatrix): void {
     const s = Math.sin(angle)
     const c = Math.cos(angle)
-    Matrix.FromValuesToRef(
+    fromValuesToRef(
       c,
       0.0,
       -s,
@@ -433,7 +449,7 @@ export class Matrix {
       result
     )
 
-    result._updateIdentityStatus(c === 1 && s === 0)
+    _updateIdentityStatus(result, c === 1 && s === 0)
   }
 
   /**
@@ -441,9 +457,9 @@ export class Matrix {
    * @param angle - defines the angle (in radians) to use
    * @returns the new matrix
    */
-  public static RotationZ(angle: number): Matrix {
-    const result = new Matrix()
-    Matrix.RotationZToRef(angle, result)
+  export function rotationZ(angle: number): MutableMatrix {
+    const result = create()
+    rotationZToRef(angle, result)
     return result
   }
 
@@ -452,10 +468,10 @@ export class Matrix {
    * @param angle - defines the angle (in radians) to use
    * @param result - defines the target matrix
    */
-  public static RotationZToRef(angle: number, result: Matrix): void {
+  export function rotationZToRef(angle: number, result: MutableMatrix): void {
     const s = Math.sin(angle)
     const c = Math.cos(angle)
-    Matrix.FromValuesToRef(
+    fromValuesToRef(
       c,
       s,
       0.0,
@@ -475,7 +491,7 @@ export class Matrix {
       result
     )
 
-    result._updateIdentityStatus(c === 1 && s === 0)
+    _updateIdentityStatus(result, c === 1 && s === 0)
   }
 
   /**
@@ -484,9 +500,12 @@ export class Matrix {
    * @param angle - defines the angle (in radians) to use
    * @returns the new matrix
    */
-  public static RotationAxis(axis: Vector3, angle: number): Matrix {
-    const result = new Matrix()
-    Matrix.RotationAxisToRef(axis, angle, result)
+  export function rotationAxis(
+    axis: Vector3.ReadonlyVector3,
+    angle: number
+  ): MutableMatrix {
+    const result = create()
+    rotationAxisToRef(axis, angle, result)
     return result
   }
 
@@ -496,16 +515,16 @@ export class Matrix {
    * @param angle - defines the angle (in radians) to use
    * @param result - defines the target matrix
    */
-  public static RotationAxisToRef(
-    axis: Vector3,
+  export function rotationAxisToRef(
+    _axis: Vector3.ReadonlyVector3,
     angle: number,
-    result: Matrix
+    result: MutableMatrix
   ): void {
     const s = Math.sin(-angle)
     const c = Math.cos(-angle)
     const c1 = 1 - c
 
-    axis.normalize()
+    const axis = Vector3.normalize(_axis)
     const m = result._m
     m[0] = axis.x * axis.x * c1 + c
     m[1] = axis.x * axis.y * c1 - axis.z * s
@@ -527,7 +546,7 @@ export class Matrix {
     m[14] = 0.0
     m[15] = 1.0
 
-    result._markAsUpdated()
+    _markAsUpdated(result)
   }
 
   /**
@@ -537,13 +556,13 @@ export class Matrix {
    * @param roll - defines the roll angle in radians (X axis)
    * @returns the new rotation matrix
    */
-  public static RotationYawPitchRoll(
+  export function rotationYawPitchRoll(
     yaw: number,
     pitch: number,
     roll: number
-  ): Matrix {
-    const result = new Matrix()
-    Matrix.RotationYawPitchRollToRef(yaw, pitch, roll, result)
+  ): MutableMatrix {
+    const result = create()
+    rotationYawPitchRollToRef(yaw, pitch, roll, result)
     return result
   }
 
@@ -554,19 +573,15 @@ export class Matrix {
    * @param roll - defines the roll angle in radians (X axis)
    * @param result - defines the target matrix
    */
-  public static RotationYawPitchRollToRef(
+  export function rotationYawPitchRollToRef(
     yaw: number,
     pitch: number,
     roll: number,
-    result: Matrix
+    result: MutableMatrix
   ): void {
-    Quaternion.RotationYawPitchRollToRef(
-      yaw,
-      pitch,
-      roll,
-      MathTmp.Quaternion[0]
-    )
-    MathTmp.Quaternion[0].toRotationMatrix(result)
+    const quaternionResult = Quaternion.Zero()
+    Quaternion.rotationYawPitchRollToRef(yaw, pitch, roll, quaternionResult)
+    fromQuaternionToRef(quaternionResult, result)
   }
 
   /**
@@ -576,9 +591,9 @@ export class Matrix {
    * @param z - defines the scale factor on Z axis
    * @returns the new matrix
    */
-  public static Scaling(x: number, y: number, z: number): Matrix {
-    const result = new Matrix()
-    Matrix.ScalingToRef(x, y, z, result)
+  export function scaling(x: number, y: number, z: number): MutableMatrix {
+    const result = create()
+    scalingToRef(x, y, z, result)
     return result
   }
 
@@ -589,13 +604,13 @@ export class Matrix {
    * @param z - defines the scale factor on Z axis
    * @param result - defines the target matrix
    */
-  public static ScalingToRef(
+  export function scalingToRef(
     x: number,
     y: number,
     z: number,
-    result: Matrix
+    result: MutableMatrix
   ): void {
-    Matrix.FromValuesToRef(
+    fromValuesToRef(
       x,
       0.0,
       0.0,
@@ -615,7 +630,7 @@ export class Matrix {
       result
     )
 
-    result._updateIdentityStatus(x === 1 && y === 1 && z === 1)
+    _updateIdentityStatus(result, x === 1 && y === 1 && z === 1)
   }
 
   /**
@@ -625,9 +640,9 @@ export class Matrix {
    * @param z - defines the translationon Z axis
    * @returns the new matrix
    */
-  public static Translation(x: number, y: number, z: number): Matrix {
-    const result = new Matrix()
-    Matrix.TranslationToRef(x, y, z, result)
+  export function translation(x: number, y: number, z: number): MutableMatrix {
+    const result = create()
+    translationToRef(x, y, z, result)
     return result
   }
 
@@ -638,13 +653,13 @@ export class Matrix {
    * @param z - defines the translationon Z axis
    * @param result - defines the target matrix
    */
-  public static TranslationToRef(
+  export function translationToRef(
     x: number,
     y: number,
     z: number,
-    result: Matrix
+    result: MutableMatrix
   ): void {
-    Matrix.FromValuesToRef(
+    fromValuesToRef(
       1.0,
       0.0,
       0.0,
@@ -663,7 +678,7 @@ export class Matrix {
       1.0,
       result
     )
-    result._updateIdentityStatus(x === 0 && y === 0 && z === 0)
+    _updateIdentityStatus(result, x === 0 && y === 0 && z === 0)
   }
 
   /**
@@ -673,13 +688,13 @@ export class Matrix {
    * @param gradient - defines the gradient factor
    * @returns the new matrix
    */
-  public static Lerp(
-    startValue: Matrix,
-    endValue: Matrix,
+  export function lerp(
+    startValue: ReadonlyMatrix,
+    endValue: ReadonlyMatrix,
     gradient: number
-  ): Matrix {
-    const result = new Matrix()
-    Matrix.LerpToRef(startValue, endValue, gradient, result)
+  ): MutableMatrix {
+    const result = create()
+    lerpToRef(startValue, endValue, gradient, result)
     return result
   }
 
@@ -690,17 +705,17 @@ export class Matrix {
    * @param gradient - defines the gradient factor
    * @param result - defines the Matrix object where to store data
    */
-  public static LerpToRef(
-    startValue: Matrix,
-    endValue: Matrix,
+  export function lerpToRef(
+    startValue: ReadonlyMatrix,
+    endValue: ReadonlyMatrix,
     gradient: number,
-    result: Matrix
+    result: MutableMatrix
   ): void {
     for (let index = 0; index < 16; index++) {
       result._m[index] =
         startValue._m[index] * (1.0 - gradient) + endValue._m[index] * gradient
     }
-    result._markAsUpdated()
+    _markAsUpdated(result)
   }
 
   /**
@@ -713,13 +728,13 @@ export class Matrix {
    * @param gradient - defines the gradient between the two matrices
    * @returns the new matrix
    */
-  public static DecomposeLerp(
-    startValue: Matrix,
-    endValue: Matrix,
+  export function decomposeLerp(
+    startValue: ReadonlyMatrix,
+    endValue: ReadonlyMatrix,
     gradient: number
-  ): Matrix {
-    const result = new Matrix()
-    Matrix.DecomposeLerpToRef(startValue, endValue, gradient, result)
+  ): MutableMatrix {
+    const result = create()
+    decomposeLerpToRef(startValue, endValue, gradient, result)
     return result
   }
 
@@ -733,94 +748,98 @@ export class Matrix {
    * @param gradient - defines the gradient between the two matrices
    * @param result - defines the target matrix
    */
-  public static DecomposeLerpToRef(
-    startValue: Matrix,
-    endValue: Matrix,
+  export function decomposeLerpToRef(
+    startValue: ReadonlyMatrix,
+    endValue: ReadonlyMatrix,
     gradient: number,
-    result: Matrix
+    result: MutableMatrix
   ) {
-    const startScale = MathTmp.Vector3[0]
-    const startRotation = MathTmp.Quaternion[0]
-    const startTranslation = MathTmp.Vector3[1]
-    startValue.decompose(startScale, startRotation, startTranslation)
+    const startScale = Vector3.Zero()
+    const startRotation = Quaternion.Zero()
+    const startTranslation = Vector3.Zero()
+    decompose(startValue, startScale, startRotation, startTranslation)
 
-    const endScale = MathTmp.Vector3[2]
-    const endRotation = MathTmp.Quaternion[1]
-    const endTranslation = MathTmp.Vector3[3]
-    endValue.decompose(endScale, endRotation, endTranslation)
+    const endScale = Vector3.Zero()
+    const endRotation = Quaternion.Zero()
+    const endTranslation = Vector3.Zero()
+    decompose(endValue, endScale, endRotation, endTranslation)
 
-    const resultScale = MathTmp.Vector3[4]
-    Vector3.LerpToRef(startScale, endScale, gradient, resultScale)
-    const resultRotation = MathTmp.Quaternion[2]
-    Quaternion.SlerpToRef(startRotation, endRotation, gradient, resultRotation)
+    const resultScale = Vector3.Zero()
+    Vector3.lerpToRef(startScale, endScale, gradient, resultScale)
+    const resultRotation = Quaternion.Zero()
+    Quaternion.slerpToRef(startRotation, endRotation, gradient, resultRotation)
 
-    const resultTranslation = MathTmp.Vector3[5]
-    Vector3.LerpToRef(
+    const resultTranslation = Vector3.Zero()
+    Vector3.lerpToRef(
       startTranslation,
       endTranslation,
       gradient,
       resultTranslation
     )
 
-    Matrix.ComposeToRef(resultScale, resultRotation, resultTranslation, result)
+    composeToRef(resultScale, resultRotation, resultTranslation, result)
   }
 
   /**
    * Gets a new rotation matrix used to rotate an entity so as it looks at the target vector3, from the eye vector3 position, the up vector3 being oriented like "up"
-   * This function works in left handed mode
+   * self function works in left handed mode
    * @param eye - defines the final position of the entity
    * @param target - defines where the entity should look at
    * @param up - defines the up vector for the entity
    * @returns the new matrix
    */
-  public static LookAtLH(eye: Vector3, target: Vector3, up: Vector3): Matrix {
-    const result = new Matrix()
-    Matrix.LookAtLHToRef(eye, target, up, result)
+  export function LookAtLH(
+    eye: Vector3.ReadonlyVector3,
+    target: Vector3.ReadonlyVector3,
+    up: Vector3.ReadonlyVector3
+  ): MutableMatrix {
+    const result = create()
+    lookAtLHToRef(eye, target, up, result)
     return result
   }
 
   /**
    * Sets the given "result" Matrix to a rotation matrix used to rotate an entity so that it looks at the target vector3, from the eye vector3 position, the up vector3 being oriented like "up".
-   * This function works in left handed mode
+   * self function works in left handed mode
    * @param eye - defines the final position of the entity
    * @param target - defines where the entity should look at
    * @param up - defines the up vector for the entity
    * @param result - defines the target matrix
    */
-  public static LookAtLHToRef(
-    eye: Vector3,
-    target: Vector3,
-    up: Vector3,
-    result: Matrix
+  export function lookAtLHToRef(
+    eye: Vector3.ReadonlyVector3,
+    target: Vector3.ReadonlyVector3,
+    up: Vector3.ReadonlyVector3,
+    result: MutableMatrix
   ): void {
-    const xAxis = MathTmp.Vector3[0]
-    const yAxis = MathTmp.Vector3[1]
-    const zAxis = MathTmp.Vector3[2]
+    const xAxis = Vector3.Zero()
+    const yAxis = Vector3.Zero()
+    const zAxis = Vector3.Zero()
 
     // Z axis
-    target.subtractToRef(eye, zAxis)
-    zAxis.normalize()
+    Vector3.subtractToRef(target, eye, zAxis)
+    Vector3.normalizeToRef(zAxis, zAxis)
 
     // X axis
-    Vector3.CrossToRef(up, zAxis, xAxis)
+    Vector3.crossToRef(up, zAxis, xAxis)
 
-    const xSquareLength = xAxis.lengthSquared()
+    const xSquareLength = Vector3.lengthSquared(xAxis)
     if (xSquareLength === 0) {
       xAxis.x = 1.0
     } else {
-      xAxis.normalizeFromLength(Math.sqrt(xSquareLength))
+      Vector3.normalizeFromLengthToRef(xAxis, Math.sqrt(xSquareLength), xAxis)
     }
 
     // Y axis
-    Vector3.CrossToRef(zAxis, xAxis, yAxis)
-    yAxis.normalize()
+    Vector3.crossToRef(zAxis, xAxis, yAxis)
+    Vector3.normalizeToRef(yAxis, yAxis)
 
     // Eye angles
-    const ex = -Vector3.Dot(xAxis, eye)
-    const ey = -Vector3.Dot(yAxis, eye)
-    const ez = -Vector3.Dot(zAxis, eye)
+    const ex = -Vector3.dot(xAxis, eye)
+    const ey = -Vector3.dot(yAxis, eye)
+    const ez = -Vector3.dot(zAxis, eye)
 
-    Matrix.FromValuesToRef(
+    fromValuesToRef(
       xAxis.x,
       yAxis.x,
       zAxis.x,
@@ -843,60 +862,64 @@ export class Matrix {
 
   /**
    * Gets a new rotation matrix used to rotate an entity so as it looks at the target vector3, from the eye vector3 position, the up vector3 being oriented like "up"
-   * This function works in right handed mode
+   * self function works in right handed mode
    * @param eye - defines the final position of the entity
    * @param target - defines where the entity should look at
    * @param up - defines the up vector for the entity
    * @returns the new matrix
    */
-  public static LookAtRH(eye: Vector3, target: Vector3, up: Vector3): Matrix {
-    const result = new Matrix()
-    Matrix.LookAtRHToRef(eye, target, up, result)
+  export function lookAtRH(
+    eye: Vector3.ReadonlyVector3,
+    target: Vector3.ReadonlyVector3,
+    up: Vector3.ReadonlyVector3
+  ): MutableMatrix {
+    const result = create()
+    lookAtRHToRef(eye, target, up, result)
     return result
   }
 
   /**
    * Sets the given "result" Matrix to a rotation matrix used to rotate an entity so that it looks at the target vector3, from the eye vector3 position, the up vector3 being oriented like "up".
-   * This function works in right handed mode
+   * self function works in right handed mode
    * @param eye - defines the final position of the entity
    * @param target - defines where the entity should look at
    * @param up - defines the up vector for the entity
    * @param result - defines the target matrix
    */
-  public static LookAtRHToRef(
-    eye: Vector3,
-    target: Vector3,
-    up: Vector3,
-    result: Matrix
+  export function lookAtRHToRef(
+    eye: Vector3.ReadonlyVector3,
+    target: Vector3.ReadonlyVector3,
+    up: Vector3.ReadonlyVector3,
+    result: MutableMatrix
   ): void {
-    const xAxis = MathTmp.Vector3[0]
-    const yAxis = MathTmp.Vector3[1]
-    const zAxis = MathTmp.Vector3[2]
+    const xAxis = Vector3.Zero()
+    const yAxis = Vector3.Zero()
+    const zAxis = Vector3.Zero()
 
     // Z axis
-    eye.subtractToRef(target, zAxis)
-    zAxis.normalize()
+    Vector3.subtractToRef(eye, target, zAxis)
+    Vector3.normalizeToRef(zAxis, zAxis)
 
     // X axis
-    Vector3.CrossToRef(up, zAxis, xAxis)
+    Vector3.crossToRef(up, zAxis, xAxis)
 
-    const xSquareLength = xAxis.lengthSquared()
+    const xSquareLength = Vector3.lengthSquared(xAxis)
     if (xSquareLength === 0) {
       xAxis.x = 1.0
     } else {
-      xAxis.normalizeFromLength(Math.sqrt(xSquareLength))
+      Vector3.normalizeFromLengthToRef(xAxis, Math.sqrt(xSquareLength), xAxis)
     }
 
     // Y axis
-    Vector3.CrossToRef(zAxis, xAxis, yAxis)
-    yAxis.normalize()
+    Vector3.crossToRef(zAxis, xAxis, yAxis)
+    Vector3.normalizeToRef(yAxis, yAxis)
 
     // Eye angles
-    const ex = -Vector3.Dot(xAxis, eye)
-    const ey = -Vector3.Dot(yAxis, eye)
-    const ez = -Vector3.Dot(zAxis, eye)
+    const ex = -Vector3.dot(xAxis, eye)
+    const ey = -Vector3.dot(yAxis, eye)
+    const ez = -Vector3.dot(zAxis, eye)
 
-    Matrix.FromValuesToRef(
+    fromValuesToRef(
       xAxis.x,
       yAxis.x,
       zAxis.x,
@@ -925,14 +948,14 @@ export class Matrix {
    * @param zfar - defines the far clip plane
    * @returns a new matrix as a left-handed orthographic projection matrix
    */
-  public static OrthoLH(
+  export function orthoLH(
     width: number,
     height: number,
     znear: number,
     zfar: number
-  ): Matrix {
-    const matrix = new Matrix()
-    Matrix.OrthoLHToRef(width, height, znear, zfar, matrix)
+  ): MutableMatrix {
+    const matrix = create()
+    orthoLHToRef(width, height, znear, zfar, matrix)
     return matrix
   }
 
@@ -944,12 +967,12 @@ export class Matrix {
    * @param zfar - defines the far clip plane
    * @param result - defines the target matrix
    */
-  public static OrthoLHToRef(
+  export function orthoLHToRef(
     width: number,
     height: number,
     znear: number,
     zfar: number,
-    result: Matrix
+    result: MutableMatrix
   ): void {
     const n = znear
     const f = zfar
@@ -959,7 +982,7 @@ export class Matrix {
     const c = 2.0 / (f - n)
     const d = -(f + n) / (f - n)
 
-    Matrix.FromValuesToRef(
+    fromValuesToRef(
       a,
       0.0,
       0.0,
@@ -979,7 +1002,7 @@ export class Matrix {
       result
     )
 
-    result._updateIdentityStatus(a === 1 && b === 1 && c === 1 && d === 0)
+    _updateIdentityStatus(result, a === 1 && b === 1 && c === 1 && d === 0)
   }
 
   /**
@@ -992,16 +1015,16 @@ export class Matrix {
    * @param zfar - defines the far clip plane
    * @returns a new matrix as a left-handed orthographic projection matrix
    */
-  public static OrthoOffCenterLH(
+  export function OrthoOffCenterLH(
     left: number,
     right: number,
     bottom: number,
     top: number,
     znear: number,
     zfar: number
-  ): Matrix {
-    const matrix = new Matrix()
-    Matrix.OrthoOffCenterLHToRef(left, right, bottom, top, znear, zfar, matrix)
+  ): MutableMatrix {
+    const matrix = create()
+    orthoOffCenterLHToRef(left, right, bottom, top, znear, zfar, matrix)
     return matrix
   }
 
@@ -1015,14 +1038,14 @@ export class Matrix {
    * @param zfar - defines the far clip plane
    * @param result - defines the target matrix
    */
-  public static OrthoOffCenterLHToRef(
+  export function orthoOffCenterLHToRef(
     left: number,
     right: number,
     bottom: number,
     top: number,
     znear: number,
     zfar: number,
-    result: Matrix
+    result: MutableMatrix
   ): void {
     const n = znear
     const f = zfar
@@ -1034,7 +1057,7 @@ export class Matrix {
     const i0 = (left + right) / (left - right)
     const i1 = (top + bottom) / (bottom - top)
 
-    Matrix.FromValuesToRef(
+    fromValuesToRef(
       a,
       0.0,
       0.0,
@@ -1054,7 +1077,7 @@ export class Matrix {
       result
     )
 
-    result._markAsUpdated()
+    _markAsUpdated(result)
   }
 
   /**
@@ -1067,16 +1090,16 @@ export class Matrix {
    * @param zfar - defines the far clip plane
    * @returns a new matrix as a right-handed orthographic projection matrix
    */
-  public static OrthoOffCenterRH(
+  export function orthoOffCenterRH(
     left: number,
     right: number,
     bottom: number,
     top: number,
     znear: number,
     zfar: number
-  ): Matrix {
-    const matrix = new Matrix()
-    Matrix.OrthoOffCenterRHToRef(left, right, bottom, top, znear, zfar, matrix)
+  ): MutableMatrix {
+    const matrix = create()
+    orthoOffCenterRHToRef(left, right, bottom, top, znear, zfar, matrix)
     return matrix
   }
 
@@ -1090,16 +1113,16 @@ export class Matrix {
    * @param zfar - defines the far clip plane
    * @param result - defines the target matrix
    */
-  public static OrthoOffCenterRHToRef(
+  export function orthoOffCenterRHToRef(
     left: number,
     right: number,
     bottom: number,
     top: number,
     znear: number,
     zfar: number,
-    result: Matrix
+    result: MutableMatrix
   ): void {
-    Matrix.OrthoOffCenterLHToRef(left, right, bottom, top, znear, zfar, result)
+    orthoOffCenterLHToRef(left, right, bottom, top, znear, zfar, result)
     result._m[10] *= -1 // No need to call _markAsUpdated as previous function already called it and let _isIdentityDirty to true
   }
 
@@ -1111,13 +1134,13 @@ export class Matrix {
    * @param zfar - defines the far clip plane
    * @returns a new matrix as a left-handed perspective projection matrix
    */
-  public static PerspectiveLH(
+  export function perspectiveLH(
     width: number,
     height: number,
     znear: number,
     zfar: number
-  ): Matrix {
-    const matrix = new Matrix()
+  ): MutableMatrix {
+    const matrix = create()
 
     const n = znear
     const f = zfar
@@ -1127,7 +1150,7 @@ export class Matrix {
     const c = (f + n) / (f - n)
     const d = (-2.0 * f * n) / (f - n)
 
-    Matrix.FromValuesToRef(
+    fromValuesToRef(
       a,
       0.0,
       0.0,
@@ -1147,7 +1170,7 @@ export class Matrix {
       matrix
     )
 
-    matrix._updateIdentityStatus(false)
+    _updateIdentityStatus(matrix, false)
     return matrix
   }
 
@@ -1159,14 +1182,14 @@ export class Matrix {
    * @param zfar - defines the far clip plane
    * @returns a new matrix as a left-handed perspective projection matrix
    */
-  public static PerspectiveFovLH(
+  export function perspectiveFovLH(
     fov: number,
     aspect: number,
     znear: number,
     zfar: number
-  ): Matrix {
-    const matrix = new Matrix()
-    Matrix.PerspectiveFovLHToRef(fov, aspect, znear, zfar, matrix)
+  ): MutableMatrix {
+    const matrix = create()
+    perspectiveFovLHToRef(fov, aspect, znear, zfar, matrix)
     return matrix
   }
 
@@ -1179,12 +1202,12 @@ export class Matrix {
    * @param result - defines the target matrix
    * @param isVerticalFovFixed - defines it the fov is vertically fixed (default) or horizontally
    */
-  public static PerspectiveFovLHToRef(
+  export function perspectiveFovLHToRef(
     fov: number,
     aspect: number,
     znear: number,
     zfar: number,
-    result: Matrix,
+    result: MutableMatrix,
     isVerticalFovFixed = true
   ): void {
     const n = znear
@@ -1196,7 +1219,7 @@ export class Matrix {
     const c = (f + n) / (f - n)
     const d = (-2.0 * f * n) / (f - n)
 
-    Matrix.FromValuesToRef(
+    fromValuesToRef(
       a,
       0.0,
       0.0,
@@ -1215,7 +1238,7 @@ export class Matrix {
       0.0,
       result
     )
-    result._updateIdentityStatus(false)
+    _updateIdentityStatus(result, false)
   }
 
   /**
@@ -1226,14 +1249,14 @@ export class Matrix {
    * @param zfar - defines the far clip plane
    * @returns a new matrix as a right-handed perspective projection matrix
    */
-  public static PerspectiveFovRH(
+  export function PerspectiveFovRH(
     fov: number,
     aspect: number,
     znear: number,
     zfar: number
-  ): Matrix {
-    const matrix = new Matrix()
-    Matrix.PerspectiveFovRHToRef(fov, aspect, znear, zfar, matrix)
+  ): MutableMatrix {
+    const matrix = create()
+    perspectiveFovRHToRef(fov, aspect, znear, zfar, matrix)
     return matrix
   }
 
@@ -1246,15 +1269,15 @@ export class Matrix {
    * @param result - defines the target matrix
    * @param isVerticalFovFixed - defines it the fov is vertically fixed (default) or horizontally
    */
-  public static PerspectiveFovRHToRef(
+  export function perspectiveFovRHToRef(
     fov: number,
     aspect: number,
     znear: number,
     zfar: number,
-    result: Matrix,
+    result: MutableMatrix,
     isVerticalFovFixed = true
   ): void {
-    /* alternatively this could be expressed as:
+    /* alternatively self could be expressed as:
     //    m = PerspectiveFovLHToRef
     //    m[10] *= -1.0;
     //    m[11] *= -1.0;
@@ -1269,7 +1292,7 @@ export class Matrix {
     const c = -(f + n) / (f - n)
     const d = (-2 * f * n) / (f - n)
 
-    Matrix.FromValuesToRef(
+    fromValuesToRef(
       a,
       0.0,
       0.0,
@@ -1289,7 +1312,7 @@ export class Matrix {
       result
     )
 
-    result._updateIdentityStatus(false)
+    _updateIdentityStatus(result, false)
   }
 
   /**
@@ -1300,7 +1323,7 @@ export class Matrix {
    * @param result - defines the target matrix
    * @param rightHanded - defines if the matrix must be in right-handed mode (false by default)
    */
-  public static PerspectiveFovWebVRToRef(
+  export function perspectiveFovWebVRToRef(
     fov: {
       upDegrees: number
       downDegrees: number
@@ -1309,7 +1332,7 @@ export class Matrix {
     },
     znear: number,
     zfar: number,
-    result: Matrix,
+    result: MutableMatrix,
     rightHanded = false
   ): void {
     const rightHandedFactor = rightHanded ? -1 : 1
@@ -1332,7 +1355,7 @@ export class Matrix {
     m[12] = m[13] = m[15] = 0.0
     m[14] = -(2.0 * zfar * znear) / (zfar - znear)
 
-    result._markAsUpdated()
+    _markAsUpdated(result)
   }
 
   /**
@@ -1340,7 +1363,7 @@ export class Matrix {
    * @param matrix - defines the matrix to use
    * @returns a new FloatArray array with 4 elements : the 2x2 matrix extracted from the given matrix
    */
-  public static GetAsMatrix2x2(matrix: Matrix): FloatArray {
+  export function GetAsMatrix2x2(matrix: ReadonlyMatrix): FloatArray {
     return [matrix._m[0], matrix._m[1], matrix._m[4], matrix._m[5]]
   }
   /**
@@ -1348,7 +1371,7 @@ export class Matrix {
    * @param matrix - defines the matrix to use
    * @returns a new FloatArray array with 9 elements : the 3x3 matrix extracted from the given matrix
    */
-  public static GetAsMatrix3x3(matrix: Matrix): FloatArray {
+  export function GetAsMatrix3x3(matrix: ReadonlyMatrix): FloatArray {
     return [
       matrix._m[0],
       matrix._m[1],
@@ -1367,9 +1390,9 @@ export class Matrix {
    * @param matrix - defines the matrix to transpose
    * @returns the new matrix
    */
-  public static Transpose(matrix: Matrix): Matrix {
-    const result = new Matrix()
-    Matrix.TransposeToRef(matrix, result)
+  export function transpose(matrix: ReadonlyMatrix): MutableMatrix {
+    const result = create()
+    transposeToRef(matrix, result)
     return result
   }
 
@@ -1378,7 +1401,10 @@ export class Matrix {
    * @param matrix - defines the matrix to transpose
    * @param result - defines the target matrix
    */
-  public static TransposeToRef(matrix: Matrix, result: Matrix): void {
+  export function transposeToRef(
+    matrix: ReadonlyMatrix,
+    result: MutableMatrix
+  ): void {
     const rm = result._m
     const mm = matrix._m
     rm[0] = mm[0]
@@ -1401,7 +1427,7 @@ export class Matrix {
     rm[14] = mm[11]
     rm[15] = mm[15]
     // identity-ness does not change when transposing
-    result._updateIdentityStatus(matrix._isIdentity, matrix._isIdentityDirty)
+    _updateIdentityStatus(result, matrix.isIdentity, matrix._isIdentityDirty)
   }
 
   /**
@@ -1409,9 +1435,9 @@ export class Matrix {
    * @param plane - defines the reflection plane
    * @returns a new matrix
    */
-  public static Reflection(plane: Plane): Matrix {
-    const matrix = new Matrix()
-    Matrix.ReflectionToRef(plane, matrix)
+  export function reflection(plane: Plane.ReadonlyPlane): MutableMatrix {
+    const matrix = create()
+    reflectionToRef(plane, matrix)
     return matrix
   }
 
@@ -1420,15 +1446,18 @@ export class Matrix {
    * @param plane - defines the reflection plane
    * @param result - defines the target matrix
    */
-  public static ReflectionToRef(plane: Plane, result: Matrix): void {
-    plane.normalize()
+  export function reflectionToRef(
+    _plane: Plane.ReadonlyPlane,
+    result: MutableMatrix
+  ): void {
+    const plane: Plane.ReadonlyPlane = Plane.normalize(_plane)
     const x = plane.normal.x
     const y = plane.normal.y
     const z = plane.normal.z
     const temp = -2 * x
     const temp2 = -2 * y
     const temp3 = -2 * z
-    Matrix.FromValuesToRef(
+    fromValuesToRef(
       temp * x + 1,
       temp2 * x,
       temp3 * x,
@@ -1456,13 +1485,13 @@ export class Matrix {
    * @param zaxis - defines the value of the 3rd axis
    * @param result - defines the target matrix
    */
-  public static FromXYZAxesToRef(
-    xaxis: Vector3,
-    yaxis: Vector3,
-    zaxis: Vector3,
-    result: Matrix
+  export function fromXYZAxesToRef(
+    xaxis: Vector3.ReadonlyVector3,
+    yaxis: Vector3.ReadonlyVector3,
+    zaxis: Vector3.ReadonlyVector3,
+    result: MutableMatrix
   ) {
-    Matrix.FromValuesToRef(
+    fromValuesToRef(
       xaxis.x,
       xaxis.y,
       xaxis.z,
@@ -1488,7 +1517,10 @@ export class Matrix {
    * @param quat - defines the quaternion to use
    * @param result - defines the target matrix
    */
-  public static FromQuaternionToRef(quat: Quaternion, result: Matrix) {
+  export function fromQuaternionToRef(
+    quat: Quaternion.ReadonlyQuaternion,
+    result: MutableMatrix
+  ) {
     const xx = quat.x * quat.x
     const yy = quat.y * quat.y
     const zz = quat.z * quat.z
@@ -1519,16 +1551,16 @@ export class Matrix {
     result._m[14] = 0.0
     result._m[15] = 1.0
 
-    result._markAsUpdated()
+    _markAsUpdated(result)
   }
 
   /** @internal */
-  public _markAsUpdated() {
-    this.updateFlag = Matrix._updateFlagSeed++
-    this._isIdentity = false
-    this._isIdentity3x2 = false
-    this._isIdentityDirty = true
-    this._isIdentity3x2Dirty = true
+  function _markAsUpdated(self: MutableMatrix) {
+    self.updateFlag = _updateFlagSeed++
+    self.isIdentity = false
+    self.isIdentity3x2 = false
+    self._isIdentityDirty = true
+    self._isIdentity3x2Dirty = true
   }
 
   // Properties
@@ -1537,11 +1569,11 @@ export class Matrix {
    * Check if the current matrix is identity
    * @returns true is the matrix is the identity matrix
    */
-  public isIdentity(): boolean {
-    if (this._isIdentityDirty) {
-      this._isIdentityDirty = false
-      const m = this._m
-      this._isIdentity =
+  export function isIdentityUpdate(self: MutableMatrix): boolean {
+    if (self._isIdentityDirty) {
+      self._isIdentityDirty = false
+      const m = self._m
+      self.isIdentity =
         m[0] === 1.0 &&
         m[1] === 0.0 &&
         m[2] === 0.0 &&
@@ -1560,52 +1592,52 @@ export class Matrix {
         m[15] === 1.0
     }
 
-    return this._isIdentity
+    return self.isIdentity
   }
 
   /**
    * Check if the current matrix is identity as a texture matrix (3x2 store in 4x4)
    * @returns true is the matrix is the identity matrix
    */
-  public isIdentityAs3x2(): boolean {
-    if (this._isIdentity3x2Dirty) {
-      this._isIdentity3x2Dirty = false
-      if (this._m[0] !== 1.0 || this._m[5] !== 1.0 || this._m[15] !== 1.0) {
-        this._isIdentity3x2 = false
+  export function isIdentityAs3x2Update(self: MutableMatrix): boolean {
+    if (self._isIdentity3x2Dirty) {
+      self._isIdentity3x2Dirty = false
+      if (self._m[0] !== 1.0 || self._m[5] !== 1.0 || self._m[15] !== 1.0) {
+        self.isIdentity3x2 = false
       } else if (
-        this._m[1] !== 0.0 ||
-        this._m[2] !== 0.0 ||
-        this._m[3] !== 0.0 ||
-        this._m[4] !== 0.0 ||
-        this._m[6] !== 0.0 ||
-        this._m[7] !== 0.0 ||
-        this._m[8] !== 0.0 ||
-        this._m[9] !== 0.0 ||
-        this._m[10] !== 0.0 ||
-        this._m[11] !== 0.0 ||
-        this._m[12] !== 0.0 ||
-        this._m[13] !== 0.0 ||
-        this._m[14] !== 0.0
+        self._m[1] !== 0.0 ||
+        self._m[2] !== 0.0 ||
+        self._m[3] !== 0.0 ||
+        self._m[4] !== 0.0 ||
+        self._m[6] !== 0.0 ||
+        self._m[7] !== 0.0 ||
+        self._m[8] !== 0.0 ||
+        self._m[9] !== 0.0 ||
+        self._m[10] !== 0.0 ||
+        self._m[11] !== 0.0 ||
+        self._m[12] !== 0.0 ||
+        self._m[13] !== 0.0 ||
+        self._m[14] !== 0.0
       ) {
-        this._isIdentity3x2 = false
+        self.isIdentity3x2 = false
       } else {
-        this._isIdentity3x2 = true
+        self.isIdentity3x2 = true
       }
     }
 
-    return this._isIdentity3x2
+    return self.isIdentity3x2
   }
 
   /**
    * Gets the determinant of the matrix
    * @returns the matrix determinant
    */
-  public determinant(): number {
-    if (this._isIdentity === true) {
+  export function determinant(self: ReadonlyMatrix): number {
+    if (self.isIdentity === true) {
       return 1
     }
 
-    const m = this._m
+    const m = self._m
     // tslint:disable-next-line:one-variable-per-declaration
     const m00 = m[0],
       m01 = m[1],
@@ -1659,31 +1691,24 @@ export class Matrix {
    * Returns the matrix as a FloatArray
    * @returns the matrix underlying array
    */
-  public toArray(): Readonly<FloatArray> {
-    return this._m
+  export function toArray(self: ReadonlyMatrix): Readonly<FloatArray> {
+    return self._m
   }
+
   /**
    * Returns the matrix as a FloatArray
    * @returns the matrix underlying array.
    */
-  public asArray(): Readonly<FloatArray> {
-    return this._m
+  export function asArray(self: ReadonlyMatrix): Readonly<FloatArray> {
+    return self._m
   }
 
-  /**
-   * Inverts the current matrix in place
-   * @returns the current inverted matrix
-   */
-  public invert(): Matrix {
-    this.invertToRef(this)
-    return this
-  }
   /**
    * Sets all the matrix elements to zero
    * @returns the current matrix
    */
-  public reset(): Matrix {
-    Matrix.FromValuesToRef(
+  export function reset(self: MutableMatrix): void {
+    fromValuesToRef(
       0.0,
       0.0,
       0.0,
@@ -1700,10 +1725,9 @@ export class Matrix {
       0.0,
       0.0,
       0.0,
-      this
+      self
     )
-    this._updateIdentityStatus(false)
-    return this
+    _updateIdentityStatus(self, false)
   }
 
   /**
@@ -1711,9 +1735,12 @@ export class Matrix {
    * @param other - defines the matrix to add
    * @returns a new matrix as the addition of the current matrix and the given one
    */
-  public add(other: Matrix): Matrix {
-    const result = new Matrix()
-    this.addToRef(other, result)
+  export function add(
+    self: ReadonlyMatrix,
+    other: ReadonlyMatrix
+  ): MutableMatrix {
+    const result = create()
+    addToRef(self, other, result)
     return result
   }
 
@@ -1723,12 +1750,15 @@ export class Matrix {
    * @param result - defines the target matrix
    * @returns the current matrix
    */
-  public addToRef(other: Matrix, result: Matrix): Matrix {
+  export function addToRef(
+    self: ReadonlyMatrix,
+    other: ReadonlyMatrix,
+    result: MutableMatrix
+  ): void {
     for (let index = 0; index < 16; index++) {
-      result._m[index] = this._m[index] + other._m[index]
+      result._m[index] = self._m[index] + other._m[index]
     }
-    result._markAsUpdated()
-    return this
+    _markAsUpdated(result)
   }
 
   /**
@@ -1736,12 +1766,21 @@ export class Matrix {
    * @param other - defines the second operand
    * @returns the current updated matrix
    */
-  public addToSelf(other: Matrix): Matrix {
+  export function addToSelf(self: MutableMatrix, other: ReadonlyMatrix): void {
     for (let index = 0; index < 16; index++) {
-      this._m[index] += other._m[index]
+      self._m[index] += other._m[index]
     }
-    this._markAsUpdated()
-    return this
+    _markAsUpdated(self)
+  }
+  /**
+   * Creates a new matrix as the invert of a given matrix
+   * @param source - defines the source matrix
+   * @returns the new matrix
+   */
+  export function invert(source: ReadonlyMatrix): MutableMatrix {
+    const result = create()
+    invertToRef(source, result)
+    return result
   }
 
   /**
@@ -1749,14 +1788,17 @@ export class Matrix {
    * @param other - defines the target matrix
    * @returns the unmodified current matrix
    */
-  public invertToRef(other: Matrix): Matrix {
-    if (this._isIdentity === true) {
-      Matrix.IdentityToRef(other)
-      return this
+  export function invertToRef(
+    source: ReadonlyMatrix,
+    result: MutableMatrix
+  ): void {
+    if (source.isIdentity === true) {
+      copy(source, result)
+      return
     }
 
     // the inverse of a Matrix is the transpose of cofactor matrix divided by the determinant
-    const m = this._m
+    const m = source._m
     // tslint:disable:one-variable-per-declaration
     const m00 = m[0],
       m01 = m[1],
@@ -1793,9 +1835,8 @@ export class Matrix {
       m00 * cofact_00 + m01 * cofact_01 + m02 * cofact_02 + m03 * cofact_03
 
     if (det === 0) {
-      // not invertible
-      other.copyFrom(this)
-      return this
+      copy(source, result)
+      return
     }
 
     const detInv = 1 / det
@@ -1827,7 +1868,7 @@ export class Matrix {
     const cofact_32 = -(m00 * det_11_23 - m01 * det_10_23 + m03 * det_10_21)
     const cofact_33 = +(m00 * det_11_22 - m01 * det_10_22 + m02 * det_10_21)
 
-    Matrix.FromValuesToRef(
+    fromValuesToRef(
       cofact_00 * detInv,
       cofact_10 * detInv,
       cofact_20 * detInv,
@@ -1844,11 +1885,9 @@ export class Matrix {
       cofact_13 * detInv,
       cofact_23 * detInv,
       cofact_33 * detInv,
-      other
+      result
     )
     // tslint:enable:variable-name
-
-    return this
   }
 
   /**
@@ -1857,10 +1896,13 @@ export class Matrix {
    * @param value - the value to be added
    * @returns the current updated matrix
    */
-  public addAtIndex(index: number, value: number): Matrix {
-    this._m[index] += value
-    this._markAsUpdated()
-    return this
+  export function addAtIndex(
+    self: MutableMatrix,
+    index: number,
+    value: number
+  ): void {
+    self._m[index] += value
+    _markAsUpdated(self)
   }
 
   /**
@@ -1869,10 +1911,14 @@ export class Matrix {
    * @param value - the value to be added
    * @returns the current updated matrix
    */
-  public multiplyAtIndex(index: number, value: number): Matrix {
-    this._m[index] *= value
-    this._markAsUpdated()
-    return this
+  export function multiplyAtIndex(
+    self: MutableMatrix,
+    index: number,
+    value: number
+  ): MutableMatrix {
+    self._m[index] *= value
+    _markAsUpdated(self)
+    return self
   }
 
   /**
@@ -1882,12 +1928,16 @@ export class Matrix {
    * @param z - defines the 3rd component of the translation
    * @returns the current updated matrix
    */
-  public setTranslationFromFloats(x: number, y: number, z: number): Matrix {
-    this._m[12] = x
-    this._m[13] = y
-    this._m[14] = z
-    this._markAsUpdated()
-    return this
+  export function setTranslationFromFloats(
+    self: MutableMatrix,
+    x: number,
+    y: number,
+    z: number
+  ): void {
+    self._m[12] = x
+    self._m[13] = y
+    self._m[14] = z
+    _markAsUpdated(self)
   }
 
   /**
@@ -1895,16 +1945,19 @@ export class Matrix {
    * @param vector3 - defines the translation to insert
    * @returns the current updated matrix
    */
-  public setTranslation(vector3: Vector3): Matrix {
-    return this.setTranslationFromFloats(vector3.x, vector3.y, vector3.z)
+  export function setTranslation(
+    self: MutableMatrix,
+    vector3: Vector3.ReadonlyVector3
+  ): void {
+    setTranslationFromFloats(self, vector3.x, vector3.y, vector3.z)
   }
 
   /**
    * Gets the translation value of the current matrix
    * @returns a new Vector3 as the extracted translation from the matrix
    */
-  public getTranslation(): Vector3 {
-    return new Vector3(this._m[12], this._m[13], this._m[14])
+  export function getTranslation(self: MutableMatrix): Vector3.MutableVector3 {
+    return Vector3.create(self._m[12], self._m[13], self._m[14])
   }
 
   /**
@@ -1912,20 +1965,22 @@ export class Matrix {
    * @param result - defines the Vector3 where to store the translation
    * @returns the current matrix
    */
-  public getTranslationToRef(result: Vector3): Matrix {
-    result.x = this._m[12]
-    result.y = this._m[13]
-    result.z = this._m[14]
-    return this
+  export function getTranslationToRef(
+    self: MutableMatrix,
+    result: Vector3.MutableVector3
+  ) {
+    result.x = self._m[12]
+    result.y = self._m[13]
+    result.z = self._m[14]
   }
 
   /**
    * Remove rotation and scaling part from the matrix
    * @returns the updated matrix
    */
-  public removeRotationAndScaling(): Matrix {
-    const m = this.m
-    Matrix.FromValuesToRef(
+  export function removeRotationAndScaling(self: MutableMatrix): MutableMatrix {
+    const m = self._m
+    fromValuesToRef(
       1.0,
       0.0,
       0.0,
@@ -1942,12 +1997,13 @@ export class Matrix {
       m[13],
       m[14],
       m[15],
-      this
+      self
     )
-    this._updateIdentityStatus(
+    _updateIdentityStatus(
+      self,
       m[12] === 0 && m[13] === 0 && m[14] === 0 && m[15] === 1
     )
-    return this
+    return self
   }
 
   /**
@@ -1955,9 +2011,12 @@ export class Matrix {
    * @param other - defines the second operand
    * @returns a new matrix set with the multiplication result of the current Matrix and the given one
    */
-  public multiply(other: Readonly<Matrix>): Matrix {
-    const result = new Matrix()
-    this.multiplyToRef(other, result)
+  export function multiply(
+    self: MutableMatrix,
+    other: ReadonlyMatrix
+  ): MutableMatrix {
+    const result = create()
+    multiplyToRef(self, other, result)
     return result
   }
 
@@ -1966,16 +2025,15 @@ export class Matrix {
    * @param other - defines the source matrix
    * @returns the current updated matrix
    */
-  public copyFrom(other: Readonly<Matrix>): Matrix {
-    other.copyToArray(this._m)
-    const o = other as Matrix
-    this._updateIdentityStatus(
-      o._isIdentity,
-      o._isIdentityDirty,
-      o._isIdentity3x2,
-      o._isIdentity3x2Dirty
+  export function copy(from: ReadonlyMatrix, dest: MutableMatrix): void {
+    copyToArray(from, dest._m)
+    _updateIdentityStatus(
+      dest,
+      from.isIdentity,
+      from._isIdentityDirty,
+      from.isIdentity3x2,
+      from._isIdentity3x2Dirty
     )
-    return this
   }
 
   /**
@@ -1984,11 +2042,14 @@ export class Matrix {
    * @param offset - defines the offset in the target array where to start storing values
    * @returns the current matrix
    */
-  public copyToArray(array: FloatArray, offset: number = 0): Matrix {
+  export function copyToArray(
+    self: ReadonlyMatrix,
+    arrayDest: FloatArray,
+    offsetDest: number = 0
+  ): void {
     for (let index = 0; index < 16; index++) {
-      array[offset + index] = this._m[index]
+      arrayDest[offsetDest + index] = self._m[index]
     }
-    return this
   }
 
   /**
@@ -1997,19 +2058,22 @@ export class Matrix {
    * @param result - defines the matrix where to store the multiplication
    * @returns the current matrix
    */
-  public multiplyToRef(other: Readonly<Matrix>, result: Matrix): Matrix {
-    if (this._isIdentity) {
-      result.copyFrom(other)
-      return this
+  export function multiplyToRef(
+    self: ReadonlyMatrix,
+    other: ReadonlyMatrix,
+    result: MutableMatrix
+  ): void {
+    if (self.isIdentity) {
+      copy(other, result)
+      return
     }
-    if ((other as Matrix)._isIdentity) {
-      result.copyFrom(this)
-      return this
+    if (other.isIdentity) {
+      copy(self, result)
+      return
     }
 
-    this.multiplyToArray(other, result._m, 0)
-    result._markAsUpdated()
-    return this
+    multiplyToArray(self, other, result._m, 0)
+    _markAsUpdated(result)
   }
 
   /**
@@ -2019,13 +2083,14 @@ export class Matrix {
    * @param offset - defines the offset in the target array where to start storing values
    * @returns the current matrix
    */
-  public multiplyToArray(
-    other: Readonly<Matrix>,
+  export function multiplyToArray(
+    self: ReadonlyMatrix,
+    other: ReadonlyMatrix,
     result: FloatArray,
     offset: number
-  ): Matrix {
-    const m = this._m
-    const otherM = other.m
+  ): void {
+    const m = self._m
+    const otherM = other._m
 
     // tslint:disable:one-variable-per-declaration
     const tm0 = m[0],
@@ -2081,28 +2146,27 @@ export class Matrix {
     result[offset + 13] = tm12 * om1 + tm13 * om5 + tm14 * om9 + tm15 * om13
     result[offset + 14] = tm12 * om2 + tm13 * om6 + tm14 * om10 + tm15 * om14
     result[offset + 15] = tm12 * om3 + tm13 * om7 + tm14 * om11 + tm15 * om15
-    return this
   }
 
   /**
-   * Check equality between this matrix and a second one
+   * Check equality between self matrix and a second one
    * @param value - defines the second matrix to compare
    * @returns true is the current matrix and the given one values are strictly equal
    */
-  public equals(value: Matrix): boolean {
+  export function equals(self: ReadonlyMatrix, value: ReadonlyMatrix): boolean {
     const other = value
     if (!other) {
       return false
     }
 
-    if (this._isIdentity || other._isIdentity) {
-      if (!this._isIdentityDirty && !other._isIdentityDirty) {
-        return this._isIdentity && other._isIdentity
+    if (self.isIdentity || other.isIdentity) {
+      if (!self._isIdentityDirty && !other._isIdentityDirty) {
+        return self.isIdentity && other.isIdentity
       }
     }
 
-    const m = this.m
-    const om = other.m
+    const m = self._m
+    const om = other._m
     return (
       m[0] === om[0] &&
       m[1] === om[1] &&
@@ -2127,28 +2191,20 @@ export class Matrix {
    * Clone the current matrix
    * @returns a new matrix from the current matrix
    */
-  public clone(): Matrix {
-    const matrix = new Matrix()
-    matrix.copyFrom(this)
-    return matrix
-  }
-
-  /**
-   * Returns the name of the current matrix class
-   * @returns the string "Matrix"
-   */
-  public getClassName(): string {
-    return 'Matrix'
+  export function clone(self: ReadonlyMatrix): MutableMatrix {
+    const result = create()
+    copy(self, result)
+    return result
   }
 
   /**
    * Gets the hash code of the current matrix
    * @returns the hash code
    */
-  public getHashCode(): number {
-    let hash = this._m[0] || 0
+  export function getHashCode(self: ReadonlyMatrix): number {
+    let hash = self._m[0] || 0
     for (let i = 1; i < 16; i++) {
-      hash = (hash * 397) ^ (this._m[i] || 0)
+      hash = (hash * 397) ^ (self._m[i] || 0)
     }
     return hash
   }
@@ -2160,41 +2216,42 @@ export class Matrix {
    * @param translation - defines the translation vector3 given as a reference to update
    * @returns true if operation was successful
    */
-  public decompose(
-    scale?: Vector3,
-    rotation?: Quaternion,
-    translation?: Vector3
+  export function decompose(
+    self: ReadonlyMatrix,
+    scale?: Vector3.MutableVector3,
+    rotation?: Quaternion.MutableQuaternion,
+    translation?: Vector3.MutableVector3
   ): boolean {
-    if (this._isIdentity) {
+    if (self.isIdentity) {
       if (translation) {
-        translation.setAll(0)
+        translation = Vector3.create(0, 0, 0)
       }
       if (scale) {
-        scale.setAll(1)
+        scale = Vector3.create(0, 0, 0)
       }
       if (rotation) {
-        rotation.copyFromFloats(0, 0, 0, 1)
+        rotation = Quaternion.create(0, 0, 0, 1)
       }
       return true
     }
 
-    const m = this._m
+    const m = self._m
     if (translation) {
-      translation.copyFromFloats(m[12], m[13], m[14])
+      translation = Vector3.create(m[12], m[13], m[14])
     }
 
-    const usedScale = scale || MathTmp.Vector3[0]
+    const usedScale = scale || Vector3.Zero()
     usedScale.x = Math.sqrt(m[0] * m[0] + m[1] * m[1] + m[2] * m[2])
     usedScale.y = Math.sqrt(m[4] * m[4] + m[5] * m[5] + m[6] * m[6])
     usedScale.z = Math.sqrt(m[8] * m[8] + m[9] * m[9] + m[10] * m[10])
 
-    if (this.determinant() <= 0) {
+    if (determinant(self) <= 0) {
       usedScale.y *= -1
     }
 
     if (usedScale.x === 0 || usedScale.y === 0 || usedScale.z === 0) {
       if (rotation) {
-        rotation.copyFromFloats(0.0, 0.0, 0.0, 1.0)
+        rotation = Quaternion.create(0, 0, 0, 1)
       }
       return false
     }
@@ -2204,7 +2261,8 @@ export class Matrix {
       const sx = 1 / usedScale.x,
         sy = 1 / usedScale.y,
         sz = 1 / usedScale.z
-      Matrix.FromValuesToRef(
+      const tmpMatrix = create()
+      fromValuesToRef(
         m[0] * sx,
         m[1] * sx,
         m[2] * sx,
@@ -2221,10 +2279,10 @@ export class Matrix {
         0.0,
         0.0,
         1.0,
-        MathTmp.Matrix[0]
+        tmpMatrix
       )
 
-      Quaternion.FromRotationMatrixToRef(MathTmp.Matrix[0], rotation)
+      Quaternion.fromRotationMatrixToRef(tmpMatrix, rotation)
     }
 
     return true
@@ -2235,18 +2293,19 @@ export class Matrix {
    * @param index - defines the number of the row to get
    * @returns the index-th row of the current matrix as a new Vector4
    */
-  public getRow(index: number): Nullable<Vector4> {
-    if (index < 0 || index > 3) {
-      return null
-    }
-    const i = index * 4
-    return new Vector4(
-      this._m[i + 0],
-      this._m[i + 1],
-      this._m[i + 2],
-      this._m[i + 3]
-    )
-  }
+  // TODO
+  // export function getRow(index: number): Nullable<Vector4> {
+  //   if (index < 0 || index > 3) {
+  //     return null
+  //   }
+  //   const i = index * 4
+  //   return new Vector4(
+  //     self._m[i + 0],
+  //     self._m[i + 1],
+  //     self._m[i + 2],
+  //     self._m[i + 3]
+  //   )
+  // }
 
   /**
    * Sets the index-th row of the current matrix to the vector4 values
@@ -2254,27 +2313,10 @@ export class Matrix {
    * @param row - defines the target vector4
    * @returns the updated current matrix
    */
-  public setRow(index: number, row: Vector4): Matrix {
-    return this.setRowFromFloats(index, row.x, row.y, row.z, row.w)
-  }
-
-  /**
-   * Compute the transpose of the matrix
-   * @returns the new transposed matrix
-   */
-  public transpose(): Matrix {
-    return Matrix.Transpose(this)
-  }
-
-  /**
-   * Compute the transpose of the matrix and store it in a given matrix
-   * @param result - defines the target matrix
-   * @returns the current matrix
-   */
-  public transposeToRef(result: Matrix): Matrix {
-    Matrix.TransposeToRef(this, result)
-    return this
-  }
+  // TODO
+  // export function setRow(index: number, row: Vector4): MutableMatrix {
+  //   return setRowFromFloats(index, row.x, row.y, row.z, row.w)
+  // }
 
   /**
    * Sets the index-th row of the current matrix with the given 4 x float values
@@ -2285,24 +2327,24 @@ export class Matrix {
    * @param w - defines the w component to set
    * @returns the updated current matrix
    */
-  public setRowFromFloats(
+  export function setRowFromFloats(
+    self: MutableMatrix,
     index: number,
     x: number,
     y: number,
     z: number,
     w: number
-  ): Matrix {
+  ): void {
     if (index < 0 || index > 3) {
-      return this
+      return
     }
     const i = index * 4
-    this._m[i + 0] = x
-    this._m[i + 1] = y
-    this._m[i + 2] = z
-    this._m[i + 3] = w
+    self._m[i + 0] = x
+    self._m[i + 1] = y
+    self._m[i + 2] = z
+    self._m[i + 3] = w
 
-    this._markAsUpdated()
-    return this
+    _markAsUpdated(self)
   }
 
   /**
@@ -2310,9 +2352,9 @@ export class Matrix {
    * @param scale - defines the scale factor
    * @returns a new matrix
    */
-  public scale(scale: number): Matrix {
-    const result = new Matrix()
-    this.scaleToRef(scale, result)
+  export function scale(self: ReadonlyMatrix, scale: number): MutableMatrix {
+    const result = create()
+    scaleToRef(self, scale, result)
     return result
   }
 
@@ -2322,12 +2364,15 @@ export class Matrix {
    * @param result - defines the matrix to store the result
    * @returns the current matrix
    */
-  public scaleToRef(scale: number, result: Matrix): Matrix {
+  export function scaleToRef(
+    self: ReadonlyMatrix,
+    scale: number,
+    result: MutableMatrix
+  ): void {
     for (let index = 0; index < 16; index++) {
-      result._m[index] = this._m[index] * scale
+      result._m[index] = self._m[index] * scale
     }
-    result._markAsUpdated()
-    return this
+    _markAsUpdated(result)
   }
 
   /**
@@ -2336,24 +2381,30 @@ export class Matrix {
    * @param result - defines the Matrix to store the result
    * @returns the current matrix
    */
-  public scaleAndAddToRef(scale: number, result: Matrix): Matrix {
+  export function scaleAndAddToRef(
+    self: ReadonlyMatrix,
+    scale: number,
+    result: MutableMatrix
+  ): void {
     for (let index = 0; index < 16; index++) {
-      result._m[index] += this._m[index] * scale
+      result._m[index] += self._m[index] * scale
     }
-    result._markAsUpdated()
-    return this
+    _markAsUpdated(result)
   }
 
   /**
-   * Writes to the given matrix a normal matrix, computed from this one (using values from identity matrix for fourth row and column).
+   * Writes to the given matrix a normal matrix, computed from self one (using values from identity matrix for fourth row and column).
    * @param ref - matrix to store the result
    */
-  public toNormalMatrix(ref: Matrix): void {
-    const tmp = MathTmp.Matrix[0]
-    this.invertToRef(tmp)
-    tmp.transposeToRef(ref)
+  export function normalMatrixToRef(
+    self: ReadonlyMatrix,
+    ref: MutableMatrix
+  ): void {
+    const tmp = create()
+    invertToRef(self, tmp)
+    transposeToRef(tmp, ref)
     const m = ref._m
-    Matrix.FromValuesToRef(
+    fromValuesToRef(
       m[0],
       m[1],
       m[2],
@@ -2378,9 +2429,9 @@ export class Matrix {
    * Gets only rotation part of the current matrix
    * @returns a new matrix sets to the extracted rotation matrix from the current one
    */
-  public getRotationMatrix(): Matrix {
-    const result = new Matrix()
-    this.getRotationMatrixToRef(result)
+  export function getRotationMatrix(self: ReadonlyMatrix): MutableMatrix {
+    const result = create()
+    getRotationMatrixToRef(self, result)
     return result
   }
 
@@ -2389,19 +2440,22 @@ export class Matrix {
    * @param result - defines the target matrix to store data to
    * @returns the current matrix
    */
-  public getRotationMatrixToRef(result: Matrix): Matrix {
-    const scale = MathTmp.Vector3[0]
-    if (!this.decompose(scale)) {
-      Matrix.IdentityToRef(result)
-      return this
+  export function getRotationMatrixToRef(
+    self: ReadonlyMatrix,
+    result: MutableMatrix
+  ): void {
+    const scale = Vector3.Zero()
+    if (!decompose(self, scale)) {
+      result = Identity()
+      return
     }
 
-    const m = this._m
+    const m = self._m
     // tslint:disable-next-line:one-variable-per-declaration
     const sx = 1 / scale.x,
       sy = 1 / scale.y,
       sz = 1 / scale.z
-    Matrix.FromValuesToRef(
+    fromValuesToRef(
       m[0] * sx,
       m[1] * sx,
       m[2] * sx,
@@ -2420,45 +2474,43 @@ export class Matrix {
       1.0,
       result
     )
-    return this
   }
 
   /**
    * Toggles model matrix from being right handed to left handed in place and vice versa
    */
-  public toggleModelMatrixHandInPlace() {
-    const m = this._m
-    m[2] *= -1
-    m[6] *= -1
-    m[8] *= -1
-    m[9] *= -1
-    m[14] *= -1
-    this._markAsUpdated()
+  export function toggleModelMatrixHandInPlace(self: MutableMatrix) {
+    self._m[2] *= -1
+    self._m[6] *= -1
+    self._m[8] *= -1
+    self._m[9] *= -1
+    self._m[14] *= -1
+    _markAsUpdated(self)
   }
 
   /**
    * Toggles projection matrix from being right handed to left handed in place and vice versa
    */
-  public toggleProjectionMatrixHandInPlace() {
-    const m = this._m
-    m[8] *= -1
-    m[9] *= -1
-    m[10] *= -1
-    m[11] *= -1
-    this._markAsUpdated()
+  export function toggleProjectionMatrixHandInPlace(self: MutableMatrix) {
+    self._m[8] *= -1
+    self._m[9] *= -1
+    self._m[10] *= -1
+    self._m[11] *= -1
+    _markAsUpdated(self)
   }
 
   /** @internal */
-  private _updateIdentityStatus(
+  function _updateIdentityStatus(
+    self: MutableMatrix,
     isIdentity: boolean,
     isIdentityDirty: boolean = false,
     isIdentity3x2: boolean = false,
     isIdentity3x2Dirty: boolean = true
   ) {
-    this.updateFlag = Matrix._updateFlagSeed++
-    this._isIdentity = isIdentity
-    this._isIdentity3x2 = isIdentity || isIdentity3x2
-    this._isIdentityDirty = this._isIdentity ? false : isIdentityDirty
-    this._isIdentity3x2Dirty = this._isIdentity3x2 ? false : isIdentity3x2Dirty
+    self.updateFlag = _updateFlagSeed++
+    self.isIdentity = isIdentity
+    self.isIdentity3x2 = isIdentity || isIdentity3x2
+    self._isIdentityDirty = self.isIdentity ? false : isIdentityDirty
+    self._isIdentity3x2Dirty = self.isIdentity3x2 ? false : isIdentity3x2Dirty
   }
 }
