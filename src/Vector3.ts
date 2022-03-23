@@ -208,7 +208,7 @@ export class Vector3 implements EcsMathReadOnlyVector3 {
     return new Vector3(1.0, 1.0, 1.0)
   }
   /**
-   * Returns a new Vector3 set to (0.0, 1.0, 0.0)
+   * Returns a new Vector3 set tolengthSquared (0.0, 1.0, 0.0)
    * @returns a new up Vector3
    */
   public static Up(): Vector3 {
