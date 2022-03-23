@@ -1,4 +1,4 @@
-# DCL Ecs Math components.
+# DCL ECS Math components
 
 ## Installation
 ```sh
