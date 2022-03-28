@@ -37,9 +37,10 @@ export namespace Vector3 {
       return true
     }
 
-    if (absY !== absZ) {
-      return true
-    }
+    // // These lines will never run
+    // if (absY !== absZ) {
+    //   return true
+    // }
 
     return false
   }
@@ -815,9 +816,8 @@ export namespace Vector3 {
     left: ReadonlyVector3,
     right: ReadonlyVector3
   ): MutableVector3 {
-    const min = create(left.x, left.y, left.z)
-    // TODO
-    // min.minimizeInPlace(right)
+    const min = create()
+    minimizeInPlaceFromFloatsToRef(right, left.x, left.y, left.z, min)
     return min
   }
 
@@ -831,9 +831,8 @@ export namespace Vector3 {
     left: MutableVector3,
     right: MutableVector3
   ): MutableVector3 {
-    const max = create(left.x, left.y, left.z)
-    // TODO
-    // max.maximizeInPlace(right)
+    const max = create()
+    maximizeInPlaceFromFloatsToRef(left, right.x, right.y, right.z, max)
     return max
   }
 
@@ -913,12 +912,11 @@ export namespace Vector3 {
     axis1: MutableVector3,
     axis2: MutableVector3,
     axis3: MutableVector3,
-    ref: MutableVector3
+    result: MutableVector3
   ): void {
     const quat = Quaternion.create()
-    // TODO
-    // Quaternion.rotationQuaternionFromAxisToRef(axis1, axis2, axis3, quat)
-    // ref.copyFrom(quat.eulerAngles)
+    Quaternion.rotationQuaternionFromAxisToRef(axis1, axis2, axis3, quat)
+    copy(Quaternion.eulerAngles(quat), result)
   }
 
   /**
@@ -1232,5 +1230,13 @@ export namespace Vector3 {
    */
   export function Left(): MutableVector3 {
     return create(-1.0, 0.0, 0.0)
+  }
+
+  /**
+   * Returns a new random Vector3
+   * @returns a random Vector3
+   */
+  export function Random(): MutableVector3 {
+    return create(Math.random(), Math.random(), Math.random())
   }
 }
