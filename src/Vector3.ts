@@ -23,7 +23,7 @@ export namespace Vector3 {
 
   /**
    * Gets a boolean indicating that the vector is non uniform meaning x, y or z are not all the same
-   * @param vector vector to check
+   * @param vector - vector to check
    */
   export function isNonUniform(vector: ReadonlyVector3): boolean {
     const absX = Math.abs(vector.x)
@@ -1094,7 +1094,7 @@ export namespace Vector3 {
    * @param x - defines the x coordinate of the operand
    * @param y - defines the y coordinate of the operand
    * @param z - defines the z coordinate of the operand
-   * @param result the set Vector3
+   * @param result - the set Vector3
    */
   export function maximizeInPlaceFromFloatsToRef(
     vector1: ReadonlyVector3,
@@ -1125,7 +1125,7 @@ export namespace Vector3 {
    * @param x - defines the x coordinate of the operand
    * @param y - defines the y coordinate of the operand
    * @param z - defines the z coordinate of the operand
-   * @param result the set Vector3
+   * @param result - the set Vector3
    */
   export function minimizeInPlaceFromFloatsToRef(
     vector1: ReadonlyVector3,

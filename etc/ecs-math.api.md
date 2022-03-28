@@ -77,6 +77,8 @@ export namespace Quaternion {
     // (undocumented)
     export type ReadonlyQuaternion = DeepReadonly<MutableQuaternion>;
     export function rotateTowards(from: ReadonlyQuaternion, to: ReadonlyQuaternion, maxDegreesDelta: number): MutableQuaternion;
+    export function rotationQuaternionFromAxis(axis1: Vector3.ReadonlyVector3, axis2: Vector3.ReadonlyVector3, axis3: Vector3.ReadonlyVector3): MutableQuaternion;
+    export function rotationQuaternionFromAxisToRef(axis1: Vector3.ReadonlyVector3, axis2: Vector3.ReadonlyVector3, axis3: Vector3.ReadonlyVector3, ref: MutableQuaternion): void;
     export function rotationYawPitchRoll(yaw: number, pitch: number, roll: number): MutableQuaternion;
     export function rotationYawPitchRollToRef(yaw: number, pitch: number, roll: number, result: Quaternion.MutableQuaternion): void;
     export function slerp(left: ReadonlyQuaternion, right: ReadonlyQuaternion, amount: number): MutableQuaternion;
@@ -103,45 +105,91 @@ export const ToLinearSpace = 2.2;
 // @public (undocumented)
 export namespace Vector3 {
     export function add(vector1: ReadonlyVector3, vector2: ReadonlyVector3): MutableVector3;
+    export function addToRef(vector1: ReadonlyVector3, vector2: ReadonlyVector3, result: MutableVector3): void;
+    export function applyMatrix4(vector: ReadonlyVector3, matrix: Matrix.ReadonlyMatrix): MutableVector3;
+    export function applyMatrix4ToRef(vector: ReadonlyVector3, matrix: Matrix.ReadonlyMatrix, result: MutableVector3): void;
     export function Backward(): MutableVector3;
+    export function catmullRom(value1: ReadonlyVector3, value2: ReadonlyVector3, value3: ReadonlyVector3, value4: ReadonlyVector3, amount: number): MutableVector3;
+    export function center(value1: ReadonlyVector3, value2: ReadonlyVector3): MutableVector3;
+    export function clamp(value: ReadonlyVector3, min: ReadonlyVector3, max: ReadonlyVector3): MutableVector3;
+    export function clampToRef(value: ReadonlyVector3, min: ReadonlyVector3, max: ReadonlyVector3, result: MutableVector3): void;
     export function clone(source: ReadonlyVector3): MutableVector3;
     export function copy(source: ReadonlyVector3, dest: MutableVector3): void;
+    export function copyFromFloats(x: number, y: number, z: number, dest: MutableVector3): void;
     export function create(
     x?: number,
     y?: number,
     z?: number): MutableVector3;
     export function cross(left: ReadonlyVector3, right: ReadonlyVector3): MutableVector3;
     export function crossToRef(left: ReadonlyVector3, right: ReadonlyVector3, result: MutableVector3): void;
+    export function distance(value1: ReadonlyVector3, value2: ReadonlyVector3): number;
+    export function distanceSquared(value1: ReadonlyVector3, value2: ReadonlyVector3): number;
+    export function divide(vector1: ReadonlyVector3, vector2: ReadonlyVector3): MutableVector3;
+    export function divideToRef(vector1: ReadonlyVector3, vector2: ReadonlyVector3, result: MutableVector3): void;
     export function dot(left: ReadonlyVector3, right: ReadonlyVector3): number;
     export function Down(): MutableVector3;
+    export function equals(vector1: ReadonlyVector3, vector2: ReadonlyVector3): boolean;
+    export function equalsToFloats(vector: ReadonlyVector3, x: number, y: number, z: number): boolean;
+    export function equalsWithEpsilon(vector1: ReadonlyVector3, vector2: ReadonlyVector3, epsilon?: number): boolean;
+    export function floor(vector1: ReadonlyVector3): MutableVector3;
     export function Forward(): MutableVector3;
+    export function fract(vector1: ReadonlyVector3): MutableVector3;
+    export function fromArray(array: ArrayLike<number>, offset?: number): MutableVector3;
+    export function fromArrayToRef(array: ArrayLike<number>, offset: number, result: MutableVector3): void;
+    export function fromFloatArray(array: FloatArray, offset?: number): MutableVector3;
+    export function fromFloatArrayToRef(array: FloatArray, offset: number, result: MutableVector3): void;
+    export function getAngleBetweenVectors(vector0: ReadonlyVector3, vector1: ReadonlyVector3, normal: ReadonlyVector3): number;
+    export function getClipFactor(vector0: ReadonlyVector3, vector1: ReadonlyVector3, axis: ReadonlyVector3, size: number): number;
+    export function getHashCode(vector: ReadonlyVector3): number;
+    export function hermite(value1: ReadonlyVector3, tangent1: ReadonlyVector3, value2: ReadonlyVector3, tangent2: ReadonlyVector3, amount: number): MutableVector3;
+    export function isNonUniform(vector: ReadonlyVector3): boolean;
     export function Left(): MutableVector3;
     export function length(vector: ReadonlyVector3): number;
     export function lengthSquared(vector: ReadonlyVector3): number;
     export function lerp(start: ReadonlyVector3, end: ReadonlyVector3, amount: number): MutableVector3;
     export function lerpToRef(start: ReadonlyVector3, end: ReadonlyVector3, amount: number, result: MutableVector3): void;
+    export function maximize(left: MutableVector3, right: MutableVector3): MutableVector3;
+    export function maximizeInPlaceFromFloatsToRef(vector1: ReadonlyVector3, x: number, y: number, z: number, result: MutableVector3): void;
+    export function minimize(left: ReadonlyVector3, right: ReadonlyVector3): MutableVector3;
+    export function minimizeInPlaceFromFloatsToRef(vector1: ReadonlyVector3, x: number, y: number, z: number, result: MutableVector3): void;
+    export function multiply(vector1: ReadonlyVector3, vector2: ReadonlyVector3): MutableVector3;
+    export function multiplyByFloats(vector1: ReadonlyVector3, x: number, y: number, z: number): MutableVector3;
+    export function multiplyByFloatsToRef(vector1: ReadonlyVector3, x: number, y: number, z: number, result: MutableVector3): void;
+    export function multiplyToRef(vector1: ReadonlyVector3, vector2: ReadonlyVector3, result: MutableVector3): void;
     // (undocumented)
     export type MutableVector3 = {
-        y: number;
         x: number;
+        y: number;
         z: number;
     };
+    export function negate(value: ReadonlyVector3): MutableVector3;
     export function normalize(vector: ReadonlyVector3): MutableVector3;
     export function normalizeFromLength(vector: ReadonlyVector3, len: number): MutableVector3;
     export function normalizeFromLengthToRef(vector: ReadonlyVector3, len: number, result: MutableVector3): void;
     export function normalizeToRef(vector: ReadonlyVector3, result: MutableVector3): void;
     export function One(): MutableVector3;
-    export function opposite(value: ReadonlyVector3): MutableVector3;
+    export function Random(): MutableVector3;
     // Warning: (ae-incompatible-release-tags) The symbol "ReadonlyVector3" is marked as @public, but its signature references "DeepReadonly" which is marked as @internal
     //
     // (undocumented)
     export type ReadonlyVector3 = DeepReadonly<MutableVector3>;
     export function Right(): MutableVector3;
     export function rotate(vector: ReadonlyVector3, q: Quaternion.ReadonlyQuaternion): MutableVector3;
+    export function rotateToRef(vector: ReadonlyVector3, q: Quaternion.ReadonlyQuaternion, result: MutableVector3): void;
+    export function rotationFromAxis(axis1: MutableVector3, axis2: MutableVector3, axis3: MutableVector3): MutableVector3;
+    export function rotationFromAxisToRef(axis1: MutableVector3, axis2: MutableVector3, axis3: MutableVector3, result: MutableVector3): void;
     export function scale(vector: ReadonlyVector3, scale: number): MutableVector3;
     export function scaleToRef(vector: ReadonlyVector3, scale: number, result: MutableVector3): void;
-    export function subtract(minuend: ReadonlyVector3, subtrahend: ReadonlyVector3): MutableVector3;
-    export function subtractToRef(minuend: ReadonlyVector3, subtrahend: ReadonlyVector3, result: MutableVector3): void;
+    export function subtract(vector1: ReadonlyVector3, vector2: ReadonlyVector3): MutableVector3;
+    export function subtractFromFloatsToRef(vector1: ReadonlyVector3, x: number, y: number, z: number, result: MutableVector3): void;
+    export function subtractToRef(vector1: ReadonlyVector3, vector2: ReadonlyVector3, result: MutableVector3): void;
+    export function toString(vector: ReadonlyVector3): string;
+    export function transformCoordinates(vector: ReadonlyVector3, transformation: Matrix.ReadonlyMatrix): MutableVector3;
+    export function transformCoordinatesFromFloatsToRef(x: number, y: number, z: number, transformation: Matrix.ReadonlyMatrix, result: MutableVector3): void;
+    export function transformCoordinatesToRef(vector: ReadonlyVector3, transformation: Matrix.ReadonlyMatrix, result: MutableVector3): void;
+    export function transformNormal(vector: ReadonlyVector3, transformation: Matrix.ReadonlyMatrix): MutableVector3;
+    export function transformNormalFromFloatsToRef(x: number, y: number, z: number, transformation: Matrix.ReadonlyMatrix, result: MutableVector3): void;
+    export function transformNormalToRef(vector: ReadonlyVector3, transformation: Matrix.ReadonlyMatrix, result: MutableVector3): void;
     export function Up(): MutableVector3;
     export function Zero(): MutableVector3;
 }
