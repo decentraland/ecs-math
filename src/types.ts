@@ -80,7 +80,7 @@ export interface ISize {
 
 /**
  * Make each field readonly deeply
- * @internal
+ * @public
  */
 export type DeepReadonly<T> = {
   readonly [P in keyof T]: DeepReadonly<T[P]>
