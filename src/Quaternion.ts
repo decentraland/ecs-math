@@ -524,6 +524,46 @@ export namespace Quaternion {
   }
 
   /**
+   * Creates a new quaternion containing the rotation value to reach the target (axis1, axis2, axis3) orientation as a rotated XYZ system (axis1, axis2 and axis3 are normalized during this operation)
+   * @param axis1 - defines the first axis
+   * @param axis2 - defines the second axis
+   * @param axis3 - defines the third axis
+   * @returns the new quaternion
+   */
+  export function rotationQuaternionFromAxis(
+    axis1: Vector3.ReadonlyVector3,
+    axis2: Vector3.ReadonlyVector3,
+    axis3: Vector3.ReadonlyVector3
+  ): MutableQuaternion {
+    const quat = Quaternion.create(0.0, 0.0, 0.0, 0.0)
+    rotationQuaternionFromAxisToRef(axis1, axis2, axis3, quat)
+    return quat
+  }
+
+  /**
+   * Creates a rotation value to reach the target (axis1, axis2, axis3) orientation as a rotated XYZ system (axis1, axis2 and axis3 are normalized during this operation) and stores it in the target quaternion
+   * @param axis1 - defines the first axis
+   * @param axis2 - defines the second axis
+   * @param axis3 - defines the third axis
+   * @param ref - defines the target quaternion
+   */
+  export function rotationQuaternionFromAxisToRef(
+    axis1: Vector3.ReadonlyVector3,
+    axis2: Vector3.ReadonlyVector3,
+    axis3: Vector3.ReadonlyVector3,
+    ref: MutableQuaternion
+  ): void {
+    const rotMat = Matrix.create()
+    Matrix.fromXYZAxesToRef(
+      Vector3.normalize(axis1),
+      Vector3.normalize(axis2),
+      Vector3.normalize(axis3),
+      rotMat
+    )
+    Quaternion.fromRotationMatrixToRef(rotMat, ref)
+  }
+
+  /**
    * Returns a zero filled quaternion
    */
   export function Zero(): MutableQuaternion {
