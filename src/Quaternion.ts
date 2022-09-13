@@ -1,6 +1,6 @@
 import { Vector3 } from './Vector3'
 import { Scalar } from './Scalar'
-import { DeepReadonly, DEG2RAD, RAD2DEG } from './types'
+import { DEG2RAD, RAD2DEG } from './types'
 import { Matrix } from './Matrix'
 
 /**
@@ -20,7 +20,12 @@ export namespace Quaternion {
   /**
    * @public
    */
-  export type ReadonlyQuaternion = DeepReadonly<MutableQuaternion>
+  export type ReadonlyQuaternion = {
+    readonly y: number
+    readonly x: number
+    readonly z: number
+    readonly w: number
+  }
 
   /**
    * Creates a new Quaternion from the given floats

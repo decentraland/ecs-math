@@ -1,6 +1,5 @@
 import { Vector3 } from './Vector3'
 import { Matrix } from './Matrix'
-import { DeepReadonly } from './types'
 
 /**
  * Represens a plane by the equation ax + by + cz + d = 0
@@ -18,7 +17,16 @@ export namespace Plane {
     d: number
   }
 
-  export type ReadonlyPlane = DeepReadonly<MutablePlane>
+  export type ReadonlyPlane = {
+    /**
+     * Normal of the plane (a,b,c)
+     */
+    normal: Vector3.ReadonlyVector3
+    /**
+     * d component of the plane
+     */
+    d: number
+  }
 
   /**
    * Creates a Plane object according to the given floats a, b, c, d and the plane equation : ax + by + cz + d = 0
@@ -40,7 +48,7 @@ export namespace Plane {
    * @param array - the array to create a plane from
    * @returns a new Plane from the given array.
    */
-  export function fromArray(array: ArrayLike<number>): MutablePlane {
+  export function fromArray(array: number[]): MutablePlane {
     return create(array[0], array[1], array[2], array[3])
   }
   /**
