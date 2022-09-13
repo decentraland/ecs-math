@@ -1,4 +1,4 @@
-import { DeepReadonly, FloatArray } from './types'
+import { FloatArray } from './types'
 import { Vector3 } from './Vector3'
 import { Quaternion } from './Quaternion'
 import { Plane } from './Plane'
@@ -42,12 +42,27 @@ export namespace Matrix {
     _m: Matrix4x4
   }
 
-  export type ReadonlyMatrix = DeepReadonly<MutableMatrix>
+  export type ReadonlyMatrix = {
+    /**
+     * Gets the update flag of the matrix which is an unique number for the matrix.
+     * It will be incremented every time the matrix data change.
+     * You can use it to speed the comparison between two versions of the same matrix.
+     */
+    readonly updateFlag: number
+
+    readonly isIdentity: boolean
+    readonly isIdentity3x2: boolean
+
+    readonly _isIdentityDirty: boolean
+    readonly _isIdentity3x2Dirty: boolean
+
+    readonly _m: Matrix4x4
+  }
 
   /**
    * Gets the internal data of the matrix
    */
-  export function m(self: MutableMatrix): Readonly<Matrix4x4> {
+  export function m(self: MutableMatrix): Matrix4x4 {
     return self._m
   }
 
@@ -86,7 +101,7 @@ export namespace Matrix {
    * @returns a new Matrix set from the starting index of the given array
    */
   export function fromArray(
-    array: ArrayLike<number>,
+    array: Matrix4x4,
     offset: number = 0
   ): MutableMatrix {
     const result = create()
@@ -101,7 +116,7 @@ export namespace Matrix {
    * @param result - defines the target matrix
    */
   export function fromArrayToRef(
-    array: ArrayLike<number>,
+    array: Matrix4x4,
     offset: number,
     result: MutableMatrix
   ) {
@@ -1691,7 +1706,7 @@ export namespace Matrix {
    * Returns the matrix as a FloatArray
    * @returns the matrix underlying array
    */
-  export function toArray(self: ReadonlyMatrix): Readonly<FloatArray> {
+  export function toArray(self: ReadonlyMatrix): Matrix4x4 {
     return self._m
   }
 
@@ -1699,7 +1714,7 @@ export namespace Matrix {
    * Returns the matrix as a FloatArray
    * @returns the matrix underlying array.
    */
-  export function asArray(self: ReadonlyMatrix): Readonly<FloatArray> {
+  export function asArray(self: ReadonlyMatrix): Matrix4x4 {
     return self._m
   }
 

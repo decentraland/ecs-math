@@ -5,11 +5,6 @@
 ```ts
 
 // @public
-export type DeepReadonly<T> = {
-    readonly [P in keyof T]: DeepReadonly<T[P]>;
-};
-
-// @public
 export const DEG2RAD: number;
 
 // @public (undocumented)
@@ -71,7 +66,12 @@ export namespace Quaternion {
     };
     export function normalize(q: ReadonlyQuaternion): MutableQuaternion;
     // (undocumented)
-    export type ReadonlyQuaternion = DeepReadonly<MutableQuaternion>;
+    export type ReadonlyQuaternion = {
+        readonly y: number;
+        readonly x: number;
+        readonly z: number;
+        readonly w: number;
+    };
     export function rotateTowards(from: ReadonlyQuaternion, to: ReadonlyQuaternion, maxDegreesDelta: number): MutableQuaternion;
     export function rotationQuaternionFromAxis(axis1: Vector3.ReadonlyVector3, axis2: Vector3.ReadonlyVector3, axis3: Vector3.ReadonlyVector3): MutableQuaternion;
     export function rotationQuaternionFromAxisToRef(axis1: Vector3.ReadonlyVector3, axis2: Vector3.ReadonlyVector3, axis3: Vector3.ReadonlyVector3, ref: MutableQuaternion): void;
@@ -130,8 +130,8 @@ export namespace Vector3 {
     export function floor(vector1: ReadonlyVector3): MutableVector3;
     export function Forward(): MutableVector3;
     export function fract(vector1: ReadonlyVector3): MutableVector3;
-    export function fromArray(array: ArrayLike<number>, offset?: number): MutableVector3;
-    export function fromArrayToRef(array: ArrayLike<number>, offset: number, result: MutableVector3): void;
+    export function fromArray(array: FloatArray, offset?: number): MutableVector3;
+    export function fromArrayToRef(array: number[], offset: number, result: MutableVector3): void;
     export function fromFloatArray(array: FloatArray, offset?: number): MutableVector3;
     export function fromFloatArrayToRef(array: FloatArray, offset: number, result: MutableVector3): void;
     export function getAngleBetweenVectors(vector0: ReadonlyVector3, vector1: ReadonlyVector3, normal: ReadonlyVector3): number;
@@ -165,13 +165,12 @@ export namespace Vector3 {
     export function normalizeToRef(vector: ReadonlyVector3, result: MutableVector3): void;
     export function One(): MutableVector3;
     export function Random(): MutableVector3;
-    // Warning: (ae-incompatible-release-tags) The symbol "ReadonlyVector3" is marked as @public, but its signature references "DeepReadonly" which is marked as @internal
-    //
-
-    export function opposite(value: ReadonlyVector3): MutableVector3;
-
     // (undocumented)
-    export type ReadonlyVector3 = DeepReadonly<MutableVector3>;
+    export type ReadonlyVector3 = {
+        readonly x: number;
+        readonly y: number;
+        readonly z: number;
+    };
     export function Right(): MutableVector3;
     export function rotate(vector: ReadonlyVector3, q: Quaternion.ReadonlyQuaternion): MutableVector3;
     export function rotateToRef(vector: ReadonlyVector3, q: Quaternion.ReadonlyQuaternion, result: MutableVector3): void;

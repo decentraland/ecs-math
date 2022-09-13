@@ -1,4 +1,4 @@
-import { DeepReadonly, Epsilon, FloatArray } from './types'
+import { Epsilon, FloatArray } from './types'
 import { Quaternion } from './Quaternion'
 import { Matrix } from './Matrix'
 import { Scalar } from './Scalar'
@@ -19,7 +19,11 @@ export namespace Vector3 {
   /**
    * @public
    */
-  export type ReadonlyVector3 = DeepReadonly<MutableVector3>
+  export type ReadonlyVector3 = {
+    readonly x: number
+    readonly y: number
+    readonly z: number
+  }
 
   /**
    * Gets a boolean indicating that the vector is non uniform meaning x, y or z are not all the same
@@ -244,7 +248,7 @@ export namespace Vector3 {
    * @returns the new Vector3
    */
   export function fromArray(
-    array: ArrayLike<number>,
+    array: FloatArray,
     offset: number = 0
   ): MutableVector3 {
     return create(array[offset], array[offset + 1], array[offset + 2])
@@ -271,7 +275,7 @@ export namespace Vector3 {
    * @param result - defines the Vector3 where to store the result
    */
   export function fromArrayToRef(
-    array: ArrayLike<number>,
+    array: number[],
     offset: number,
     result: MutableVector3
   ): void {
