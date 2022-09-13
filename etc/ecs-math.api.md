@@ -4,9 +4,7 @@
 
 ```ts
 
-// Warning: (ae-internal-missing-underscore) The name "DeepReadonly" should be prefixed with an underscore because the declaration is marked as @internal
-//
-// @internal
+// @public
 export type DeepReadonly<T> = {
     readonly [P in keyof T]: DeepReadonly<T[P]>;
 };
@@ -72,8 +70,6 @@ export namespace Quaternion {
         w: number;
     };
     export function normalize(q: ReadonlyQuaternion): MutableQuaternion;
-    // Warning: (ae-incompatible-release-tags) The symbol "ReadonlyQuaternion" is marked as @public, but its signature references "DeepReadonly" which is marked as @internal
-    //
     // (undocumented)
     export type ReadonlyQuaternion = DeepReadonly<MutableQuaternion>;
     export function rotateTowards(from: ReadonlyQuaternion, to: ReadonlyQuaternion, maxDegreesDelta: number): MutableQuaternion;
@@ -171,6 +167,9 @@ export namespace Vector3 {
     export function Random(): MutableVector3;
     // Warning: (ae-incompatible-release-tags) The symbol "ReadonlyVector3" is marked as @public, but its signature references "DeepReadonly" which is marked as @internal
     //
+
+    export function opposite(value: ReadonlyVector3): MutableVector3;
+
     // (undocumented)
     export type ReadonlyVector3 = DeepReadonly<MutableVector3>;
     export function Right(): MutableVector3;
