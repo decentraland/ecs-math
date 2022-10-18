@@ -193,7 +193,7 @@ export namespace Vector3 {
    * @returns the resulting vector
    */
   export function clone(source: ReadonlyVector3): MutableVector3 {
-    return { ...source }
+    return create(source.x, source.y, source.z)
   }
 
   /**

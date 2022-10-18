@@ -1,4 +1,7 @@
 export * from './Quaternion'
 export * from './Vector3'
+export * from './Color3'
+export * from './Color4'
+export * from './Vector3'
 export * from './types'
 export * from './index'
