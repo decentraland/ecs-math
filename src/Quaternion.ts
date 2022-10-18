@@ -5,27 +5,71 @@ import { Matrix } from './Matrix'
 
 /**
  * @public
+ * Quaternion is a type and a namespace.
+ * - The namespace contains all types and functions to operates with Quaternion
+ * - The type Quaternion is an alias to Quaternion.ReadonlyQuaternion
+ * ```
+ *
+ * // Namespace usage example
+ * const next = Quaternion.add(pointA, velocityA)
+ *
+ * // Type usage example
+ * const readonlyRotation: Quaternion = Quaternion.Zero()
+ * readonlyRotation.x = 0.1 // this FAILS
+ *
+ * // For mutable usage, use `Quaternion.Mutable`
+ * const rotation: Quaternion.Mutable = Quaternion.Identity()
+ * rotation.x = 3.0 // this WORKS
+ * ```
+ */
+export type Quaternion = Quaternion.ReadonlyQuaternion
+
+/**
+ * @public
+ * Quaternion is a type and a namespace.
+ * ```
+ * // The namespace contains all types and functions to operates with Quaternion
+ * const next = Quaternion.add(pointA, velocityA)
+ * // The type Quaternion is an alias to Quaternion.ReadonlyQuaternion
+ * const readonlyRotation: Quaternion = Quaternion.Zero()
+ * readonlyRotation.x = 0.1 // this FAILS
+ *
+ * // For mutable usage, use `Quaternion.Mutable`
+ * const rotation: Quaternion.Mutable = Quaternion.Identity()
+ * rotation.x = 3.0 // this WORKS
+ * ```
  */
 export namespace Quaternion {
   /**
    * @public
+   * For external use, type with `Quaternion`, e.g. `const zeroRotation: Quaternion = Quaternion.Zero()`.
+   * For mutable typing, use `Quaternion.Mutable`, e.g. `const identityQuaternion: Quaternion.Mutable = Quaternion.Identity()`.
+   */
+  export type ReadonlyQuaternion = {
+    readonly x: number
+    readonly y: number
+    readonly z: number
+    readonly w: number
+  }
+
+  /**
+   * @public
+   * For external usage, type with `Quaternion`, e.g. `const zeroRotation: Quaternion = Quaternion.Zero()`.
+   * For mutable typing, use `Quaternion.Mutable`, e.g. `const identityQuaternion: Quaternion.Mutable = Quaternion.Identity()`.
    */
   export type MutableQuaternion = {
-    y: number
     x: number
+    y: number
     z: number
     w: number
   }
 
   /**
    * @public
+   * Type with `Quaternion` for readonly usage, e.g. `const zeroRotation: Quaternion = Quaternion.Zero()`.
+   * For mutable, use `Quaternion.Mutable`, e.g. `const identityQuaternion: Quaternion.Mutable = Quaternion.Identity()`.
    */
-  export type ReadonlyQuaternion = {
-    readonly y: number
-    readonly x: number
-    readonly z: number
-    readonly w: number
-  }
+  export type Mutable = MutableQuaternion
 
   /**
    * Creates a new Quaternion from the given floats
@@ -62,12 +106,12 @@ export namespace Quaternion {
 
   /**
    * Creates a new rotation from the given Euler float angles (y, x, z) and stores it in the target quaternion
-   * @param yaw - defines the rotation around Y axis
-   * @param pitch - defines the rotation around X axis
-   * @param roll - defines the rotation around Z axis
-   * @param result - defines the target quaternion
+   * @param yaw - defines the rotation around Y axis (radians)
+   * @param pitch - defines the rotation around X axis (radians)
+   * @param roll - defines the rotation around Z axis (radians)
+   * @returns result quaternion
    */
-  export function rotationYawPitchRoll(
+  export function fromRotationYawPitchRoll(
     yaw: number,
     pitch: number,
     roll: number
@@ -99,8 +143,12 @@ export namespace Quaternion {
    * @param y - the rotation on the y axis in euler degrees
    * @param z - the rotation on the z axis in euler degrees
    */
-  export function euler(x: number, y: number, z: number): MutableQuaternion {
-    return rotationYawPitchRoll(y * DEG2RAD, x * DEG2RAD, z * DEG2RAD)
+  export function fromEulerDegress(
+    x: number,
+    y: number,
+    z: number
+  ): MutableQuaternion {
+    return fromRotationYawPitchRoll(y * DEG2RAD, x * DEG2RAD, z * DEG2RAD)
   }
 
   /**
@@ -138,6 +186,7 @@ export namespace Quaternion {
    * Returns the angle in degrees between two rotations a and b.
    * @param quat1 - defines the first quaternion
    * @param quat2 - defines the second quaternion
+   * @returns the degress angle
    */
   export function angle(
     quat1: ReadonlyQuaternion,
@@ -282,8 +331,10 @@ export namespace Quaternion {
   /**
    * Gets or sets the euler angle representation of the rotation.
    * Implemented unity-based calculations from: https://stackoverflow.com/a/56055813
+   * @public
+   * @returns a new Vector3 with euler angles degress
    */
-  export function eulerAngles(q: MutableQuaternion) {
+  export function toEulerAngles(q: MutableQuaternion): Vector3.Mutable {
     const out = Vector3.create()
 
     // if the input quaternion is normalized, this is exactly one. Otherwise, this acts as a correction factor for the quaternion's not-normalizedness
@@ -328,12 +379,12 @@ export namespace Quaternion {
 
   /**
    * Creates a new rotation from the given Euler float angles (y, x, z) and stores it in the target quaternion
-   * @param yaw - defines the rotation around Y axis
-   * @param pitch - defines the rotation around X axis
-   * @param roll - defines the rotation around Z axis
+   * @param yaw - defines the rotation around Y axis (radians)
+   * @param pitch - defines the rotation around X axis (radians)
+   * @param roll - defines the rotation around Z axis (radians)
    * @param result - defines the target quaternion
    */
-  export function rotationYawPitchRollToRef(
+  export function fromRotationYawPitchRollToRef(
     yaw: number,
     pitch: number,
     roll: number,
@@ -505,7 +556,13 @@ export namespace Quaternion {
     result.w = -self.x * q1.x - self.y * q1.y - self.z * q1.z + self.w * q1.w
   }
 
-  export function angleAxis(
+  /**
+   *
+   * @param degress - the angle degress
+   * @param axis - vector3
+   * @returns a new Quaternion
+   */
+  export function fromAngleAxis(
     degress: number,
     axis: Vector3.ReadonlyVector3
   ): MutableQuaternion {
@@ -535,13 +592,13 @@ export namespace Quaternion {
    * @param axis3 - defines the third axis
    * @returns the new quaternion
    */
-  export function rotationQuaternionFromAxis(
+  export function fromAxisToRotationQuaternion(
     axis1: Vector3.ReadonlyVector3,
     axis2: Vector3.ReadonlyVector3,
     axis3: Vector3.ReadonlyVector3
   ): MutableQuaternion {
     const quat = Quaternion.create(0.0, 0.0, 0.0, 0.0)
-    rotationQuaternionFromAxisToRef(axis1, axis2, axis3, quat)
+    fromAxisToRotationQuaternionToRef(axis1, axis2, axis3, quat)
     return quat
   }
 
@@ -552,7 +609,7 @@ export namespace Quaternion {
    * @param axis3 - defines the third axis
    * @param ref - defines the target quaternion
    */
-  export function rotationQuaternionFromAxisToRef(
+  export function fromAxisToRotationQuaternionToRef(
     axis1: Vector3.ReadonlyVector3,
     axis2: Vector3.ReadonlyVector3,
     axis3: Vector3.ReadonlyVector3,
@@ -573,5 +630,36 @@ export namespace Quaternion {
    */
   export function Zero(): MutableQuaternion {
     return create(0.0, 0.0, 0.0, 0.0)
+  }
+
+  /**
+   * @public
+   * Rotates the transform so the forward vector points at target's current position.
+   */
+  export function fromLookAt(
+    position: Vector3.ReadonlyVector3,
+    target: Vector3.ReadonlyVector3,
+    worldUp: Vector3.ReadonlyVector3 = Vector3.Up()
+  ) {
+    const result = Quaternion.Identity()
+    fromLookAtToRef(position, target, worldUp, result)
+    return result
+  }
+
+  /**
+   * @public
+   * Rotates the transform so the forward vector points at target's current position.
+   */
+  export function fromLookAtToRef(
+    position: Vector3.ReadonlyVector3,
+    target: Vector3.ReadonlyVector3,
+    worldUp: Vector3.ReadonlyVector3 = Vector3.Up(),
+    result: MutableQuaternion
+  ): void {
+    const m = Matrix.Identity()
+    Matrix.lookAtLHToRef(position, target, worldUp, m)
+    Matrix.invertToRef(m, m)
+
+    Quaternion.fromRotationMatrixToRef(m, result)
   }
 }
