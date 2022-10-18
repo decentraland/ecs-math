@@ -1,9 +1,5 @@
 /** @public */
 export type FloatArray = number[]
-// /** @public */
-// export type float = number
-// /** @public */
-// export type double = number
 
 /**
  * Constant used to convert a value to gamma space
@@ -34,18 +30,3 @@ export const DEG2RAD = Math.PI / 180
  * @public
  */
 export const RAD2DEG = 360 / (Math.PI * 2)
-
-// /**
-//  * Interface for the size containing width and height
-//  * @public
-//  */
-// export interface ISize {
-//   /**
-//    * Width
-//    */
-//   width: number
-//   /**
-//    * Heighht
-//    */
-//   height: number
-// }
