@@ -67,13 +67,13 @@ export namespace Matrix {
   }
 
   let _updateFlagSeed = 0
-  const _identityReadOnly = {} as MutableMatrix
+  const _identityReadonly = {} as MutableMatrix
 
   /**
    * Gets an identity matrix that must not be updated
    */
-  export function IdentityReadOnly(): ReadonlyMatrix {
-    return _identityReadOnly
+  export function IdentityReadonly(): ReadonlyMatrix {
+    return _identityReadonly
   }
 
   /**
@@ -595,7 +595,7 @@ export namespace Matrix {
     result: MutableMatrix
   ): void {
     const quaternionResult = Quaternion.Zero()
-    Quaternion.rotationYawPitchRollToRef(yaw, pitch, roll, quaternionResult)
+    Quaternion.fromRotationYawPitchRollToRef(yaw, pitch, roll, quaternionResult)
     fromQuaternionToRef(quaternionResult, result)
   }
 
