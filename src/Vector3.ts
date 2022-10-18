@@ -5,10 +5,56 @@ import { Scalar } from './Scalar'
 
 /**
  * @public
+ * Vector3 is a type and a namespace.
+ * - The namespace contains all types and functions to operates with Vector3
+ * - The type Vector3 is an alias to Vector3.ReadonlyVector3
+ * ```
+ *
+ * // Namespace usage example
+ * const next = Vector3.add(pointA, velocityA)
+ *
+ * // Type usage example
+ * const readonlyPosition: Vector3 = Vector3.Zero()
+ * readonlyPosition.x = 0.1 // this FAILS
+ *
+ * // For mutable usage, use `Vector3.Mutable`
+ * const position: Vector3.Mutable = Vector3.One()
+ * position.x = 3.0 // this WORKS
+ * ```
+ */
+export type Vector3 = Vector3.ReadonlyVector3
+
+/**
+ * @public
+ * Vector3 is a type and a namespace.
+ * ```
+ * // The namespace contains all types and functions to operates with Vector3
+ * const next = Vector3.add(pointA, velocityA)
+ * // The type Vector3 is an alias to Vector3.ReadonlyVector3
+ * const readonlyPosition: Vector3 = Vector3.Zero()
+ * readonlyPosition.x = 0.1 // this FAILS
+ *
+ * // For mutable usage, use `Vector3.Mutable`
+ * const position: Vector3.Mutable = Vector3.One()
+ * position.x = 3.0 // this WORKS
+ * ```
  */
 export namespace Vector3 {
   /**
    * @public
+   * For external use, type with `Vector3`, e.g. `const zeroPosition: Vector3 = Vector3.Zero()`.
+   * For mutable typing, use `Vector3.Mutable`, e.g. `const upVector: Vector3.Mutable = Vector3.Up()`.
+   */
+  export type ReadonlyVector3 = {
+    readonly x: number
+    readonly y: number
+    readonly z: number
+  }
+
+  /**
+   * @public
+   * For external usage, type with `Vector3`, e.g. `const zeroPosition: Vector3 = Vector3.Zero()`.
+   * For mutable typing, use `Vector3.Mutable`, e.g. `const upVector: Vector3.Mutable = Vector3.Up()`.
    */
   export type MutableVector3 = {
     x: number
@@ -18,12 +64,10 @@ export namespace Vector3 {
 
   /**
    * @public
+   * Type with `Vector3` for readonly usage, e.g. `const zeroPosition: Vector3 = Vector3.Zero()`.
+   * For mutable, use `Vector3.Mutable`, e.g. `const upVector: Vector3.Mutable = Vector3.Up()`.
    */
-  export type ReadonlyVector3 = {
-    readonly x: number
-    readonly y: number
-    readonly z: number
-  }
+  export type Mutable = MutableVector3
 
   /**
    * Gets a boolean indicating that the vector is non uniform meaning x, y or z are not all the same
@@ -40,11 +84,6 @@ export namespace Vector3 {
     if (absX !== absZ) {
       return true
     }
-
-    // // These lines will never run
-    // if (absY !== absZ) {
-    //   return true
-    // }
 
     return false
   }
@@ -164,7 +203,10 @@ export namespace Vector3 {
    * Copy source into dest
    *
    */
-  export function copy(source: ReadonlyVector3, dest: MutableVector3): void {
+  export function copyFrom(
+    source: ReadonlyVector3,
+    dest: MutableVector3
+  ): void {
     dest.x = source.x
     dest.y = source.y
     dest.z = source.z
@@ -302,7 +344,7 @@ export namespace Vector3 {
   // Properties
   /**
    * Gets the length of the Vector3
-   * @returns the length of the Vecto3
+   * @returns the length of the Vector3
    */
   export function length(vector: ReadonlyVector3): number {
     return Math.sqrt(
@@ -372,7 +414,7 @@ export namespace Vector3 {
     result: MutableVector3
   ): void {
     if (len === 0 || len === 1.0) {
-      copy(vector, result)
+      copyFrom(vector, result)
       return
     }
     scaleToRef(vector, 1.0 / len, result)
@@ -530,8 +572,8 @@ export namespace Vector3 {
     left: ReadonlyVector3,
     right: ReadonlyVector3
   ): MutableVector3 {
-    const result = Vector3.Zero()
-    Vector3.crossToRef(left, right, result)
+    const result = Zero()
+    crossToRef(left, right, result)
     return result
   }
 
@@ -563,7 +605,7 @@ export namespace Vector3 {
     vector: ReadonlyVector3,
     transformation: Matrix.ReadonlyMatrix
   ): MutableVector3 {
-    const result = Vector3.Zero()
+    const result = Zero()
     transformCoordinatesToRef(vector, transformation, result)
     return result
   }
@@ -627,7 +669,7 @@ export namespace Vector3 {
     vector: ReadonlyVector3,
     transformation: Matrix.ReadonlyMatrix
   ): MutableVector3 {
-    const result = Vector3.Zero()
+    const result = Zero()
     transformNormalToRef(vector, transformation, result)
     return result
   }
@@ -900,7 +942,7 @@ export namespace Vector3 {
     axis2: MutableVector3,
     axis3: MutableVector3
   ): MutableVector3 {
-    const rotation = Vector3.Zero()
+    const rotation = Zero()
     rotationFromAxisToRef(axis1, axis2, axis3, rotation)
     return rotation
   }
@@ -919,8 +961,8 @@ export namespace Vector3 {
     result: MutableVector3
   ): void {
     const quat = Quaternion.create()
-    Quaternion.rotationQuaternionFromAxisToRef(axis1, axis2, axis3, quat)
-    copy(Quaternion.eulerAngles(quat), result)
+    Quaternion.fromAxisToRotationQuaternionToRef(axis1, axis2, axis3, quat)
+    copyFrom(Quaternion.toEulerAngles(quat), result)
   }
 
   /**

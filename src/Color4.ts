@@ -4,12 +4,47 @@ import { ToLinearSpace, ToGammaSpace } from './types'
 
 /**
  * @public
+ * Color4 is a type and a namespace.
+ * - The namespace contains all types and functions to operates with Color4
+ * - The type Color4 is an alias to Color4.ReadonlyColor4
+ * ```
+ *
+ * // Namespace usage example
+ * Color4.add(blue, red) // sum component by component resulting pink
+ *
+ * // Type usage example
+ * const readonlyBlue: Color4 = Color4.Blue()
+ * readonlyBlue.a = 0.1 // this FAILS
+ *
+ * // For mutable usage, use `Color4.Mutable`
+ * const blue: Color4.Mutable = Color4.Blue()
+ * blue.a = 0.1 // this WORKS
+ * ```
+ */
+export type Color4 = Color4.ReadonlyColor4
+
+/**
+ * @public
+ * Color4 is a type and a namespace.
+ * ```
+ * // The namespace contains all types and functions to operates with Color4
+ * Color4.add(blue, red) // sum component by component resulting pink
+ * // The type Color4 is an alias to Color4.ReadonlyColor4
+ * const readonlyBlue: Color4 = Color4.Blue()
+ * readonlyBlue.a = 0.1 // this FAILS
+ *
+ * // For mutable usage, use `Color4.Mutable`
+ * const blue: Color4.Mutable = Color4.Blue()
+ * blue.a = 0.1 // this WORKS
+ * ```
  */
 export namespace Color4 {
   /**
    * @public
+   * For external use, type with `Color4`, e.g. `const blackColor: Color4 = Color4.Black()`.
+   * For mutable typing, use `Color4.Mutable`, e.g. `const redColor: Color4.Mutable = Color4.Red()`.
    */
-  export type ReadOnlyColor4 = {
+  export type ReadonlyColor4 = {
     readonly r: number
     readonly g: number
     readonly b: number
@@ -18,6 +53,8 @@ export namespace Color4 {
 
   /**
    * @public
+   * For external usage, type with `Color4`, e.g. `const blackColor: Color4 = Color4.Black()`.
+   * For mutable typing, use `Color4.Mutable`, e.g. `const redColor: Color4.Mutable = Color4.Red()`.
    */
   export type MutableColor4 = {
     r: number
@@ -25,6 +62,13 @@ export namespace Color4 {
     b: number
     a: number
   }
+
+  /**
+   * @public
+   * Type with `Color4` for readonly usage, e.g. `const blackColor: Color4 = Color4.Black()`.
+   * For mutable, use `Color4.Mutable`, e.g. `const redColor: Color4.Mutable = Color4.Red()`.
+   */
+  export type Mutable = MutableColor4
 
   /**
    * Creates create mutable Color4 from red, green, blue values, all between 0 and 1
@@ -57,7 +101,7 @@ export namespace Color4 {
   // Statics
 
   /**
-   * Creates a create from the string containing valid hexadecimal values
+   * Creates a Color4 from the string containing valid hexadecimal values
    * @param hex - defines a string containing valid hexadecimal values
    * @returns create mutable Color4
    */
@@ -82,8 +126,8 @@ export namespace Color4 {
    * @returns create mutable Color4
    */
   export function lerp(
-    left: ReadOnlyColor4,
-    right: ReadOnlyColor4,
+    left: ReadonlyColor4,
+    right: ReadonlyColor4,
     amount: number
   ): MutableColor4 {
     const result = create(0.0, 0.0, 0.0, 0.0)
@@ -99,8 +143,8 @@ export namespace Color4 {
    * @param result - defines the Color4 object where to store data
    */
   export function lerpToRef(
-    left: ReadOnlyColor4,
-    right: ReadOnlyColor4,
+    left: ReadonlyColor4,
+    right: ReadonlyColor4,
     amount: number,
     result: MutableColor4
   ): void {
@@ -189,20 +233,20 @@ export namespace Color4 {
   }
 
   /**
-   * Creates a create from a Color3 and an alpha value
+   * Creates a Color4 from a Color3 and an alpha value
    * @param color3 - defines the source Color3 to read from
    * @param alpha - defines the alpha component (1.0 by default)
    * @returns create mutable Color4
    */
   export function fromColor3(
-    color3: Color3.ReadOnlyColor3,
+    color3: Color3.ReadonlyColor3,
     alpha: number = 1.0
   ): MutableColor4 {
     return create(color3.r, color3.g, color3.b, alpha)
   }
 
   /**
-   * Creates a create from the starting index element of the given array
+   * Creates a Color4 from the starting index element of the given array
    * @param array - defines the source array to read from
    * @param offset - defines the offset in the source array
    * @returns create mutable Color4
@@ -210,7 +254,7 @@ export namespace Color4 {
   export function fromArray(
     array: ArrayLike<number>,
     offset: number = 0
-  ): ReadOnlyColor4 {
+  ): ReadonlyColor4 {
     return create(
       array[offset],
       array[offset + 1],
@@ -271,8 +315,8 @@ export namespace Color4 {
    * @returns
    */
   export function addToRef(
-    a: ReadOnlyColor4,
-    b: ReadOnlyColor4,
+    a: ReadonlyColor4,
+    b: ReadonlyColor4,
     ref: MutableColor4
   ): void {
     ref.r = a.r + b.r
@@ -288,7 +332,7 @@ export namespace Color4 {
    * @returns the current Color4 object
    */
   export function toArray(
-    value: ReadOnlyColor4,
+    value: ReadonlyColor4,
     array: number[],
     index: number = 0
   ): void {
@@ -299,13 +343,13 @@ export namespace Color4 {
   }
 
   /**
-   * Creates a create set with the added values of the current Color4 and of the given one
+   * Creates a Color4 set with the added values of the current Color4 and of the given one
    * @param right - defines the second operand
    * @returns create mutable Color4
    */
   export function add(
-    value: ReadOnlyColor4,
-    right: ReadOnlyColor4
+    value: ReadonlyColor4,
+    right: ReadonlyColor4
   ): MutableColor4 {
     const ret: MutableColor4 = Clear()
     addToRef(value, right, ret)
@@ -313,14 +357,14 @@ export namespace Color4 {
   }
 
   /**
-   * Creates a create set with the subtracted values of the given one from the current Color4
+   * Creates a Color4 set with the subtracted values of the given one from the current Color4
    * @param right - defines the second operand
    * @returns create mutable Color4
    */
   export function subtract(
-    value: ReadOnlyColor4,
-    right: ReadOnlyColor4
-  ): ReadOnlyColor4 {
+    value: ReadonlyColor4,
+    right: ReadonlyColor4
+  ): ReadonlyColor4 {
     const ret: MutableColor4 = Clear()
     subtractToRef(value, right, ret)
     return ret
@@ -333,8 +377,8 @@ export namespace Color4 {
    * @returns the current Color4 object
    */
   export function subtractToRef(
-    a: ReadOnlyColor4,
-    b: ReadOnlyColor4,
+    a: ReadonlyColor4,
+    b: ReadonlyColor4,
     result: MutableColor4
   ): void {
     result.r = a.r - b.r
@@ -344,11 +388,11 @@ export namespace Color4 {
   }
 
   /**
-   * Creates a create with the current Color4 values multiplied by scale
+   * Creates a Color4 with the current Color4 values multiplied by scale
    * @param scale - defines the scaling factor to apply
    * @returns create mutable Color4
    */
-  export function scale(value: ReadOnlyColor4, scale: number): ReadOnlyColor4 {
+  export function scale(value: ReadonlyColor4, scale: number): ReadonlyColor4 {
     return create(
       value.r * scale,
       value.g * scale,
@@ -363,7 +407,7 @@ export namespace Color4 {
    * @param result - defines the Color4 object where to store the result
    */
   export function scaleToRef(
-    value: ReadOnlyColor4,
+    value: ReadonlyColor4,
     scale: number,
     result: MutableColor4
   ): void {
@@ -379,7 +423,7 @@ export namespace Color4 {
    * @param result - defines the Color4 object where to store the result
    */
   export function scaleAndAddToRef(
-    value: ReadOnlyColor4,
+    value: ReadonlyColor4,
     scale: number,
     result: MutableColor4
   ): void {
@@ -396,7 +440,7 @@ export namespace Color4 {
    * @param result - defines color to store the result into.
    */
   export function clampToRef(
-    value: ReadOnlyColor4,
+    value: ReadonlyColor4,
     min: number = 0,
     max: number = 1,
     result: MutableColor4
@@ -413,9 +457,9 @@ export namespace Color4 {
    * @returns create mutable Color4
    */
   export function multiply(
-    value: ReadOnlyColor4,
-    color: ReadOnlyColor4
-  ): ReadOnlyColor4 {
+    value: ReadonlyColor4,
+    color: ReadonlyColor4
+  ): ReadonlyColor4 {
     return create(
       value.r * color.r,
       value.g * color.g,
@@ -431,8 +475,8 @@ export namespace Color4 {
    * @returns the result Color4
    */
   export function multiplyToRef(
-    value: ReadOnlyColor4,
-    color: ReadOnlyColor4,
+    value: ReadonlyColor4,
+    color: ReadonlyColor4,
     result: MutableColor4
   ): void {
     result.r = value.r * color.r
@@ -445,7 +489,7 @@ export namespace Color4 {
    * Creates a string with the Color4 current values
    * @returns the string representation of the Color4 object
    */
-  export function toString(value: ReadOnlyColor4): string {
+  export function toString(value: ReadonlyColor4): string {
     return (
       '{R: ' +
       value.r +
@@ -463,7 +507,7 @@ export namespace Color4 {
    * Compute the Color4 hash code
    * @returns an unique number that can be used to hash Color4 objects
    */
-  export function getHashCode(value: ReadOnlyColor4): number {
+  export function getHashCode(value: ReadonlyColor4): number {
     let hash = value.r || 0
     hash = (hash * 397) ^ (value.g || 0)
     hash = (hash * 397) ^ (value.b || 0)
@@ -472,10 +516,10 @@ export namespace Color4 {
   }
 
   /**
-   * Creates a create copied from the current one
+   * Creates a Color4 copied from the current one
    * @returns create mutable Color4
    */
-  export function clone(value: ReadOnlyColor4): MutableColor4 {
+  export function clone(value: ReadonlyColor4): MutableColor4 {
     return create(value.r, value.g, value.b, value.a)
   }
 
@@ -485,7 +529,7 @@ export namespace Color4 {
    * @param dest - defines the destination Color4 object
    * @returns
    */
-  export function copyFrom(source: ReadOnlyColor4, dest: MutableColor4): void {
+  export function copyFrom(source: ReadonlyColor4, dest: MutableColor4): void {
     dest.r = source.r
     dest.g = source.g
     dest.b = source.b
@@ -538,7 +582,7 @@ export namespace Color4 {
    * Compute the Color4 hexadecimal code as a string
    * @returns a string containing the hexadecimal representation of the Color4 object
    */
-  export function toHexString(value: ReadOnlyColor4): string {
+  export function toHexString(value: ReadonlyColor4): string {
     const intR = (value.r * 255) | 0
     const intG = (value.g * 255) | 0
     const intB = (value.b * 255) | 0
@@ -553,10 +597,10 @@ export namespace Color4 {
   }
 
   /**
-   * Computes a create converted from the current one to linear space
+   * Computes a Color4 converted from the current one to linear space
    * @returns create mutable Color4
    */
-  export function toLinearSpace(value: ReadOnlyColor4): MutableColor4 {
+  export function toLinearSpace(value: ReadonlyColor4): MutableColor4 {
     const convertedColor = create()
     toLinearSpaceToRef(value, convertedColor)
     return convertedColor
@@ -568,7 +612,7 @@ export namespace Color4 {
    * @returns the unmodified Color4
    */
   export function toLinearSpaceToRef(
-    value: ReadOnlyColor4,
+    value: ReadonlyColor4,
     ref: MutableColor4
   ): void {
     ref.r = Math.pow(value.r, ToLinearSpace)
@@ -578,10 +622,10 @@ export namespace Color4 {
   }
 
   /**
-   * Computes a create converted from the current one to gamma space
+   * Computes a Color4 converted from the current one to gamma space
    * @returns create mutable Color4
    */
-  export function toGammaSpace(value: ReadOnlyColor4): ReadOnlyColor4 {
+  export function toGammaSpace(value: ReadonlyColor4): ReadonlyColor4 {
     const convertedColor = create()
     toGammaSpaceToRef(value, convertedColor)
     return convertedColor
@@ -593,7 +637,7 @@ export namespace Color4 {
    * @returns the unmodified Color4
    */
   export function toGammaSpaceToRef(
-    value: ReadOnlyColor4,
+    value: ReadonlyColor4,
     convertedColor: MutableColor4
   ): void {
     convertedColor.r = Math.pow(value.r, ToGammaSpace)

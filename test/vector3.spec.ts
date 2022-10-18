@@ -110,6 +110,8 @@ describe('ECS Vector3 - Next tests', () => {
 
     Vector3.subtractToRef(vector1, vector2, result)
     expect(result.x).toEqual(8)
+    @leanmendoza
+    
     expect(result.y).toEqual(8)
     expect(result.z).toEqual(-12)
 
