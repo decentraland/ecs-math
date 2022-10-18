@@ -203,6 +203,32 @@ export namespace Quaternion {
 export const RAD2DEG: number;
 
 // @public
+export namespace Scalar {
+    const TwoPi: number;
+    export function clamp(value: number, min?: number, max?: number): number;
+    export function deltaAngle(current: number, target: number): number;
+    export function denormalize(normalized: number, min: number, max: number): number;
+    export function hermite(value1: number, tangent1: number, value2: number, tangent2: number, amount: number): number;
+    export function inverseLerp(a: number, b: number, value: number): number;
+    export function lerp(start: number, end: number, amount: number): number;
+    export function lerpAngle(start: number, end: number, amount: number): number;
+    export function log2(value: number): number;
+    export function moveTowards(current: number, target: number, maxDelta: number): number;
+    export function moveTowardsAngle(current: number, target: number, maxDelta: number): number;
+    export function normalize(value: number, min: number, max: number): number;
+    export function normalizeRadians(angle: number): number;
+    export function percentToRange(percent: number, min: number, max: number): number;
+    export function pingPong(tx: number, length: number): number;
+    export function randomRange(min: number, max: number): number;
+    export function rangeToPercent(num: number, min: number, max: number): number;
+    export function repeat(value: number, length: number): number;
+    export function sign(value: number): number;
+    export function smoothStep(from: number, to: number, tx: number): number;
+    export function toHex(i: number): string;
+    export function withinEpsilon(a: number, b: number, epsilon?: number): boolean;
+}
+
+// @public
 export const ToGammaSpace: number;
 
 // @public
