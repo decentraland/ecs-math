@@ -64,7 +64,7 @@ describe('ECS Vector3 - Next tests', () => {
   it('vector3.rotate', () => {
     expect(
       vector3ToString(
-        Vector3.rotate(Vector3.One(), Quaternion.fromEulerDegress(45, 60, 90))
+        Vector3.rotate(Vector3.One(), Quaternion.fromEulerDegrees(45, 60, 90))
       )
     ).toEqual(results.rotatedWithQuat01)
 
@@ -72,7 +72,7 @@ describe('ECS Vector3 - Next tests', () => {
       vector3ToString(
         Vector3.rotate(
           Vector3.create(1, 0, -0.5),
-          Quaternion.fromEulerDegress(-165, 55, 125)
+          Quaternion.fromEulerDegrees(-165, 55, 125)
         )
       )
     ).toEqual(results.rotatedWithQuat02)
@@ -81,7 +81,7 @@ describe('ECS Vector3 - Next tests', () => {
       vector3ToString(
         Vector3.rotate(
           Vector3.create(100, -90, 35),
-          Quaternion.fromEulerDegress(45, 60, 90)
+          Quaternion.fromEulerDegrees(45, 60, 90)
         )
       )
     ).toEqual(results.rotatedWithQuat03)
@@ -90,7 +90,7 @@ describe('ECS Vector3 - Next tests', () => {
       vector3ToString(
         Vector3.rotate(
           Vector3.create(100, 200, 300),
-          Quaternion.fromEulerDegress(47.572, 13.179, 83.369)
+          Quaternion.fromEulerDegrees(47.572, 13.179, 83.369)
         )
       )
     ).toEqual(results.rotatedWithQuat04)

@@ -71,8 +71,8 @@ describe('ECS Quaternion - Next tests', () => {
   it('Quaternion.angle', () => {
     expect(
       Quaternion.angle(
-        Quaternion.fromEulerDegress(0, 0, 0),
-        Quaternion.fromEulerDegress(90, 90, 90)
+        Quaternion.fromEulerDegrees(0, 0, 0),
+        Quaternion.fromEulerDegrees(90, 90, 90)
       )
         .toString()
         .substr(0, 5)
@@ -80,8 +80,8 @@ describe('ECS Quaternion - Next tests', () => {
 
     expect(
       Quaternion.angle(
-        Quaternion.fromEulerDegress(10, 0, 10),
-        Quaternion.fromEulerDegress(360, 0, -1)
+        Quaternion.fromEulerDegrees(10, 0, 10),
+        Quaternion.fromEulerDegrees(360, 0, -1)
       )
         .toString()
         .substr(0, 5)
@@ -89,8 +89,8 @@ describe('ECS Quaternion - Next tests', () => {
 
     expect(
       Quaternion.angle(
-        Quaternion.fromEulerDegress(0, 5, 0),
-        Quaternion.fromEulerDegress(0, 0, 0)
+        Quaternion.fromEulerDegrees(0, 5, 0),
+        Quaternion.fromEulerDegrees(0, 0, 0)
       )
         .toString()
         .substr(0, 5)
@@ -98,33 +98,33 @@ describe('ECS Quaternion - Next tests', () => {
 
     expect(
       Quaternion.angle(
-        Quaternion.fromEulerDegress(360, -360, 0),
-        Quaternion.fromEulerDegress(180, 90, 0)
+        Quaternion.fromEulerDegrees(360, -360, 0),
+        Quaternion.fromEulerDegrees(180, 90, 0)
       )
         .toString()
         .substr(0, 5)
     ).toEqual(results.staticAngle04.substr(0, 5))
   })
 
-  it('Quaternion.fromEulerDegress', () => {
-    expect(quaternionToString(Quaternion.fromEulerDegress(0, 0, 0))).toEqual(
+  it('Quaternion.fromEulerDegrees', () => {
+    expect(quaternionToString(Quaternion.fromEulerDegrees(0, 0, 0))).toEqual(
       results.staticEuler01
     )
 
-    expect(quaternionToString(Quaternion.fromEulerDegress(90, 0, 90))).toEqual(
+    expect(quaternionToString(Quaternion.fromEulerDegrees(90, 0, 90))).toEqual(
       results.staticEuler02
     )
 
     expect(
-      quaternionToString(Quaternion.fromEulerDegress(45, 180, -1))
+      quaternionToString(Quaternion.fromEulerDegrees(45, 180, -1))
     ).toEqual(results.staticEuler03)
 
     expect(
-      quaternionToString(Quaternion.fromEulerDegress(360, 110, -180))
+      quaternionToString(Quaternion.fromEulerDegrees(360, 110, -180))
     ).toEqual(results.staticEuler04)
 
     expect(
-      quaternionToString(Quaternion.fromEulerDegress(100, 10, 400))
+      quaternionToString(Quaternion.fromEulerDegrees(100, 10, 400))
     ).toEqual(results.staticEuler05)
   })
 
@@ -132,8 +132,8 @@ describe('ECS Quaternion - Next tests', () => {
     expect(
       quaternionToString(
         Quaternion.rotateTowards(
-          Quaternion.fromEulerDegress(10, 10, 10),
-          Quaternion.fromEulerDegress(100, 100, 100),
+          Quaternion.fromEulerDegrees(10, 10, 10),
+          Quaternion.fromEulerDegrees(100, 100, 100),
           0.1
         )
       )
@@ -142,8 +142,8 @@ describe('ECS Quaternion - Next tests', () => {
     expect(
       quaternionToString(
         Quaternion.rotateTowards(
-          Quaternion.fromEulerDegress(0, 10, -0),
-          Quaternion.fromEulerDegress(0, 9, 45),
+          Quaternion.fromEulerDegrees(0, 10, -0),
+          Quaternion.fromEulerDegrees(0, 9, 45),
           0.1
         )
       )
@@ -152,8 +152,8 @@ describe('ECS Quaternion - Next tests', () => {
     expect(
       quaternionToString(
         Quaternion.rotateTowards(
-          Quaternion.fromEulerDegress(360, -10, 10),
-          Quaternion.fromEulerDegress(0, 100, 0),
+          Quaternion.fromEulerDegrees(360, -10, 10),
+          Quaternion.fromEulerDegrees(0, 100, 0),
           0.1
         )
       )
@@ -162,8 +162,8 @@ describe('ECS Quaternion - Next tests', () => {
     expect(
       quaternionToString(
         Quaternion.rotateTowards(
-          Quaternion.fromEulerDegress(0, 0, 0),
-          Quaternion.fromEulerDegress(0, 0, 0),
+          Quaternion.fromEulerDegrees(0, 0, 0),
+          Quaternion.fromEulerDegrees(0, 0, 0),
           0.1
         )
       )
@@ -267,25 +267,25 @@ describe('ECS Quaternion - Next tests', () => {
   it('quaternion.toEulerAngles', () => {
     expect(
       vector3ToString(
-        Quaternion.toEulerAngles(Quaternion.fromEulerDegress(10, 10, 10))
+        Quaternion.toEulerAngles(Quaternion.fromEulerDegrees(10, 10, 10))
       )
     ).toEqual(results.eulerAngles01)
 
     expect(
       vector3ToString(
-        Quaternion.toEulerAngles(Quaternion.fromEulerDegress(0, 90, 0))
+        Quaternion.toEulerAngles(Quaternion.fromEulerDegrees(0, 90, 0))
       )
     ).toEqual(results.eulerAngles02)
 
     expect(
       vector3ToString(
-        Quaternion.toEulerAngles(Quaternion.fromEulerDegress(100, 10, 400))
+        Quaternion.toEulerAngles(Quaternion.fromEulerDegrees(100, 10, 400))
       )
     ).toEqual(results.eulerAngles03)
 
     expect(
       vector3ToString(
-        Quaternion.toEulerAngles(Quaternion.fromEulerDegress(360, 10, 0))
+        Quaternion.toEulerAngles(Quaternion.fromEulerDegrees(360, 10, 0))
       )
     ).toEqual(results.eulerAngles04)
   })
@@ -293,25 +293,25 @@ describe('ECS Quaternion - Next tests', () => {
   it('quaternion.normalized', () => {
     expect(
       quaternionToString(
-        Quaternion.normalize(Quaternion.fromEulerDegress(10, 10, 10))
+        Quaternion.normalize(Quaternion.fromEulerDegrees(10, 10, 10))
       )
     ).toEqual(results.normalized01)
 
     expect(
       quaternionToString(
-        Quaternion.normalize(Quaternion.fromEulerDegress(0, 90, 0))
+        Quaternion.normalize(Quaternion.fromEulerDegrees(0, 90, 0))
       )
     ).toEqual(results.normalized02)
 
     expect(
       quaternionToString(
-        Quaternion.normalize(Quaternion.fromEulerDegress(100, 10, 400))
+        Quaternion.normalize(Quaternion.fromEulerDegrees(100, 10, 400))
       )
     ).toEqual(results.normalized03)
 
     expect(
       quaternionToString(
-        Quaternion.normalize(Quaternion.fromEulerDegress(360, 10, 0))
+        Quaternion.normalize(Quaternion.fromEulerDegrees(360, 10, 0))
       )
     ).toEqual(results.normalized04)
   })
@@ -379,8 +379,8 @@ describe('ECS Quaternion - Next tests', () => {
     expect(
       quaternionToString(
         Quaternion.slerp(
-          Quaternion.fromEulerDegress(10, 10, 10),
-          Quaternion.fromEulerDegress(45, 45, 45),
+          Quaternion.fromEulerDegrees(10, 10, 10),
+          Quaternion.fromEulerDegrees(45, 45, 45),
           1
         )
       )
@@ -389,8 +389,8 @@ describe('ECS Quaternion - Next tests', () => {
     expect(
       quaternionToString(
         Quaternion.slerp(
-          Quaternion.fromEulerDegress(-10, -0, 110),
-          Quaternion.fromEulerDegress(4100, 100, 100),
+          Quaternion.fromEulerDegrees(-10, -0, 110),
+          Quaternion.fromEulerDegrees(4100, 100, 100),
           0.00123
         )
       )
@@ -399,8 +399,8 @@ describe('ECS Quaternion - Next tests', () => {
     expect(
       quaternionToString(
         Quaternion.slerp(
-          Quaternion.fromEulerDegress(0, 123, -123),
-          Quaternion.fromEulerDegress(360, -10, 360),
+          Quaternion.fromEulerDegrees(0, 123, -123),
+          Quaternion.fromEulerDegrees(360, -10, 360),
           0.9
         )
       )
@@ -409,8 +409,8 @@ describe('ECS Quaternion - Next tests', () => {
     expect(
       quaternionToString(
         Quaternion.slerp(
-          Quaternion.fromEulerDegress(1, 1, 0),
-          Quaternion.fromEulerDegress(12, 12341, 1),
+          Quaternion.fromEulerDegrees(1, 1, 0),
+          Quaternion.fromEulerDegrees(12, 12341, 1),
           0.4
         )
       )

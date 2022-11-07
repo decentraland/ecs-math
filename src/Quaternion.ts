@@ -143,7 +143,7 @@ export namespace Quaternion {
    * @param y - the rotation on the y axis in euler degrees
    * @param z - the rotation on the z axis in euler degrees
    */
-  export function fromEulerDegress(
+  export function fromEulerDegrees(
     x: number,
     y: number,
     z: number
@@ -186,7 +186,7 @@ export namespace Quaternion {
    * Returns the angle in degrees between two rotations a and b.
    * @param quat1 - defines the first quaternion
    * @param quat2 - defines the second quaternion
-   * @returns the degress angle
+   * @returns the degrees angle
    */
   export function angle(
     quat1: ReadonlyQuaternion,
@@ -332,7 +332,7 @@ export namespace Quaternion {
    * Gets or sets the euler angle representation of the rotation.
    * Implemented unity-based calculations from: https://stackoverflow.com/a/56055813
    * @public
-   * @returns a new Vector3 with euler angles degress
+   * @returns a new Vector3 with euler angles degrees
    */
   export function toEulerAngles(q: MutableQuaternion): Vector3.Mutable {
     const out = Vector3.create()
@@ -558,12 +558,12 @@ export namespace Quaternion {
 
   /**
    *
-   * @param degress - the angle degress
+   * @param degrees - the angle degrees
    * @param axis - vector3
    * @returns a new Quaternion
    */
   export function fromAngleAxis(
-    degress: number,
+    degrees: number,
     axis: Vector3.ReadonlyVector3
   ): MutableQuaternion {
     if (Vector3.lengthSquared(axis) === 0) {
@@ -571,7 +571,7 @@ export namespace Quaternion {
     }
 
     const result: MutableQuaternion = Identity()
-    let radians = degress * DEG2RAD
+    let radians = degrees * DEG2RAD
     radians *= 0.5
 
     const a2: Vector3.MutableVector3 = Vector3.normalize(axis)
