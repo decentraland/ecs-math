@@ -113,7 +113,8 @@ export namespace Color4 {
     const r = parseInt(hex.substring(1, 3), 16)
     const g = parseInt(hex.substring(3, 5), 16)
     const b = parseInt(hex.substring(5, 7), 16)
-    const a = hex.substring(7, 9) ? parseInt(hex.substring(7, 9), 16) : 255
+    const aStr = hex.substring(7, 9)
+    const a = aStr ? parseInt(aStr, 16) : 255
 
     return Color4.fromInts(r, g, b, a)
   }
