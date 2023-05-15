@@ -106,14 +106,14 @@ export namespace Color4 {
    * @returns create mutable Color4
    */
   export function fromHexString(hex: string): MutableColor4 {
-    if (hex.substring(0, 1) !== '#' || hex.length !== 9) {
-      return create(0.0, 0.0, 0.0, 0.0)
+    if (hex.substring(0, 1) !== '#' || (hex.length !== 7 && hex.length !== 9)) {
+      return create(0.0, 0.0, 0.0, 1.0)
     }
 
     const r = parseInt(hex.substring(1, 3), 16)
     const g = parseInt(hex.substring(3, 5), 16)
     const b = parseInt(hex.substring(5, 7), 16)
-    const a = parseInt(hex.substring(7, 9), 16)
+    const a = hex.substring(7, 9) ? parseInt(hex.substring(7, 9), 16) : 255
 
     return Color4.fromInts(r, g, b, a)
   }
