@@ -2239,20 +2239,29 @@ export namespace Matrix {
   ): boolean {
     if (self.isIdentity) {
       if (translation) {
-        translation = Vector3.create(0, 0, 0)
+        translation.x = 0
+        translation.y = 0
+        translation.z = 0
       }
       if (scale) {
-        scale = Vector3.create(0, 0, 0)
+        scale.x = 1
+        scale.y = 1
+        scale.z = 1
       }
       if (rotation) {
-        rotation = Quaternion.create(0, 0, 0, 1)
+        rotation.w = 1
+        rotation.x = 0
+        rotation.y = 0
+        rotation.z = 0
       }
       return true
     }
 
     const m = self._m
     if (translation) {
-      translation = Vector3.create(m[12], m[13], m[14])
+      translation.x = m[12]
+      translation.y = m[13]
+      translation.z = m[14]
     }
 
     const usedScale = scale || Vector3.Zero()
@@ -2266,7 +2275,10 @@ export namespace Matrix {
 
     if (usedScale.x === 0 || usedScale.y === 0 || usedScale.z === 0) {
       if (rotation) {
-        rotation = Quaternion.create(0, 0, 0, 1)
+        rotation.w = 1
+        rotation.x = 0
+        rotation.y = 0
+        rotation.z = 0
       }
       return false
     }
