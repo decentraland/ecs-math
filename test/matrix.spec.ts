@@ -1,3 +1,4 @@
+import { Epsilon, Quaternion, Vector3 } from '../src'
 import { Matrix } from '../src/Matrix'
 
 const results = {
@@ -21,5 +22,36 @@ function matrixToString(m: Matrix.ReadonlyMatrix) {
 describe('ECS Matrix - Next tests', () => {
   it('Matrix.create One', () => {
     expect(matrixToString(Matrix.Identity())).toEqual(results.identity)
+  })
+
+  let tOut: Vector3
+  let sOut: Vector3
+  let rOut: Quaternion
+
+  beforeEach(() => {
+    tOut = Vector3.create(NaN, NaN, NaN)
+    sOut = Vector3.create(NaN, NaN, NaN)
+    rOut = Quaternion.create(NaN, NaN, NaN, NaN)
+  })
+
+  it('Matrix.decompose common case', () => {
+    const t = Vector3.create(1, 2, 3)
+    const r = Quaternion.fromEulerDegrees(15, 25, 35)
+    const s = Vector3.create(2, 2, 2)
+    const m = Matrix.compose(s, r, t)
+    expect(Matrix.decompose(m, sOut, rOut, tOut)).toBe(true)
+    expect(Vector3.equalsWithEpsilon(t, tOut)).toBe(true)
+    expect(Vector3.equalsWithEpsilon(s, sOut)).toBe(true)
+    expect(Math.abs(Quaternion.angle(r, rOut)) < Epsilon).toBe(true)
+  })
+
+  it('Matrix.decompose identity case', () => {
+    expect(Matrix.decompose(Matrix.Identity(), sOut, rOut, tOut)).toBe(true)
+    expect(Vector3.equalsWithEpsilon(tOut, Vector3.Zero())).toBe(true)
+    expect(Vector3.equalsWithEpsilon(sOut, Vector3.One())).toBe(true)
+    expect(
+      Math.abs(Quaternion.angle(rOut, Quaternion.fromEulerDegrees(0, 0, 0))) <
+        Epsilon
+    ).toBe(true)
   })
 })
