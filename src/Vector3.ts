@@ -1,8 +1,8 @@
-import { MathTmp } from './preallocatedVariables'
-import { FloatArray, Epsilon } from './types'
+import { getMathTmp } from './preallocatedVariables'
 import { Matrix } from './Matrix'
 import { Quaternion } from './Quaternion'
 import { Scalar } from './Scalar'
+import { FloatArray, Epsilon } from './types'
 /**
  * @public
  */
@@ -111,6 +111,7 @@ export class Vector3 implements EcsMathReadOnlyVector3 {
     vector1: Vector3,
     normal: EcsMathReadOnlyVector3
   ): number {
+    const MathTmp = getMathTmp()
     const v0: Vector3 = vector0.normalizeToRef(MathTmp.Vector3[1])
     const v1: Vector3 = vector1.normalizeToRef(MathTmp.Vector3[2])
     const dot: number = Vector3.Dot(v0, v1)
@@ -715,6 +716,7 @@ export class Vector3 implements EcsMathReadOnlyVector3 {
     axis3: Vector3,
     ref: Vector3
   ): void {
+    const MathTmp = getMathTmp()
     const quat = MathTmp.Quaternion[0]
     Quaternion.RotationQuaternionFromAxisToRef(axis1, axis2, axis3, quat)
     ref.copyFrom(quat.eulerAngles)

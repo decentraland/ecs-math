@@ -228,19 +228,19 @@ export class Frustum {
 }
 
 // @public
-export interface ISize {
-    height: number;
-    width: number;
-}
-
-// @public
-export const MathTmp: {
+export function getMathTmp(): {
     Vector3: Vector3[];
     Matrix: Matrix[];
     Quaternion: Quaternion[];
     staticUp: Readonly<Vector3>;
     tmpMatrix: Matrix;
 };
+
+// @public
+export interface ISize {
+    height: number;
+    width: number;
+}
 
 // @public
 export class Matrix {
