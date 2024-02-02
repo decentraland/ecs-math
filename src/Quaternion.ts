@@ -1,8 +1,8 @@
+import { getMathTmp } from './preallocatedVariables'
 import { Matrix } from './Matrix'
 import { Vector3 } from './Vector3'
-import { MathTmp } from './preallocatedVariables'
-import { DEG2RAD, RAD2DEG } from './types'
 import { Scalar } from './Scalar'
+import { DEG2RAD, RAD2DEG } from './types'
 
 /**
  * @public
@@ -357,6 +357,7 @@ export class Quaternion implements EcsMathReadOnlyQuaternion {
     axis3: Vector3,
     ref: Quaternion
   ): void {
+    const MathTmp = getMathTmp()
     const rotMat = MathTmp.Matrix[0]
     Matrix.FromXYZAxesToRef(
       axis1.normalize(),
@@ -516,7 +517,7 @@ export class Quaternion implements EcsMathReadOnlyQuaternion {
    */
   public static LookRotation(
     forward: Vector3,
-    up: Vector3 = MathTmp.staticUp
+    up: Vector3 = Vector3.Up() as Readonly<Vector3>
   ): Quaternion {
     const forwardNew = Vector3.Normalize(forward)
     const right: Vector3 = Vector3.Normalize(Vector3.Cross(up, forwardNew))
@@ -601,7 +602,7 @@ export class Quaternion implements EcsMathReadOnlyQuaternion {
   public static FromToRotation(
     from: Vector3,
     to: Vector3,
-    up: Vector3 = MathTmp.staticUp
+    up: Vector3 = Vector3.Up() as Readonly<Vector3>
   ): Quaternion {
     // Unity-based calculations implemented from https://forum.unity.com/threads/quaternion-lookrotation-around-an-axis.608470/#post-4069888
 
@@ -639,7 +640,7 @@ export class Quaternion implements EcsMathReadOnlyQuaternion {
   public setFromToRotation(
     from: Vector3,
     to: Vector3,
-    up: Vector3 = MathTmp.staticUp
+    up: Vector3 = Vector3.Up() as Readonly<Vector3>
   ) {
     const result = Quaternion.FromToRotation(from, to, up)
     this.x = result.x

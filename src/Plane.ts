@@ -1,6 +1,6 @@
+import { getMathTmp } from './preallocatedVariables'
 import { Vector3 } from './Vector3'
 import { Matrix } from './Matrix'
-import { MathTmp } from './preallocatedVariables'
 
 /**
  * Represens a plane by the equation ax + by + cz + d = 0
@@ -138,6 +138,7 @@ export class Plane {
    * @returns a new Plane as the result of the transformation of the current Plane by the given matrix.
    */
   public transform(transformation: Matrix): Plane {
+    const MathTmp = getMathTmp()
     const transposedMatrix = MathTmp.Matrix[0]
     Matrix.TransposeToRef(transformation, transposedMatrix)
     const m = transposedMatrix.m

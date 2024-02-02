@@ -1,9 +1,9 @@
-import { FloatArray, Nullable } from './types'
+import { getMathTmp } from './preallocatedVariables'
 import { Vector3 } from './Vector3'
 import { Quaternion } from './Quaternion'
-import { MathTmp } from './preallocatedVariables'
 import { Plane } from './Plane'
 import { Vector4 } from './Vector4'
+import { FloatArray, Nullable } from './types'
 
 /**
  * Class used to store matrix data (4x4)
@@ -253,6 +253,7 @@ export class Matrix {
     translation: Vector3,
     result: Matrix
   ): void {
+    const MathTmp = getMathTmp()
     Matrix.ScalingToRef(scale.x, scale.y, scale.z, MathTmp.Matrix[1])
     rotation.toRotationMatrix(MathTmp.Matrix[0])
     MathTmp.Matrix[1].multiplyToRef(MathTmp.Matrix[0], result)
@@ -560,6 +561,7 @@ export class Matrix {
     roll: number,
     result: Matrix
   ): void {
+    const MathTmp = getMathTmp()
     Quaternion.RotationYawPitchRollToRef(
       yaw,
       pitch,
@@ -739,6 +741,7 @@ export class Matrix {
     gradient: number,
     result: Matrix
   ) {
+    const MathTmp = getMathTmp()
     const startScale = MathTmp.Vector3[0]
     const startRotation = MathTmp.Quaternion[0]
     const startTranslation = MathTmp.Vector3[1]
@@ -793,6 +796,7 @@ export class Matrix {
     up: Vector3,
     result: Matrix
   ): void {
+    const MathTmp = getMathTmp()
     const xAxis = MathTmp.Vector3[0]
     const yAxis = MathTmp.Vector3[1]
     const zAxis = MathTmp.Vector3[2]
@@ -869,6 +873,7 @@ export class Matrix {
     up: Vector3,
     result: Matrix
   ): void {
+    const MathTmp = getMathTmp()
     const xAxis = MathTmp.Vector3[0]
     const yAxis = MathTmp.Vector3[1]
     const zAxis = MathTmp.Vector3[2]
@@ -2165,6 +2170,7 @@ export class Matrix {
     rotation?: Quaternion,
     translation?: Vector3
   ): boolean {
+    const MathTmp = getMathTmp()
     if (this._isIdentity) {
       if (translation) {
         translation.setAll(0)
@@ -2349,6 +2355,7 @@ export class Matrix {
    * @param ref - matrix to store the result
    */
   public toNormalMatrix(ref: Matrix): void {
+    const MathTmp = getMathTmp()
     const tmp = MathTmp.Matrix[0]
     this.invertToRef(tmp)
     tmp.transposeToRef(ref)
@@ -2390,6 +2397,7 @@ export class Matrix {
    * @returns the current matrix
    */
   public getRotationMatrixToRef(result: Matrix): Matrix {
+    const MathTmp = getMathTmp()
     const scale = MathTmp.Vector3[0]
     if (!this.decompose(scale)) {
       Matrix.IdentityToRef(result)
