@@ -129,18 +129,19 @@ export namespace Vector3 {
   }
 
   /**
-   * Add component by component the vector2 into dest
-   * @param dest - the first vector and destination of addition
-   * @param vector2 - the second vector
+   * Performs addition between firstVector and secondVector and stores the result into resultVector
+   * @param firstVector - the first vector for the addition operation
+   * @param secondVector - the second vector for the addition operation
+   * @param resultVector - the vector where the result of the addition is stored
    */
   export function addToRef(
-    vector1: ReadonlyVector3,
-    vector2: ReadonlyVector3,
-    result: MutableVector3
+    firstVector: ReadonlyVector3,
+    secondVector: ReadonlyVector3,
+    resultVector: MutableVector3
   ): void {
-    result.x = vector1.x + vector2.x
-    result.y = vector1.y + vector2.y
-    result.z = vector1.z + vector2.z
+    resultVector.x = firstVector.x + secondVector.x
+    resultVector.y = firstVector.y + secondVector.y
+    resultVector.z = firstVector.z + secondVector.z
   }
 
   /**
