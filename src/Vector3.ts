@@ -129,19 +129,19 @@ export namespace Vector3 {
   }
 
   /**
-   * Performs addition between firstVector and secondVector and stores the result into resultVector
-   * @param firstVector - the first vector for the addition operation
-   * @param secondVector - the second vector for the addition operation
-   * @param resultVector - the vector where the result of the addition is stored
+   * Performs addition between vectorA and vectorB and stores the result into result
+   * @param vectorA - the first vector for the addition operation
+   * @param vectorB - the second vector for the addition operation
+   * @param result - the vector where the result of the addition is stored
    */
   export function addToRef(
-    firstVector: ReadonlyVector3,
-    secondVector: ReadonlyVector3,
-    resultVector: MutableVector3
+    vectorA: ReadonlyVector3,
+    vectorB: ReadonlyVector3,
+    result: MutableVector3
   ): void {
-    resultVector.x = firstVector.x + secondVector.x
-    resultVector.y = firstVector.y + secondVector.y
-    resultVector.z = firstVector.z + secondVector.z
+    result.x = vectorA.x + vectorB.x
+    result.y = vectorA.y + vectorB.y
+    result.z = vectorA.z + vectorB.z
   }
 
   /**
@@ -160,17 +160,19 @@ export namespace Vector3 {
   }
 
   /**
-   * Returns a new Vector3 as the result of the substraction of the two given vectors.
-   * @returns the resulting vector
+   * Performs substraction between vectorA and vectorB and stores the result into result
+   * @param vectorA - the first vector for the substraction operation
+   * @param vectorB - the second vector for the substraction operation
+   * @param result - the vector where the result of the substraction is stored
    */
   export function subtractToRef(
-    vector1: ReadonlyVector3,
-    vector2: ReadonlyVector3,
+    vectorA: ReadonlyVector3,
+    vectorB: ReadonlyVector3,
     result: MutableVector3
   ): void {
-    result.x = vector1.x - vector2.x
-    result.y = vector1.y - vector2.y
-    result.z = vector1.z - vector2.z
+    result.x = vectorA.x - vectorB.x
+    result.y = vectorA.y - vectorB.y
+    result.z = vectorA.z - vectorB.z
   }
 
   /**
