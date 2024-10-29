@@ -17,7 +17,7 @@
  * position.x = 3.0 // this WORKS
  * ```
  */
-export type Vector2 = Vector2.ReadonlyVector2;
+export type Vector2 = Vector2.ReadonlyVector2
 
 /**
  * @public
@@ -41,9 +41,9 @@ export namespace Vector2 {
    * For mutable typing, use `Vector2.Mutable`, e.g. `const oneVector: Vector2.Mutable = Vector2.One()`.
    */
   export type ReadonlyVector2 = {
-    readonly x: number;
-    readonly y: number;
-  };
+    readonly x: number
+    readonly y: number
+  }
 
   /**
    * @public
@@ -51,16 +51,16 @@ export namespace Vector2 {
    * For mutable typing, use `Vector2.Mutable`, e.g. `const oneVector: Vector2.Mutable = Vector2.One()`.
    */
   export type MutableVector2 = {
-    x: number;
-    y: number;
-  };
+    x: number
+    y: number
+  }
 
   /**
    * @public
    * Type with `Vector2` for readonly usage, e.g. `const zeroPosition: Vector2 = Vector2.Zero()`.
    * For mutable, use `Vector2.Mutable`, e.g. `const oneVector: Vector2.Mutable = Vector2.One()`.
    */
-  export type Mutable = MutableVector2;
+  export type Mutable = MutableVector2
 
   /**
    * Creates a new Vector2 object from the given x, y (floats) coordinates.
@@ -77,7 +77,7 @@ export namespace Vector2 {
      */
     y: number = 0
   ): MutableVector2 {
-    return { x, y };
+    return { x, y }
   }
 
   /**
@@ -85,7 +85,7 @@ export namespace Vector2 {
    * @returns a new empty Vector2
    */
   export function Zero(): MutableVector2 {
-    return create(0.0, 0.0);
+    return create(0.0, 0.0)
   }
 
   /**
@@ -93,6 +93,6 @@ export namespace Vector2 {
    * @returns a new unit Vector2
    */
   export function One(): MutableVector2 {
-    return create(1.0, 1.0);
+    return create(1.0, 1.0)
   }
 }
