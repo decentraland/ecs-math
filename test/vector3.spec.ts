@@ -26,7 +26,6 @@ function vector3ToString(vec: Vector3.MutableVector3) {
 describe('ECS Vector3 - Next tests', () => {
   it('Vector3.create One', () => {
     expect(vector3ToString(Vector3.One())).toEqual(results.ones)
-    Vector3.Random()
   })
 
   it('Vector3.create zeros', () => {

@@ -129,18 +129,19 @@ export namespace Vector3 {
   }
 
   /**
-   * Add component by component the vector2 into dest
-   * @param dest - the first vector and destination of addition
-   * @param vector2 - the second vector
+   * Performs addition between vectorA and vectorB and stores the result into result
+   * @param vectorA - the first vector for the addition operation
+   * @param vectorB - the second vector for the addition operation
+   * @param result - the vector where the result of the addition is stored
    */
   export function addToRef(
-    vector1: ReadonlyVector3,
-    vector2: ReadonlyVector3,
+    vectorA: ReadonlyVector3,
+    vectorB: ReadonlyVector3,
     result: MutableVector3
   ): void {
-    result.x = vector1.x + vector2.x
-    result.y = vector1.y + vector2.y
-    result.z = vector1.z + vector2.z
+    result.x = vectorA.x + vectorB.x
+    result.y = vectorA.y + vectorB.y
+    result.z = vectorA.z + vectorB.z
   }
 
   /**
@@ -159,17 +160,19 @@ export namespace Vector3 {
   }
 
   /**
-   * Returns a new Vector3 as the result of the substraction of the two given vectors.
-   * @returns the resulting vector
+   * Performs substraction between vectorA and vectorB and stores the result into result
+   * @param vectorA - the first vector for the substraction operation
+   * @param vectorB - the second vector for the substraction operation
+   * @param result - the vector where the result of the substraction is stored
    */
   export function subtractToRef(
-    vector1: ReadonlyVector3,
-    vector2: ReadonlyVector3,
+    vectorA: ReadonlyVector3,
+    vectorB: ReadonlyVector3,
     result: MutableVector3
   ): void {
-    result.x = vector1.x - vector2.x
-    result.y = vector1.y - vector2.y
-    result.z = vector1.z - vector2.z
+    result.x = vectorA.x - vectorB.x
+    result.y = vectorA.y - vectorB.y
+    result.z = vectorA.z - vectorB.z
   }
 
   /**
